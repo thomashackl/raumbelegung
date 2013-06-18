@@ -1,0 +1,8 @@
+pluginname=Raumbelegung
+pluginclassname=Raumbelegung
+origin=intelec
+version=1.0
+description=Zeigt Raumbelegungen eines Tages an
+studipMinVersion=1.11
+dbscheme=sql/install.sql
+uninstalldbscheme=sql/uninstall.sql

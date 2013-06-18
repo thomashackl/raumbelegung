@@ -1,0 +1,1 @@
+DROP TABLE `resources_rooms_order`;
