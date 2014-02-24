@@ -29,7 +29,7 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         $navigation = Navigation::getItem('/tools');
         
         // Erstelle einen neuen Navigationspunkt
-        $roomplaner_navi = new Navigation(_('Raumbelegung'), PluginEngine::getUrl('raumbelegung/index/list'));
+        $roomplaner_navi = new Navigation(dgettext('roomplanplugin', 'Raumbelegung'), PluginEngine::getUrl('raumbelegung/index/list'));
         
         // Binde disen Punkt unter "tools" ein
         $navigation->addSubNavigation('raumbelegung', $roomplaner_navi);
@@ -45,14 +45,14 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         
         // Erstelle Unternavigation
         $navigation = Navigation::getItem('/tools/raumbelegung');
-        $listview = new Navigation(_('Anzeige (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
-        $tableview = new Navigation(_('Anzeige (Tabelle)'), PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
+        $listview = new Navigation(dgettext('roomplanplugin', 'Anzeige (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
+        $tableview = new Navigation(dgettext('roomplanplugin', 'Anzeige (Tabelle)'), PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
         $navigation->addSubNavigation('listview', $listview);
         $navigation->addSubNavigation('tableview', $tableview);
 
         // Für root erstelle auch den Navipunkt 'Einstellungen'
         if ($GLOBALS['perm']->have_perm('root')) {
-            $navi_settings = new Navigation(_('Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
+            $navi_settings = new Navigation(dgettext('roomplanplugin', 'Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
             $navigation->addSubNavigation('settings', $navi_settings);
         }
 

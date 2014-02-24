@@ -15,8 +15,8 @@ use Studip\Button;
 ?>
 <form id="dateform" method="get">
     <input name="date" id="date" value="<?= $date ?>"></input>
-    <?= Button::create(_("Anzeigen"), 'submitButton') ?>
-    <span id="datehint"><?= _('Datumsformat tt.mm.yyyy'); ?></span>
+    <?= Button::create(dgettext('roomplanplugin', "Anzeigen"), 'submitButton') ?>
+    <span id="datehint"><?= dgettext('roomplanplugin', 'Datumsformat tt.mm.yyyy'); ?></span>
 </form>
 
 <script>
