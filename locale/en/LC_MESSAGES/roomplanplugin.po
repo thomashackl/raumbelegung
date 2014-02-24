@@ -1,0 +1,50 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-24 08:10+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: Raumbelegung.php:32
+msgid "Raumbelegung"
+msgstr ""
+
+#: Raumbelegung.php:48
+msgid "Anzeige (Liste)"
+msgstr ""
+
+#: Raumbelegung.php:49
+msgid "Anzeige (Tabelle)"
+msgstr ""
+
+#: Raumbelegung.php:55
+msgid "Einstellungen"
+msgstr ""
+
+#: trails/views/index/list.php:13
+msgid "Belegungsplan für Datum: "
+msgstr ""
+
+#: trails/views/index/list.php:15 trails/views/index/table.php:18
+msgid "Anzeigen"
+msgstr ""
+
+#: trails/views/index/list.php:16 trails/views/index/table.php:19
+msgid "Datumsformat tt.mm.yyyy"
+msgstr ""
+
+#: trails/views/index/settings.php:5
+msgid "Ändern"
+msgstr ""
