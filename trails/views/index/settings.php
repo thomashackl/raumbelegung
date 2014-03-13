@@ -1,4 +1,3 @@
-<? Navigation::activateItem('/tools/raumbelegung/settings'); ?>
 <noscript><h1>Die Administration setzt Javascript vorraus</h1></noscript>
 <form id="updateform" method="post">
     <input type="hidden" name="update" id="update" />

@@ -9,8 +9,6 @@
     table table table table {border-color:  #d78888;}
 </style>
 <?
-Navigation::activateItem('/tools/raumbelegung/tableview');
-
 use Studip\Button;
 ?>
 <form id="dateform" method="get">

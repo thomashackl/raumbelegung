@@ -26,10 +26,10 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         parent::__construct();
 
         // Lade den Navigationsabschnitt "tools"
-        $navigation = Navigation::getItem('/tools');
+        $navigation = Navigation::getItem('/calendar');
         
         // Erstelle einen neuen Navigationspunkt
-        $roomplaner_navi = new Navigation(_('Raumbelegung'), PluginEngine::getUrl('raumbelegung/index/list'));
+        $roomplaner_navi = new AutoNavigation(_('Raumbelegung'), PluginEngine::getUrl('raumbelegung/index/list'));
         
         // Binde disen Punkt unter "tools" ein
         $navigation->addSubNavigation('raumbelegung', $roomplaner_navi);
@@ -44,15 +44,15 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
     function perform($unconsumed_path) {
         
         // Erstelle Unternavigation
-        $navigation = Navigation::getItem('/tools/raumbelegung');
-        $listview = new Navigation(_('Anzeige (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
-        $tableview = new Navigation(_('Anzeige (Tabelle)'), PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
+        $navigation = AutoNavigation::getItem('/calendar/raumbelegung');
+        $listview = new AutoNavigation(_('Anzeige (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
+        $tableview = new AutoNavigation(_('Anzeige (Tabelle)'), PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
         $navigation->addSubNavigation('listview', $listview);
         $navigation->addSubNavigation('tableview', $tableview);
 
         // Für root erstelle auch den Navipunkt 'Einstellungen'
         if ($GLOBALS['perm']->have_perm('root')) {
-            $navi_settings = new Navigation(_('Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
+            $navi_settings = new AutoNavigation(_('Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
             $navigation->addSubNavigation('settings', $navi_settings);
         }
 

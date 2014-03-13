@@ -5,7 +5,6 @@
     .belegungsplan ul ul ul{font-size: 14px;}
 </style>
 <?
-Navigation::activateItem('/tools/raumbelegung/listview');
 
 use Studip\Button;
 ?>
