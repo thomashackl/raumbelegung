@@ -80,4 +80,3 @@ class IndexController extends StudipController {
         $this->room = $belegung->root;
     }
 }
-?>

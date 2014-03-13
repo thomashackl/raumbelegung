@@ -45,8 +45,8 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         
         // Erstelle Unternavigation
         $navigation = AutoNavigation::getItem('/calendar/raumbelegung');
-        $listview = new AutoNavigation(_('Anzeige (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
-        $tableview = new AutoNavigation(_('Anzeige (Tabelle)'), PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
+        $listview = new AutoNavigation(_('Tagesansicht (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
+        $tableview = new AutoNavigation(_('Tagesansicht (Tabelle)'), PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
         $navigation->addSubNavigation('listview', $listview);
         $navigation->addSubNavigation('tableview', $tableview);
 
@@ -55,6 +55,9 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
             $navi_settings = new AutoNavigation(_('Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
             $navigation->addSubNavigation('settings', $navi_settings);
         }
+        
+        // Füge Navigation für die Wochenansicht an
+        $navigation->addSubNavigation('weekview', new AutoNavigation(_('Wochenansicht'), PluginEngine::getUrl('raumbelegung/week/index')));
 
         // Füge nun dem Head die benötigten Styles und Scripts hinzu
         PageLayout::addStylesheet($this->getPluginURL() . "/js/jquery-easyui-1.3.2/themes/default/easyui.css");
@@ -74,6 +77,7 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
          */
         $trails_root = $this->getPluginPath() . "/trails";
         $dispatcher = new Trails_Dispatcher($trails_root, PluginEngine::getUrl('raumbelegung/index'), 'index');
+        $dispatcher->plugin = $this;
         $dispatcher->dispatch($unconsumed_path);
     }
 
