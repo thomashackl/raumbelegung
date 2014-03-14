@@ -38,10 +38,17 @@ class RoomUsageResourceObject extends SimpleORMap {
         return SimpleORMapCollection::createFromArray(RoomUsageResourceProperty::findBySQL('1'));
     }
 
-    public function getProperty($name) {
+    public function getProperty($name, $type = null) {
 
         // Fetch id of prop array
-        $prop = $this->prop->findOneBy('name', $name);
+        if ($type) {
+            $props = $this->prop->findBy('name', $name);
+            $prop = $props->findOneBy('type', $name);
+        } else {
+            $prop = $this->prop->findOneBy('name', $name);
+        }
+
+        // If we got no property we already know what is gonna happen
         if (!$prop) {
             return null;
         }
