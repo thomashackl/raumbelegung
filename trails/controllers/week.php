@@ -13,7 +13,8 @@ class WeekController extends StudipController {
     public function index_action() {
         PageLayout::addScript($this->plugin->getPluginURL() . "/js/week.js");
         PageLayout::addStylesheet($this->plugin->getPluginURL() . "/styles/intelecroomplan.css");
-
+        PageLayout::addStylesheet($this->plugin->getPluginURL() . "/styles/intelecroomprint.css", array('media' => 'print'));
+        
         // Fetch requested date
         $this->date = Request::get('date');
         

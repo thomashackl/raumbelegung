@@ -1,0 +1,13 @@
+#flex-header,#barBottomContainer,#layout_footer,#tabs,#tabs2,#dateform {
+    display: none;
+}
+
+table.intelec_roomtable {
+    page-break-after: always;
+}
+
+@page 
+{
+    size: landscape;
+    margin: 12mm 12mm 5mm 12mm;
+}
