@@ -23,8 +23,13 @@ class WeekController extends StudipController {
         if (Request::get('date') && Request::get('building')) {
             
             // At first check if we got a building
-            if ($this->buildings->find(Request::get('building'))) {
-                $this->request = 
+            $find = $this->buildings->find(Request::get('building'));
+            if ($find) {
+                $this->request = $find->children;
+            } else {
+                
+                // If we got nothing we just have a room requested
+                $this->request = array(new RoomUsageResourceObject(Request::get('building')));
             }
         }
     }

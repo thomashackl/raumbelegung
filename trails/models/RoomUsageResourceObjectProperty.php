@@ -1,7 +1,7 @@
 <?php
 /**
- * ResourceObjects.php
- * model class for table ResourceObjects
+ * RoomUsageResourceObjectProperty.php
+ * model class for table RoomUsageResourceObjectProperty
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -14,16 +14,12 @@
  * @category    Stud.IP
  * @since       3.0
  */
-class RoomUsageResourceObjects extends SimpleORMap
+
+class RoomUsageResourceObjectProperty extends SimpleORMap
 {
     public function __construct($id = null)
     {
-        $this->db_table = 'resources_objects';
-        $this->has_many['children'] = array(
-            'class_name' => 'RoomUsageResourceObjects',
-            'assoc_foreign_key' => 'parent_id'
-        );
+        $this->db_table = 'resources_objects_properties';
         parent::__construct($id);
     }
-
 }

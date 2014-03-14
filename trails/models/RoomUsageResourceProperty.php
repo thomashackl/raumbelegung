@@ -1,7 +1,7 @@
 <?php
 /**
- * ResourceCategorie.php
- * model class for table ResourceCategorie
+ * RoomUsageResourceProperty.php
+ * model class for table RoomUsageResourceProperty
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -15,14 +15,11 @@
  * @since       3.0
  */
 
-class RoomUsageResourceCategory extends SimpleORMap
+class RoomUsageResourceProperty extends SimpleORMap
 {
     public function __construct($id = null)
     {
-        $this->db_table = 'resources_categories';
-        $this->has_many['objects'] = array(
-            'class_name' => 'RoomUsageResourceObject'
-        );
+        $this->db_table = 'resources_properties';
         parent::__construct($id);
     }
 }
