@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ResourceObjects.php
  * model class for table ResourceObjects
@@ -14,11 +15,14 @@
  * @category    Stud.IP
  * @since       3.0
  */
-class RoomUsageResourceObject extends SimpleORMap
-{
-    public function __construct($id = null)
-    {
+class RoomUsageResourceObject extends SimpleORMap {
+
+    public function __construct($id = null) {
         $this->db_table = 'resources_objects';
+        $this->belongs_to['parent'] = array(
+            'class_name' => 'RoomUsageResourceObject',
+            'foreign_key' => 'parent_id'
+        );
         $this->has_many['children'] = array(
             'class_name' => 'RoomUsageResourceObject',
             'assoc_foreign_key' => 'parent_id'
@@ -29,19 +33,19 @@ class RoomUsageResourceObject extends SimpleORMap
         $this->additional_fields['prop'] = true;
         parent::__construct($id);
     }
-    
+
     public function getProp() {
         return SimpleORMapCollection::createFromArray(RoomUsageResourceProperty::findBySQL('1'));
     }
-    
+
     public function getProperty($name) {
-        
+
         // Fetch id of prop array
         $prop = $this->prop->findOneBy('name', $name);
         if (!$prop) {
             return null;
         }
-        
+
         // Now find the value and return
         $value = $this->prop_values->findOneBy('property_id', $prop->id);
         return $value->state;
