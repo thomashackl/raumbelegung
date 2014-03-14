@@ -1,0 +1,29 @@
+<?php
+/**
+ * ResourceObjects.php
+ * model class for table ResourceObjects
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * @author      Florian Bieringer <florian.bieringer@uni-passau.de>
+ * @copyright   2013 Stud.IP Core-Group
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
+ * @category    Stud.IP
+ * @since       3.0
+ */
+class RoomUsageResourceObjects extends SimpleORMap
+{
+    public function __construct($id = null)
+    {
+        $this->db_table = 'resources_objects';
+        $this->has_many['children'] = array(
+            'class_name' => 'RoomUsageResourceObjects',
+            'assoc_foreign_key' => 'parent_id'
+        );
+        parent::__construct($id);
+    }
+
+}

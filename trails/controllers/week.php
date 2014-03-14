@@ -12,9 +12,21 @@ class WeekController extends StudipController {
 
     public function index_action() {
         PageLayout::addScript($this->plugin->getPluginURL() . "/js/week.js");
-        
+
         // Fetch requested date
         $this->date = Request::get('date');
+        
+        // Fetch the top layer rooms
+        $this->buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
+        
+        // Get the requested rooms
+        if (Request::get('date') && Request::get('building')) {
+            
+            // At first check if we got a building
+            if ($this->buildings->find(Request::get('building'))) {
+                $this->request = 
+            }
+        }
     }
 
 }
