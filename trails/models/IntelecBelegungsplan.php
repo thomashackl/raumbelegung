@@ -48,6 +48,27 @@ class IntelecBelegungsplan {
 
         $html .= '</tbody>';
 
+        // Actual data
+        for ($time = 8; $time <= 23; $time++) {
+            $html .= '<tr>'
+                    . '<td>' . $time . '</td>';
+
+            // Now get actuall stuff
+            for ($day = 0; $day < 5; $day++) {
+
+                $assignment = self::getAssignement($object, $start, $day, $time);
+
+
+                $html .= '<td>';
+                if ($assignment) {
+                $html .= $assignment['realname'];
+                }
+                $html .= '</td>';
+            }
+
+            $html .= '</tr>';
+        }
+
         // Footer
         $html .= '<tfoot>'
                 . '<tr>'
@@ -64,6 +85,26 @@ class IntelecBelegungsplan {
 
     private static function timeformat($stamp) {
         return strftime('%a. %d.%m.%y', $stamp);
+    }
+
+    private static function getAssignement($object, $start, $day, $hour) {
+        $startstamp = $start + $day * 3600 * 24 + $hour * 3600;
+        $endstamp = $startstamp + 3599;
+
+        $sql = "SELECT *, COALESCE(s.Name, user_free_name) as realname, COUNT( * ) AS teilnehmer FROM resources_objects o
+                    JOIN resources_assign a USING (resource_id)
+                    LEFT JOIN termine t ON t.termin_id = a.assign_user_id
+                    LEFT JOIN seminare s ON t.range_id = s.seminar_id
+                    LEFT JOIN seminar_user u USING (seminar_id) 
+                    LEFT JOIN auth_user_md5 au USING(user_id)
+                    LEFT JOIN seminar_user u2 USING (seminar_id) 
+                    WHERE o.resource_id = ? 
+                    AND (u.status = 'dozent' OR u.status is null)
+                    AND a.begin >= ? and a.begin < ?
+                    GROUP BY termin_id";
+        $stmt = DBManager::get()->prepare($sql);
+        $stmt->execute(array($object->id, $startstamp, $endstamp));
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
 }
