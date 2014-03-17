@@ -17,7 +17,7 @@ table.intelec_roomtable thead tr td span.headline {
     font-weight: bold;
 }
 
-table.intelec_roomtable tbody tr:nth-child(4n+3),table.intelec_roomtable tbody tr:nth-child(4n+4) {
+table.intelec_roomtable tbody tr:nth-child(4n+4),table.intelec_roomtable tbody tr:nth-child(4n+5) {
     background-color: #dddddd !important;
 }
 
