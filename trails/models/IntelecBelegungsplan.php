@@ -47,13 +47,13 @@ class IntelecBelegungsplan {
         // Headline
         $html .= '<tr>'
                 . '<td></td>'
-                . '<td>Montag</td>'
-                . '<td>Dienstag</td>'
-                . '<td>Mittwoch</td>'
-                . '<td>Donnerstag</td>'
-                . '<td>Freitag</td>'
+                . '<th>Montag</th>'
+                . '<th>Dienstag</th>'
+                . '<th>Mittwoch</th>'
+                . '<th>Donnerstag</th>'
+                . '<th>Freitag</th>'
                 . '<td></td>'
-                . '<td>Samstag&thinsp;/&thinsp;Sonntag</td>'
+                . '<th>Samstag&thinsp;/&thinsp;Sonntag</th>'
                 . '</tr>';
 
         $html .= '</tbody>';
