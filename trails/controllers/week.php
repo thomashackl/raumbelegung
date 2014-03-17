@@ -34,6 +34,15 @@ class WeekController extends StudipController {
                 $this->request = array(new RoomUsageResourceObject(Request::get('building')));
             }
         }
+        
+        // Initialise to prevent foreach fails
+        $this->timetables = array();
+        
+        if ($this->request) {
+            foreach ($this->request as $request) {
+                $this->timetables[] = new IntelecBelegungsplan(Request::get('date'), $request);
+            }
+        }
     }
 
 }

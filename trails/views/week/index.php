@@ -18,8 +18,12 @@
 
     <?= \Studip\Button::create(_("Anzeigen"), 'submitButton') ?>
 </form>
-<? if ($request): ?>
+<? if (false): ?>
     <? foreach ($request as $room): ?>
         <?= IntelecBelegungsplan::display(Request::get('date'), $room) ?>
     <? endforeach; ?>
-<? endif;
+<? endif; ?>
+
+<? foreach ($timetables as $timetable): ?>
+<?= $this->render_partial('week/timetable', array('table' => $timetable)); ?>
+<? endforeach; 
