@@ -12,6 +12,16 @@ class IntelecBelegungsplan {
         // Parse start and end
         // Start table
         $html = '<table class="intelec_roomtable">';
+        $html .= '  <colgroup>
+    <col width="1%">
+    <col width="16%">
+    <col width="16%">
+    <col width="16%">
+    <col width="16%">
+    <col width="16%">
+    <col width="1%">
+    <col width="16%">
+  </colgroup>';
 
         // Header
         $html .= '<thead>'
@@ -48,6 +58,7 @@ class IntelecBelegungsplan {
 
         $html .= '</tbody>';
 
+        $jump = array();
         // Actual data
         for ($time = 8; $time <= 23; $time++) {
             $html .= '<tr>'
@@ -56,15 +67,35 @@ class IntelecBelegungsplan {
             // Now get actuall stuff
             for ($day = 0; $day < 5; $day++) {
 
+                // Check if jump is required
+                if ($jump[$day]) {
+                    $jump[$day] --;
+                    continue;
+                }
+
                 $assignment = self::getAssignement($object, $start, $day, $time);
 
-
-                $html .= '<td>';
                 if ($assignment) {
-                $html .= $assignment['realname'];
+                    // Check how long the assignment runs
+                    $runtime = ($assignment['end'] - $assignment['begin']) / 3600;
+
+                    // Set jumper
+                    $jump[$day] += $runtime - 1;
+
+                    $html .= '<td rowspan="' . $runtime . '">';
+                    $html .= '<div class="entry">'
+                            . mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;")
+                            . '<br>'
+                            . $assignment['dozenten']
+                            . '<br>'
+                            . $assignment['teilnehmer'] . '</div>';
+                } else {
+                    $html .= '<td>';
                 }
                 $html .= '</td>';
             }
+
+            $html .= '<td>' . $time . '</td>';
 
             $html .= '</tr>';
         }
@@ -91,20 +122,35 @@ class IntelecBelegungsplan {
         $startstamp = $start + $day * 3600 * 24 + $hour * 3600;
         $endstamp = $startstamp + 3599;
 
-        $sql = "SELECT *, COALESCE(s.Name, user_free_name) as realname, COUNT( * ) AS teilnehmer FROM resources_objects o
+        $sql = "SELECT *, COALESCE(s.Name, user_free_name) as realname FROM resources_objects o
                     JOIN resources_assign a USING (resource_id)
                     LEFT JOIN termine t ON t.termin_id = a.assign_user_id
                     LEFT JOIN seminare s ON t.range_id = s.seminar_id
-                    LEFT JOIN seminar_user u USING (seminar_id) 
-                    LEFT JOIN auth_user_md5 au USING(user_id)
-                    LEFT JOIN seminar_user u2 USING (seminar_id) 
                     WHERE o.resource_id = ? 
-                    AND (u.status = 'dozent' OR u.status is null)
-                    AND a.begin >= ? and a.begin < ?
-                    GROUP BY termin_id";
+                    AND a.begin >= ? and a.begin < ?";
         $stmt = DBManager::get()->prepare($sql);
         $stmt->execute(array($object->id, $startstamp, $endstamp));
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // find result
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+        if ($result) {
+
+            // Fetch dozenten
+            $stmt = DBManager::get()->prepare("SELECT Nachname FROM seminar_user JOIN auth_user_md5 USING (user_id) WHERE seminar_id = ? AND status = 'dozent'");
+            $stmt->execute(array($result['Seminar_id']));
+
+            $dozenten = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $result['dozenten'] = join(', ', $dozenten);
+
+            // Fetch teilnehmer
+            $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM seminar_user WHERE seminar_id = ? AND (status = 'autor' OR status = 'user')");
+            $stmt->execute(array($result['Seminar_id']));
+            $result['teilnehmer'] = $stmt->fetch(PDO::FETCH_COLUMN);
+        }
+
+        return $result;
     }
 
 }

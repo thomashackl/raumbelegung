@@ -1,8 +1,32 @@
 table.intelec_roomtable {
     border: 1px solid #000;
     margin: 10px;
+    border-collapse: collapse;
+}
+
+table.intelec_roomtable tbody tr:nth-child(4n+3),table.intelec_roomtable tbody tr:nth-child(4n+4) {
+    background-color: #dddddd;
+}
+
+table.intelec_roomtable tbody tr {
+}
+
+table.intelec_roomtable tbody tr td {
+    border: 1px solid #000;
+    padding: 2px;
+}
+
+table.intelec_roomtable tfoot {
+    font-size: 10px;
 }
 
 table.intelec_roomtable thead {
-    
+
+}
+
+table.intelec_roomtable div.entry {
+    background-color: #eeeeee;
+    border: 2px solid #777777;
+    border-radius: 5px;
+    font-size: 12px;
 }

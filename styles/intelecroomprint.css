@@ -11,3 +11,7 @@ table.intelec_roomtable {
     size: landscape;
     margin: 12mm 12mm 5mm 12mm;
 }
+
+table.intelec_roomtable tfoot tr td {
+    font-size: 10px;
+}
