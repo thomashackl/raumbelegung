@@ -4,8 +4,17 @@ table.intelec_roomtable {
     border-collapse: collapse;
 }
 
+table.intelec_roomtable thead tr td {
+    padding: 10px;
+}
+
+table.intelec_roomtable thead tr td span.headline {
+    font-size: 20px;
+    font-weight: bold;
+}
+
 table.intelec_roomtable tbody tr:nth-child(4n+3),table.intelec_roomtable tbody tr:nth-child(4n+4) {
-    background-color: #dddddd;
+    background-color: #dddddd !important;
 }
 
 table.intelec_roomtable tbody tr {
@@ -26,7 +35,7 @@ table.intelec_roomtable thead {
 
 table.intelec_roomtable div.entry {
     background-color: #eeeeee;
-    border: 2px solid #777777;
+    border: 2px solid #777777 !important;
     border-radius: 5px;
     font-size: 12px;
 }

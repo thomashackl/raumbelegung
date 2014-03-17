@@ -27,7 +27,7 @@ class IntelecBelegungsplan {
         $html .= '<thead>'
                 . '<tr>'
                 . '<td colspan="3">'
-                . $object->name . ($object->description ? (' (' . $object->description . ')') : '') . '<br>'
+                . '<span class="headline">'.$object->name . ($object->description ? (' (' . $object->description . ')') : '') . '</span><br>'
                 . $object->parent->getProperty('Adresse')
                 . '</td>'
                 . '<td colspan="2">'
