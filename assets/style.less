@@ -1,0 +1,78 @@
+.multilevel .building {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+table.intelec_roomtable {
+    border: 1px solid #000;
+    margin: 10px;
+    border-collapse: collapse;
+
+    thead tr td {
+        padding: 10px;
+
+        span.headline {
+            font-size: 20px;
+            font-weight: bold;
+        }
+    }
+
+    tbody {
+        tr {
+            height: 30px;
+            td {
+                border: 1px solid #000;
+                padding: 1px;
+                vertical-align: top;
+
+                .weekend {
+                    background-color: #ffffff;
+                    background-image: url('logo.png');
+                }
+            }
+        }
+
+        tr:nth-child(4n+4), tr:nth-child(4n+5){
+            background-color: #dddddd !important;
+        }
+        tr th {
+            border: 1px solid #000;
+        }
+        div.entry {
+            background-color: #eeeeee;
+            border: 1px solid #777777 !important;
+            border-radius: 5px;
+            font-size: 10px;
+            position: absolute;
+            overflow: hidden;
+        }
+    }
+    tfoot {
+        font-size: 10px;
+    }
+}
+
+@media print {
+    #flex-header,#barBottomContainer,#layout_footer,#tabs,#tabs2,#dateform {
+        display: none;
+    }
+
+    table.intelec_roomtable {
+        page-break-after: always;
+        height: 100% !important;
+    }
+
+    @page 
+    {
+        size: landscape;
+        margin: 12mm 12mm 5mm 12mm;
+    }
+
+    table.intelec_roomtable tfoot tr td {
+        font-size: 10px;
+    }
+
+    table.intelec_roomtable div.entry {
+        width: 154px;
+    }
+}

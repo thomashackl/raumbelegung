@@ -50,7 +50,7 @@
                         </td>
                     <? endif; ?>
                     <? if ($day['weekend']): ?>
-                        <td rowspan="<?= count($table->hour) ?>">
+                        <td class="weekend" rowspan="<?= count($table->hour) ?>">
                             <? foreach ($day['weekend'] as $entry):?>
                                 <?= $entry['realname'] ?><br>
                             <? endforeach; ?>
