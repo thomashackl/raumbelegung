@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Raumbelegung - Plugin zur Anzeige aller Raumbelegungen an einem Tag
  *
@@ -17,20 +18,20 @@
  * @category    Stud.IP
  */
 class Raumbelegung extends StudipPlugin implements SystemPlugin {
-
     /*
      *  Ein Systemplugin wird auf JEDER Seite geladen (Konstruiert) deshalb
      * erzeugen wir hier den Navigationspunkt
      */
+
     function __construct() {
         parent::__construct();
 
         // Lade den Navigationsabschnitt "tools"
         $navigation = Navigation::getItem('/calendar');
-        
+
         // Erstelle einen neuen Navigationspunkt
         $roomplaner_navi = new AutoNavigation(_('Raumbelegung'), PluginEngine::getUrl('raumbelegung/index/list'));
-        
+
         // Binde disen Punkt unter "tools" ein
         $navigation->addSubNavigation('raumbelegung', $roomplaner_navi);
     }
@@ -42,7 +43,7 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
      * @param string Die restliche Pfadangabe
      */
     function perform($unconsumed_path) {
-        
+
         // Erstelle Unternavigation
         $navigation = AutoNavigation::getItem('/calendar/raumbelegung');
         $listview = new AutoNavigation(_('Tagesansicht (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
@@ -50,14 +51,14 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         $navigation->addSubNavigation('listview', $listview);
         $navigation->addSubNavigation('tableview', $tableview);
 
+        // Füge Navigation für die Wochenansicht an
+        $navigation->addSubNavigation('weekview', new AutoNavigation(_('Wochenansicht'), PluginEngine::getUrl('raumbelegung/week/index')));
+
         // Für root erstelle auch den Navipunkt 'Einstellungen'
         if ($GLOBALS['perm']->have_perm('root')) {
             $navi_settings = new AutoNavigation(_('Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
             $navigation->addSubNavigation('settings', $navi_settings);
         }
-        
-        // Füge Navigation für die Wochenansicht an
-        $navigation->addSubNavigation('weekview', new AutoNavigation(_('Wochenansicht'), PluginEngine::getUrl('raumbelegung/week/index')));
 
         // Füge nun dem Head die benötigten Styles und Scripts hinzu
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/jquery-easyui-1.3.2/themes/default/easyui.css");
@@ -68,9 +69,9 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         // Baue jetzt einen autoloader für alle models (ja ich bin faul)
         $GLOBALS['autoloader_path'] = $this->getPluginPath() . '/trails/models/';
         spl_autoload_register(function ($class) {
-                    include_once $GLOBALS['autoloader_path'] . $class . '.php';
-                });
-                
+            include_once $GLOBALS['autoloader_path'] . $class . '.php';
+        });
+
         /*
          * Jetzt brauchen wir nur noch einen Trailsdispatcher der die restliche
          * Arbeit für uns erledigt. An dieser Stelle springt also die Plugin-
