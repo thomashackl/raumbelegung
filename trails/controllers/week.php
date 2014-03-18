@@ -19,6 +19,8 @@ class WeekController extends StudipController {
         // Fetch the top layer rooms
         $this->buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
         
+        // Only show visible buildings
+        
         // Get the requested rooms
         if (Request::get('date') && Request::get('building')) {
             
