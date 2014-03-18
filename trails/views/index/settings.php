@@ -1,7 +1,7 @@
 <noscript><h1>Die Administration setzt Javascript vorraus</h1></noscript>
 <form id="updateform" method="post">
     <input type="hidden" name="update" id="update" />
-    <?= \Studip\Button::create(_('Ändern')) ?>
+    <?= \Studip\Button::create(dgettext('roomplanplugin', 'Ändern')) ?>
 </form>
 <ul id="tt"></ul>  
 
