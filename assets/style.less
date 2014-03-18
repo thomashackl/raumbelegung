@@ -25,10 +25,14 @@ table.intelec_roomtable {
                 padding: 1px;
                 vertical-align: top;
 
-                .weekend {
-                    background-color: #ffffff;
-                    background-image: url('logo.png');
-                }
+                
+            }
+            td.weekend {
+                background-color: #ffffff;
+                background-image: url('logo.png');
+                background-position: bottom;
+                background-repeat: no-repeat;
+                background-size: 80%;
             }
         }
 
@@ -49,6 +53,9 @@ table.intelec_roomtable {
     }
     tfoot {
         font-size: 10px;
+        .headline {
+            font-weight: bold;
+        }
     }
 }
 

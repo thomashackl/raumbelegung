@@ -64,7 +64,7 @@ class IntelecBelegungsplan {
             if ($time == 8) {
 
                 $assignments = self::getWeekendAssignements($object, $start);
-                $slot[] = array('weekend' => $assignments);
+                $slot[] = array('weekend' => $assignments ? : array());
             }
             $this->hour[] = $slot;
         }
