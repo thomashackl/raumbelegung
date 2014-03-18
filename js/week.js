@@ -4,8 +4,18 @@ $(document).ready(function() {
             $('#dateform').submit();
         }});
     $('#buildings').change(function(date) {
-            $('#dateform').submit();
-        });
+        $('#dateform').submit();
+    });
     $('#datehint').hide();
     $('[name="submitButton"]').hide();
+
+    // Adjust width of entries
+    /*var width = $('tbody tr th').first().width();
+    $('.entry').css('width', width - 2);
+
+    $(window).resize(function() {
+        var width = $('tbody tr th').first().width();
+        $('.entry').css('width', width - 2);
+
+    });*/
 });

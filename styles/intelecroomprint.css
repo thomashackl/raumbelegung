@@ -20,3 +20,7 @@ table.intelec_roomtable tbody {
 table.intelec_roomtable tfoot tr td {
     font-size: 10px;
 }
+
+table.intelec_roomtable div.entry {
+    width: 154px;
+}

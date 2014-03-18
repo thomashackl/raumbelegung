@@ -45,12 +45,26 @@
                         </td>
                     <? endif; ?>
                     <? if ($day['content']): ?>
-                        <td rowspan="<?= $day['content']['timeslots'] ?>">
+                        <td>
                             <?= $this->render_partial('week/entry', array('entry' => $day['content'])) ?>
+                        </td>
+                    <? endif; ?>
+                    <? if ($day['weekend']): ?>
+                        <td rowspan="<?= count($table->hour) ?>">
+                            <? foreach ($day['weekend'] as $entry):?>
+                                <?= $entry['realname'] ?><br>
+                            <? endforeach; ?>
                         </td>
                     <? endif; ?>
                 <? endforeach; ?>
             </tr>
         <? endforeach; ?>
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="100">
+                Dreizeiliges Bla Bla Bla, das sich alle 3-4 Monate ändert. Daher wäre es toll, wenn die Raumvergabe diesen Text in Stud.IP editieren könnte!?Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ...
+            </td>
+        </tr>
+    </tfoot>
 </table>

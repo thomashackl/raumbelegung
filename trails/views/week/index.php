@@ -1,7 +1,7 @@
 <form id="dateform" class="studip_form" method="get">
     <label>
         <?= _('Datum') ?> 
-        <input name="date" id="date" value="<?= $date ?>"></input>
+        <input type="text" name="date" id="date" value="<?= $date ?>"></input>
     </label>
 
     <label>

@@ -17,16 +17,19 @@ table.intelec_roomtable thead tr td span.headline {
     font-weight: bold;
 }
 
-table.intelec_roomtable tbody tr:nth-child(4n+4),table.intelec_roomtable tbody tr:nth-child(4n+5) {
+table.intelec_roomtable tbody tr:nth-child(4n+4),
+table.intelec_roomtable tbody tr:nth-child(4n+5) {
     background-color: #dddddd !important;
 }
 
 table.intelec_roomtable tbody tr {
+    height: 30px;
 }
 
 table.intelec_roomtable tbody tr td {
     border: 1px solid #000;
-    padding: 2px;
+    padding: 1px;
+    vertical-align: top;
 }
 
 table.intelec_roomtable tfoot {
@@ -39,7 +42,9 @@ table.intelec_roomtable thead {
 
 table.intelec_roomtable div.entry {
     background-color: #eeeeee;
-    border: 2px solid #777777 !important;
+    border: 1px solid #777777 !important;
     border-radius: 5px;
-    font-size: 12px;
+    font-size: 10px;
+    position: absolute;
+    overflow: hidden;
 }

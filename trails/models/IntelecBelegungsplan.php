@@ -2,6 +2,8 @@
 
 class IntelecBelegungsplan {
 
+    const SLOTSIZE = 30;
+
     public function __construct($date, RoomUsageResourceObject $object) {
 
         // Calculate timestamps
@@ -15,26 +17,23 @@ class IntelecBelegungsplan {
         $this->area = $object->getProperty('Fläche');
         $this->timespan = self::timeformat($start) . ' - ' . self::timeformat($end);
         $this->timestamp = self::timeformat(time());
-        
+
         $jump = array();
 
         // Now get content
-        for ($time = 8; $time <= 23; $time++) {
+        for ($time = 8; $time < 24; $time++) {
 
             // Clear the slot
             $slot = array();
-            
+
             // First column should contain an enumeration
-            $slot[] = array('title' => $time);
+            $slot[] = array('title' => ctype_digit((string) $time) ? $time : '');
 
             // Now get actuall stuff
             for ($day = 0; $day < 5; $day++) {
 
-                // Check if jump is required
-                if ($jump[$day]) {
-                    $jump[$day]--;
-                    continue;
-                }
+                // Calculate startstamp
+                $startstamp = $start + $day * 3600 * 24 + $time * 3600;
 
                 $assignment = self::getAssignement($object, $start, $day, $time);
 
@@ -46,32 +45,30 @@ class IntelecBelegungsplan {
                     $jump[$day] += $runtime - 1;
 
                     $slot[] = array('content' => array(
-                            "timeslots" => $runtime,
                             "name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
                             "dozenten" => $assignment['dozenten'],
-                            "teilnehmer" => $assignment['teilnehmer']
+                            "teilnehmer" => $assignment['teilnehmer'],
+                            "size" => self::SLOTSIZE * $runtime,
+                            "margin" => ($assignment['begin'] - $startstamp) / 3600 * self::SLOTSIZE
                     ));
                 } else {
                     // If no assignement push an empty slot
                     $slot[] = array('title' => '');
                 }
-                
             }
-            
+
             // Push another timeslot
-            $slot[] = array('title' => $time);
+            $slot[] = array('title' => ctype_digit((string) $time) ? $time : '');
 
             // Special case at first saturday
-            /* if ($time == 8) {
+            if ($time == 8) {
 
-              $assignments = self::getWeekendAssignements($object, $start, $day, $time);
-              $html .= '<td rowspan="16">samstag</td>';
-              } */
+                $assignments = self::getWeekendAssignements($object, $start);
+                $slot[] = array('weekend' => $assignments);
+            }
             $this->hour[] = $slot;
-            
         }
     }
-
 
     private static function timeformat($stamp) {
         return strftime('%a. %d.%m.%y', $stamp);
@@ -117,9 +114,9 @@ class IntelecBelegungsplan {
     /**
      * Fetches roomasignments for the weekend
      */
-    private static function getWeekendAssignement($object, $start) {
-        $startstamp = $start + $day * 3600 * 24 + $hour * 3600;
-        $endstamp = $startstamp + 3599;
+    private static function getWeekendAssignements($object, $start) {
+        $startstamp = $start + 5 * 3600 * 24;
+        $endstamp = $startstamp + 3600 * 24 * 2;
 
         $sql = "SELECT *, COALESCE(s.Name, user_free_name) as realname FROM resources_objects o
                     JOIN resources_assign a USING (resource_id)
@@ -131,22 +128,27 @@ class IntelecBelegungsplan {
         $stmt->execute(array($object->id, $startstamp, $endstamp));
 
         // find result
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Only calculate dozenten and users if we actually got an assignment
-        if ($result) {
+        foreach ($result as &$r) {
+
+            // Build realname
+            $r['realname'] = strftime('%a. %d.%m., %H', $r['begin'])
+                    . '-'
+                    . strftime('%H', $r['end'])
+                    . ', ';
 
             // Fetch dozenten
-            $stmt = DBManager::get()->prepare("SELECT Nachname FROM seminar_user JOIN auth_user_md5 USING (user_id) WHERE seminar_id = ? AND status = 'dozent'");
+            $stmt = DBManager::get()->prepare("SELECT Nachname FROM seminar_user JOIN auth_user_md5 USING (user_id) WHERE seminar_id = ? AND status = 'dozent' LIMIT 1");
             $stmt->execute(array($result['Seminar_id']));
+            $dozent = $stmt->fetch(PDO::FETCH_COLUMN);
 
-            $dozenten = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            $result['dozenten'] = join(', ', $dozenten);
-
-            // Fetch teilnehmer
-            $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM seminar_user WHERE seminar_id = ? AND (status = 'autor' OR status = 'user')");
-            $stmt->execute(array($result['Seminar_id']));
-            $result['teilnehmer'] = $stmt->fetch(PDO::FETCH_COLUMN);
+            if ($dozent) {
+                $r['realname'] .= $dozent;
+            } else {
+                $r['realname'] .= $r['user_free_name'];
+            }
         }
         return $result;
     }
