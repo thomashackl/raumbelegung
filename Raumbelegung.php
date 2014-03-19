@@ -53,6 +53,7 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
 
         // Füge Navigation für die Wochenansicht an
         $navigation->addSubNavigation('weekview', new AutoNavigation(_('Wochenansicht'), PluginEngine::getUrl('raumbelegung/week/index')));
+        $navigation->addSubNavigation('semesterview', new AutoNavigation(_('Semesteransicht'), PluginEngine::getUrl('raumbelegung/semester/index')));
 
         // Für root erstelle auch den Navipunkt 'Einstellungen'
         if ($GLOBALS['perm']->have_perm('root')) {
