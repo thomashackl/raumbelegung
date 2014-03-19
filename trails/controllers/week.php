@@ -11,7 +11,6 @@ class WeekController extends StudipController {
     }
 
     public function index_action() {
-        PageLayout::addScript($this->plugin->getPluginURL() . "/assets/week.js");
         
         // Fetch requested date
         $this->date = Request::get('date');

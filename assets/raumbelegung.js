@@ -8,6 +8,7 @@ $(document).ready(function() {
     });
     $('#datehint').hide();
     $('[name="submitButton"]').hide();
+    
 
     // Adjust width of entries
     /*var width = $('tbody tr th').first().width();

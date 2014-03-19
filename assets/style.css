@@ -1,3 +1,32 @@
+table.intelec_daytable {
+  border-style: solid;
+  border-width: 6px;
+  border-color: #999999;
+}
+table.intelec_daytable th {
+  background-color: #999999;
+}
+table.intelec_daytable table {
+  border-color: #7d92ce;
+}
+table.intelec_daytable table th {
+  background-color: #7d92ce;
+  border-color: #7d92ce;
+}
+table.intelec_daytable table table {
+  border-color: #8fd08a;
+}
+table.intelec_daytable table table th {
+  background-color: #8fd08a;
+  border-color: #8fd08a;
+}
+table.intelec_daytable table table table {
+  border-color: #d78888;
+}
+table.intelec_daytable table table table th {
+  background-color: #d78888;
+  border-color: #d78888;
+}
 .multilevel .building {
   font-size: 1.2em;
   font-weight: bold;

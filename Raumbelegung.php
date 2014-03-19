@@ -64,6 +64,7 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/jquery-easyui-1.3.2/themes/default/easyui.css");
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/jquery-easyui-1.3.2/themes/icon.css");
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
+        PageLayout::addScript($this->getPluginURL() . "/assets/raumbelegung.js");
         PageLayout::addScript($this->getPluginURL() . "/assets/jquery-easyui-1.3.2/jquery.easyui.min.js");
 
         // Baue jetzt einen autoloader für alle models (ja ich bin faul)
