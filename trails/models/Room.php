@@ -70,6 +70,7 @@ class Room {
         
         // Finde einen passenden Namen
         $name = "Unbekannt";
+        $name = $result['directname'] ? : $name;
         $name = $result['realname'] ? : $name;
         $name = $result['sname'] ? : $name;
         $name = $result['nr'] ? "{$result['nr']} {$name}" : $name;

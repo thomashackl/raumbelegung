@@ -58,6 +58,9 @@ table.intelec_roomtable tbody tr td.weekend {
   background-repeat: no-repeat;
   background-size: 80%;
 }
+table.intelec_roomtable tbody tr td.non-cyclic {
+  font-size: 8px;
+}
 table.intelec_roomtable tbody tr:nth-child(4n+4),
 table.intelec_roomtable tbody tr:nth-child(4n+5) {
   background-color: #dddddd !important;

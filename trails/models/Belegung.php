@@ -49,8 +49,8 @@ class Belegung {
      * FETCH ALL THE TERMINE!!!
      */
     private function loadBelegung() {
-        
-        /* 
+
+        /*
          * Lade alle Veranstaltungen die sich in dem vorher berechneten Bereich
          * liegen
          */
@@ -59,8 +59,7 @@ class Belegung {
                        o.name, 
                        o.description, 
                        o.parent_id, 
-                       a.begin, 
-                       a.end, 
+                       a.*,
                        a.user_free_name as directname, 
                        s.VeranstaltungsNummer as nr, 
                        s.Name as sname, 
@@ -74,13 +73,14 @@ class Belegung {
                 WHERE c.is_room = 1
                 AND (a.begin > :begin AND a.begin < :end)
                 OR (a.end > :begin AND a.end < :end)
+                OR (a.begin < :begin AND a.repeat_end > :end)
                 ORDER BY ro.priority, a.begin";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(":begin", $this->begin);
         $stmt->bindParam(":end", $this->end);
         $stmt->execute();
         while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            
+
             /*
              * Wenn sich der Termin in einem Raum befindet, der noch nicht
              * gelistet ist, dann lege diesen Raum an
@@ -89,7 +89,7 @@ class Belegung {
                 $room = new Room($result['id'], "{$result['name']} {$result['description']}");
                 $this->rooms[$result['id']] = $room;
                 $parent_id = $result['parent_id'];
-                
+
                 /*
                  * Da wir im Vorhinein nicht wissen können, an welchen
                  * Ressourcen letzen Endes ein Raum hängt führen wir hier eine
@@ -120,9 +120,26 @@ class Belegung {
                     }
                 }
             }
-            
-            // Füge dem Raum einen Termin hinzu
-            $this->rooms[$result['id']]->addTermin($result);
+
+            if ($result['repeat_end'] && $result['repeat_quantity'] != 0) {
+                // Calculate next
+                $next = $result['repeat_interval'] * 3600 * 24;
+
+                while ($result['end'] <= $result['repeat_end'] && ($result['repeat_quantity'] == -1 || $result['repeat_quantity'] < $i)) {
+
+                    // Füge dem Raum einen Termin hinzu
+                    if ($result['begin'] >= $this->begin && $result['begin'] <= $this->end) {
+                        $this->rooms[$result['id']]->addTermin($result);
+                    }
+
+                    $result['begin'] += $next;
+                    $result['end'] += $next;
+                    
+                    $i++;
+                }
+            } else {
+                $this->rooms[$result['id']]->addTermin($result);
+            }
         }
     }
 

@@ -11,41 +11,39 @@ class SemesterController extends StudipController {
     }
 
     public function index_action() {
-        
+
         // Fetch requested date
         $this->date = Request::get('date');
-        
+
         // Fetch the top layer rooms
         $this->buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
-        
-        // Only show visible buildings
-        
+
+        // Fetch all semester and the selected
+        $this->semesters = Semester::getAll();
+        $selectedSemester = SimpleORMapCollection::createFromArray($this->semesters)->find(Request::get('semester'));
+
         // Get the requested rooms
-        if (Request::get('date') && Request::get('building')) {
-            
+        if ($selectedSemester && Request::get('building')) {
+
             // At first check if we got a building
             $find = $this->buildings->find(Request::get('building'));
             if ($find) {
                 $this->request = $find->children;
             } else {
-                
+
                 // If we got nothing we just have a room requested
                 $this->request = array(new RoomUsageResourceObject(Request::get('building')));
             }
         }
-        
+
         // Initialise to prevent foreach fails
         $this->timetables = array();
-        
+
         if ($this->request) {
             foreach ($this->request as $request) {
-                $this->timetables[] = new IntelecSemesterBelegungsplan(Request::get('semester'), $request);
+                $this->timetables[] = new IntelecSemesterBelegungsplan($selectedSemester, $request);
             }
         }
-        
-        // Select all semester
-        $this->semesters = Semester::getAll();
-        
     }
 
 }

@@ -1,14 +1,17 @@
 <?php
 
-class IntelecBelegungsplan {
+class IntelecSemesterBelegungsplan {
 
     const SLOTSIZE = 30;
+    public $semester;
+    public $object;
 
     public function __construct(Semester $semester, RoomUsageResourceObject $object) {
-
-        // Calculate timestamps
-        $start = strtotime('last monday', strtotime($date));
-        $end = $start + 7 * 24 * 60 * 60 - 1;
+        
+        $this->semester = $semester;
+        $this->object = $object;
+        
+        $this->getHeadline();
 
         // Get headline attributes
         $this->headline = $object->name . ($object->description ? (' (' . $object->description . ')') : '');
@@ -17,6 +20,9 @@ class IntelecBelegungsplan {
         $this->area = $object->getProperty('Fläche');
         $this->timespan = self::timeformat($start) . ' - ' . self::timeformat($end);
         $this->timestamp = self::timeformat(time());
+        
+        // Get all single assignments
+        $this->getSingleAssignement($object, $semester);
 
         // Now get content
         for ($time = 8; $time < 24; $time++) {
@@ -33,7 +39,7 @@ class IntelecBelegungsplan {
                 // Calculate startstamp
                 $startstamp = $start + $day * 3600 * 24 + $time * 3600;
 
-                $assignment = self::getAssignement($object, $start, $day, $time);
+                //$assignment = self::getAssignement($object, $start, $day, $time);
 
                 if ($assignment) {
                     // Check how long the assignment runs
@@ -75,80 +81,32 @@ class IntelecBelegungsplan {
     /**
      * Fetches roomasignments for a specified day and time
      */
-    private static function getAssignement($object, $start, $day, $hour) {
-        $startstamp = $start + $day * 3600 * 24 + $hour * 3600;
-        $endstamp = $startstamp + 3599;
+    private function getAssignement($object, $semester) {
 
-        $sql = "SELECT *, COALESCE(s.Name, user_free_name) as realname FROM resources_objects o
+        $sql = "SELECT * , COALESCE(s.Name, user_free_name) as realname FROM resources_objects o
                     JOIN resources_assign a USING (resource_id)
                     LEFT JOIN termine t ON t.termin_id = a.assign_user_id
                     LEFT JOIN seminare s ON t.range_id = s.seminar_id
                     WHERE o.resource_id = ? 
                     AND a.begin >= ? and a.begin < ?";
         $stmt = DBManager::get()->prepare($sql);
-        $stmt->execute(array($object->id, $startstamp, $endstamp));
-
-        // find result
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // Only calculate dozenten and users if we actually got an assignment
-        if ($result) {
-
-            // Fetch dozenten
-            $stmt = DBManager::get()->prepare("SELECT Nachname FROM seminar_user JOIN auth_user_md5 USING (user_id) WHERE seminar_id = ? AND status = 'dozent'");
-            $stmt->execute(array($result['Seminar_id']));
-
-            $dozenten = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            $result['dozenten'] = join(', ', $dozenten);
-
-            // Fetch teilnehmer
-            $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM seminar_user WHERE seminar_id = ? AND (status = 'autor' OR status = 'user')");
-            $stmt->execute(array($result['Seminar_id']));
-            $result['teilnehmer'] = $stmt->fetch(PDO::FETCH_COLUMN);
+        $stmt->execute(array($object->id, $semester->beginn, $semester->ende));
+        
+        // if we have some non cyclic dates initialize the array
+        if ($stmt->rowCount()) {
+            $this->dayassigns = array_fill(0, 7, array());
         }
-        return $result;
-    }
 
-    /**
-     * Fetches roomasignments for the weekend
-     */
-    private static function getWeekendAssignements($object, $start) {
-        $startstamp = $start + 5 * 3600 * 24;
-        $endstamp = $startstamp + 3600 * 24 * 2;
-
-        $sql = "SELECT *, COALESCE(s.Name, user_free_name) as realname FROM resources_objects o
-                    JOIN resources_assign a USING (resource_id)
-                    LEFT JOIN termine t ON t.termin_id = a.assign_user_id
-                    LEFT JOIN seminare s ON t.range_id = s.seminar_id
-                    WHERE o.resource_id = ? 
-                    AND a.begin >= ? and a.begin < ?";
-        $stmt = DBManager::get()->prepare($sql);
-        $stmt->execute(array($object->id, $startstamp, $endstamp));
-
-        // find result
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Only calculate dozenten and users if we actually got an assignment
-        foreach ($result as &$r) {
-
-            // Build realname
-            $r['realname'] = strftime('%a. %d.%m., %H', $r['begin'])
-                    . '-'
-                    . strftime('%H', $r['end'])
-                    . ', ';
-
-            // Fetch dozenten
-            $stmt = DBManager::get()->prepare("SELECT Nachname FROM seminar_user JOIN auth_user_md5 USING (user_id) WHERE seminar_id = ? AND status = 'dozent' LIMIT 1");
-            $stmt->execute(array($result['Seminar_id']));
-            $dozent = $stmt->fetch(PDO::FETCH_COLUMN);
-
-            if ($dozent) {
-                $r['realname'] .= $dozent;
-            } else {
-                $r['realname'] .= $r['user_free_name'];
-            }
+        // Parse day and time
+        while ($assign = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $this->dayassigns[date( "w", $assign['begin'])][date( "H", $assign['begin'])][$assign['Seminar_id']][] = $assign;
+            /*$assign->dow = date( "w", $assign->begin);
+            $assign->starthour = date( "i", $assign->begin);
+            $assign->duration = $assign->end - $assign->begin;
+            $result[] = $assign;*/
         }
-        return $result;
+        var_dump($this->dayassigns);
+        //return $result;
     }
 
 }

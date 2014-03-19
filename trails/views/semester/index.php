@@ -3,7 +3,7 @@
         <?= _('Semester') ?> 
         <select name="semester">
             <? foreach($semesters as $semester): ?>
-            <option <?= Semester::findCurrent() === $semester ? 'selected' : ''?>><?= $semester->name ?></option>
+            <option value="<?= $semester->id ?>" <?= Semester::findCurrent() === $semester ? 'selected' : ''?>><?= $semester->name ?></option>
             <? endforeach; ?>
         </select>
         
@@ -30,5 +30,5 @@
 <? endif; ?>
 
 <? foreach ($timetables as $timetable): ?>
-<?= $this->render_partial('week/timetable', array('table' => $timetable)); ?>
+<?= $this->render_partial('semester/timetable', array('table' => $timetable)); ?>
 <? endforeach; 
