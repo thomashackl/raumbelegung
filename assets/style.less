@@ -25,7 +25,7 @@ table.intelec_daytable {
             }
             table {
                 border-color:  #d78888;
-                
+
                 th {
                     background-color: #d78888; border-color:  #d78888; 
                 }
@@ -58,9 +58,8 @@ table.intelec_roomtable {
             height: 30px;
             td {
                 border: 1px solid #000;
-                padding: 1px;
                 vertical-align: top;
-
+                padding-right: 3px;
 
             }
             td.weekend {
@@ -81,6 +80,10 @@ table.intelec_roomtable {
         tr th {
             border: 1px solid #000;
         }
+        div.entry_wrapper {
+            position: relative;
+            width: 100%;
+        }
         div.entry {
             background-color: #eeeeee;
             border: 1px solid #777777 !important;
@@ -88,6 +91,17 @@ table.intelec_roomtable {
             font-size: 10px;
             position: absolute;
             overflow: hidden;
+            width: 100%;
+
+            p {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                -o-text-overflow: ellipsis;
+                white-space: nowrap;
+                width: 100%;
+                position: relative;
+                margin: 0;
+            }
         }
     }
     tfoot {
@@ -116,9 +130,5 @@ table.intelec_roomtable {
 
     table.intelec_roomtable tfoot tr td {
         font-size: 10px;
-    }
-
-    table.intelec_roomtable div.entry {
-        width: 154px;
     }
 }

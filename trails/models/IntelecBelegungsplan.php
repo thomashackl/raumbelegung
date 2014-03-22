@@ -45,7 +45,7 @@ class IntelecBelegungsplan {
                     $jump[$day] += $runtime - 1;
 
                     $slot[] = array('content' => array(
-                            "name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
+                            "name" => $assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'],
                             "dozenten" => $assignment['dozenten'],
                             "teilnehmer" => $assignment['teilnehmer'],
                             "size" => self::SLOTSIZE * $runtime,

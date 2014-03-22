@@ -1,7 +1,5 @@
 <div class="entry" style="height: <?= $entry['size'] - 5 ?>px; margin-top: <?= $entry['margin'] ?>px">
-    <?= $entry['name'] ?>
-    <br>
-    <?= $entry['dozenten'] ?>
-    <br>
-    <?= $entry['teilnehmer'] ?>
+    <p><?= $entry['name'] ?></p>
+    <p><?= $entry['dozenten'] ?></p>
+    <p><?= $entry['teilnehmer'] ?></p>
 </div>
