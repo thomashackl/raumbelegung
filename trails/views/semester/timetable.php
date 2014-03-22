@@ -39,20 +39,20 @@
         <? foreach ($table->hour as $hour): ?>
             <tr>
                 <? foreach ($hour as $day): ?>
-                    <? if (isset($day['title'])): ?>
+                    <? if (!is_array($day)): ?>
                         <td>
-                            <?= $day['title'] ?>
+                            <?= $day ?>
                         </td>
                     <? endif; ?>
                     <? if ($day['content']): ?>
                         <td>
-                            <?= $this->render_partial('week/entry', array('entry' => $day['content'])) ?>
+                            <?= $this->render_partial('semester/entry', array('entry' => $day['content'])) ?>
                         </td>
                     <? endif; ?>
                     <? if (isset($day['weekend'])): ?>
                         <td class="weekend" rowspan="<?= count($table->hour) ?>">
                             <? foreach ($day['weekend'] as $entry): ?>
-                                <?= $entry['realname'] ?><br>
+                                <?= $entry ?><br>
                             <? endforeach; ?>
                         </td>
                     <? endif; ?>

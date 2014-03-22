@@ -3,6 +3,8 @@
 class IntelecSemesterBelegungsplan {
 
     const SLOTSIZE = 30;
+    const STARTTIME = 8;
+    const ENDTIME = 23;
 
     public $semester;
     public $object;
@@ -12,6 +14,8 @@ class IntelecSemesterBelegungsplan {
 
         $this->semester = $semester;
         $this->object = $object;
+
+        $this->fillHours();
 
         // Set dates
         if ($vorlesungsbeginn) {
@@ -57,7 +61,7 @@ class IntelecSemesterBelegungsplan {
         $stmt->bindParam(':id', $object->id);
         $stmt->execute();
 
-        $this->parseAssigns($stmt->fetchAll(PDO::FETCH_ASSOC));
+        $this->parseCyclicAssigns($stmt->fetchAll(PDO::FETCH_ASSOC));
 
         // Parse day and time
         /* while ($assign = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -69,9 +73,36 @@ class IntelecSemesterBelegungsplan {
           } */
     }
 
-    private function parseAssigns($assigns) {
-        var_dump($assigns);
-        die;
+    private function parseCyclicAssigns($assigns) {
+        $geilheit = array();
+        foreach ($assigns as $assign) {
+            if ($assign['metadate_id']) {
+                if (strftime('%u', $assign['begin']) > 5) {
+                    $this->weekendDate($assign);
+                } else {
+                    $geilheit[$assign['metadate_id']] ++;
+                    $map[$assign['metadate_id']] = $assign;
+                }
+            }
+        }
+        asort($geilheit);
+        foreach ($geilheit as $key => $assign) {
+            // Get the object from the map
+            $assignment = $map[$key];
+
+            // Calculate runtime
+            $runtime = ($assignment['end'] - $assignment['begin']) / 3600;
+
+            // 
+            $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = array(
+                'content' => array(
+                    //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
+                    "name" => $assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'],
+                    "dozenten" => $assignment['dozenten'],
+                    "teilnehmer" => $assignment['teilnehmer'],
+                    "size" => self::SLOTSIZE * $runtime,
+                    "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE));
+        }
     }
 
     /**
@@ -89,56 +120,27 @@ class IntelecSemesterBelegungsplan {
         $this->timestamp = self::timeformat(time());
     }
 
-    private function old() {
-        // Now get content
-        for ($time = 8; $time < 24; $time++) {
-
-            // Clear the slot
-            $slot = array();
-
-            // First column should contain an enumeration
-            $slot[] = array('title' => $time);
-
-            // Now get actuall stuff
-            for ($day = 0; $day < 5; $day++) {
-
-                // Calculate startstamp
-                $startstamp = $start + $day * 3600 * 24 + $time * 3600;
-
-                //$assignment = self::getAssignement($object, $start, $day, $time);
-
-                if ($assignment) {
-                    // Check how long the assignment runs
-                    $runtime = ($assignment['end'] - $assignment['begin']) / 3600;
-
-                    // Set jumper
-                    $jump[$day] += $runtime - 1;
-
-                    $slot[] = array('content' => array(
-                            //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
-                            "name" => $assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'],
-                            "dozenten" => $assignment['dozenten'],
-                            "teilnehmer" => $assignment['teilnehmer'],
-                            "size" => self::SLOTSIZE * $runtime,
-                            "margin" => ($assignment['begin'] - $startstamp) / 3600 * self::SLOTSIZE
-                    ));
-                } else {
-                    // If no assignement push an empty slot
-                    $slot[] = array('title' => '');
-                }
-            }
-
-            // Push another timeslot
-            $slot[] = array('title' => ctype_digit((string) $time) ? $time : '');
-
-            // Special case at first saturday
-            /* if ($time == 8) {
-
-              $assignments = self::getWeekendAssignements($object, $start);
-              $slot[] = array('weekend' => $assignments ? : array());
-              } */
-            $this->hour[] = $slot;
+    private function fillHours() {
+        for ($time = self::STARTTIME; $time <= self::ENDTIME; $time++) {
+            $this->hour[$time] = array($time, '', '', '', '', '', $time);
         }
+        $this->hour[self::STARTTIME][] = array('weekend' => array());
+    }
+
+    private function weekendDate($asset) {
+        $name = strftime('%a. %d.%m., %H', $asset['begin'])
+                    . '-'
+                    . strftime('%H', $asset['end'])
+                    . ', ';
+        $name .= $this->getDozent($asset);
+        $this->hour[self::STARTTIME][7]['weekend'][] = $name;
+    }
+
+    private function getDozent($asset) {
+        $stmt = DBManager::get()->prepare("SELECT Nachname FROM seminar_user JOIN auth_user_md5 USING (user_id) WHERE seminar_id = ? AND status = 'dozent' LIMIT 1");
+        $stmt->execute(array($asset['Seminar_id']));
+        $dozent = $stmt->fetch(PDO::FETCH_COLUMN);
+        return $dozent;
     }
 
 }
