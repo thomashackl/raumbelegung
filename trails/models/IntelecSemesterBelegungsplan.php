@@ -9,6 +9,7 @@ class IntelecSemesterBelegungsplan {
     public $semester;
     public $object;
     public $hour = array();
+    public $takenSlot = array();
 
     public function __construct(Semester $semester, RoomUsageResourceObject $object, $vorlesungsbeginn = false) {
 
@@ -85,23 +86,59 @@ class IntelecSemesterBelegungsplan {
                 }
             }
         }
-        asort($geilheit);
+        arsort($geilheit);
         foreach ($geilheit as $key => $assign) {
             // Get the object from the map
             $assignment = $map[$key];
 
             // Calculate runtime
-            $runtime = ($assignment['end'] - $assignment['begin']) / 3600;
+            $assignment['runtime'] = ($assignment['end'] - $assignment['begin']) / 3600;
 
-            // 
-            $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = array(
-                'content' => array(
-                    //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
-                    "name" => $assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'],
-                    "dozenten" => $assignment['dozenten'],
-                    "teilnehmer" => $assignment['teilnehmer'],
-                    "size" => self::SLOTSIZE * $runtime,
-                    "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE));
+            $slots = $this->getSlots($assignment);
+            if (!$this->slotsTaken($this->getSlots($assignment))) {
+                $this->takeSlots($slots);
+                // build 
+                $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = array(
+                    'content' => array(
+                        //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
+                        "name" => $assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'],
+                        "dozenten" => $assignment['dozenten'],
+                        "teilnehmer" => $assignment['teilnehmer'],
+                        "size" => self::SLOTSIZE * $assignment['runtime'],
+                        "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE));
+            } else {
+                $this->addUngeilerAssign($assignment);
+            }
+        }
+    }
+    
+    private function addUngeilerAssign($assign) {
+        $this->dayassigns[strftime('%u', $assign['begin'])][] = $assign['realname'];
+    }
+
+    private function getSlots($assign) {
+        $day = strftime('%u', $assign['begin']);
+        for ($i = date('G', $assign['begin']); $i < date('G', $assign['begin']) + $assign['runtime']; $i++) {
+            $result[] = $i . "," . $day;
+        }
+        
+            var_dump($result);
+            echo "#####<br>";
+        return $result;
+    }
+
+    private function slotsTaken($slots) {
+        foreach ($slots as $slot) {
+            if (array_key_exists($slot, $this->takenSlot)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function takeSlots($slots) {
+        foreach ($slots as $slot) {
+            $this->takenSlot[$slot] = 1;
         }
     }
 
@@ -129,9 +166,9 @@ class IntelecSemesterBelegungsplan {
 
     private function weekendDate($asset) {
         $name = strftime('%a. %d.%m., %H', $asset['begin'])
-                    . '-'
-                    . strftime('%H', $asset['end'])
-                    . ', ';
+                . '-'
+                . strftime('%H', $asset['end'])
+                . ', ';
         $name .= $this->getDozent($asset);
         $this->hour[self::STARTTIME][7]['weekend'][] = $name;
     }
