@@ -78,7 +78,7 @@
         <tr>
             <td colspan="100">
                 <span class="headline">Hinweis für Notfälle:</span><br>
-                Dreizeiliges Bla Bla Bla, das sich alle 3-4 Monate ändert. Daher wäre es toll, wenn die Raumvergabe diesen Text in Stud.IP editieren könnte!?Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ...
+                Montag bis Freitag können Sie in Notfällen von 07.00 Uhr bis 20.00 Uhr einen Mitarbeiter der Hauswerkstatt unter der Tel.Nr. 0851 509-1232 oder unter der Mobilfunknummer 0173 8638666 anrufen. Außerdem ist ein Wachmann zu folgenden Zeiten in der Universität eingesetzt und unter der Mobilfunknummer 0175 1861348 erreichbar: Mo. - So. (klandertäglich) von 19.30 Uhr - 07.00 Uhr, Samstag und Sonntag von 07.00 Uhr - 19.30 Uhr
             </td>
         </tr>
     </tfoot>

@@ -3,5 +3,6 @@
         <p><?= $entry['name'] ?></p>
         <p><?= $entry['dozenten'] ?></p>
         <p><?= $entry['teilnehmer'] ?></p>
+        <p class="dateinfo"><?= $entry['dateinfo'] ?></p>
     </div>
 </div>

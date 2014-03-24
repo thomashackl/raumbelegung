@@ -10,7 +10,6 @@ class IntelecSemesterBelegungsplan {
     public $object;
     public $hour = array();
     public $takenSlot = array();
-    
     private $empty = true;
 
     public function __construct(Semester $semester, RoomUsageResourceObject $object, $vorlesungsbeginn = false) {
@@ -33,13 +32,8 @@ class IntelecSemesterBelegungsplan {
 
         // Get all single assignments
         $this->getAssignement($object, $semester);
-
-        // Fetch priorities
-        //$this->getPriorities();
-        // Sort priorities
-        //$thi
     }
-    
+
     public function isEmpty() {
         return $this->empty;
     }
@@ -52,7 +46,6 @@ class IntelecSemesterBelegungsplan {
      * Fetches roomasignments for a specified day and time
      */
     private function getAssignement($object) {
-
         $sql = "SELECT * , COALESCE(s.Name, user_free_name) as realname FROM resources_objects o
                     JOIN resources_assign a USING (resource_id)
                     LEFT JOIN termine t ON t.termin_id = a.assign_user_id
@@ -67,17 +60,8 @@ class IntelecSemesterBelegungsplan {
         $stmt->bindParam(':end', $this->end);
         $stmt->bindParam(':id', $object->id);
         $stmt->execute();
-
         $this->parseCyclicAssigns($stmt->fetchAll(PDO::FETCH_ASSOC));
 
-        // Parse day and time
-        /* while ($assign = $stmt->fetch(PDO::FETCH_ASSOC)) {
-          $this->dayassigns[date("w", $assign['begin'])][date("H", $assign['begin'])][$assign['Seminar_id']][] = $assign;
-          $assign->dow = date( "w", $assign->begin);
-          $assign->starthour = date( "i", $assign->begin);
-          $assign->duration = $assign->end - $assign->begin;
-          $result[] = $assign;
-          } */
     }
 
     private function parseCyclicAssigns($assigns) {
@@ -90,6 +74,9 @@ class IntelecSemesterBelegungsplan {
                     $geilheit[$assign['metadate_id']] ++;
                     $map[$assign['metadate_id']] = $assign;
                 }
+            } else {
+                $geilheit[++$terminnr]= 0;
+                $map[$terminnr] = $assign;
             }
         }
         arsort($geilheit);
@@ -104,16 +91,9 @@ class IntelecSemesterBelegungsplan {
             if (!$this->slotsTaken($this->getSlots($assignment))) {
                 $this->takeSlots($slots);
                 $this->loadDozentenAndTeilnehmer($assignment);
-                // build 
+                self::fetchDateinfo($assignment);
                 $this->empty = false;
-                $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = array(
-                    'content' => array(
-                        //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
-                        "name" => $assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'],
-                        "dozenten" => $assignment['dozenten'],
-                        "teilnehmer" => $assignment['teilnehmer'],
-                        "size" => self::SLOTSIZE * $assignment['runtime'],
-                        "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE));
+                $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = self::forgeEntry($assignment);
             } else {
                 $this->addUngeilerAssign($assignment);
             }
@@ -122,9 +102,9 @@ class IntelecSemesterBelegungsplan {
 
     private function addUngeilerAssign($assign) {
         $this->initAdditionalAssigns();
-        $this->dayassigns[strftime('%u', $assign['begin'])][] = $assign['realname'];
+        $this->dayassigns[strftime('%u', $assign['begin'])][] = $assign['realname'].' <span class="timeinfo">('.self::fetchDateinfo($assign).')</span>';
     }
-    
+
     private function initAdditionalAssigns() {
         if (!($this->dayassigns)) {
             $this->dayassigns = array_fill(0, 7, array());
@@ -204,6 +184,32 @@ class IntelecSemesterBelegungsplan {
             $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM seminar_user WHERE seminar_id = ? AND (status = 'autor' OR status = 'user')");
             $stmt->execute(array($asset['Seminar_id']));
             $asset['teilnehmer'] = $stmt->fetch(PDO::FETCH_COLUMN) ? : null;
+        }
+    }
+
+    private static function forgeEntry($assignment) {
+        return array(
+            'content' => array(
+                //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
+                "name" => $assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'],
+                "dozenten" => $assignment['dozenten'],
+                "teilnehmer" => $assignment['teilnehmer'] ? _('Teilnehmer').": ".$assignment['teilnehmer'] : null,
+                "size" => self::SLOTSIZE * $assignment['runtime'],
+                "dateinfo" => self::fetchDateinfo($assignment),
+                "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE));
+    }
+
+    private static function fetchDateinfo(&$assign) {
+        // if we have a metadate fetch the information of the metadate
+        if ($assign['metadate_id']) {
+            $cycle = new SeminarCycleDate($assign['metadate_id']);
+            $string = explode(', ', $cycle->toString('full'), 2);
+            return $string[1];
+        } else {
+            return strftime('%a. %d.%m., %H', $assign['begin'])
+                . '-'
+                . strftime('%H', $assign['end'])
+                . ', ';
         }
     }
 
