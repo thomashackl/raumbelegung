@@ -97,6 +97,7 @@ class IntelecSemesterBelegungsplan {
             $slots = $this->getSlots($assignment);
             if (!$this->slotsTaken($this->getSlots($assignment))) {
                 $this->takeSlots($slots);
+                $this->loadDozentenAndTeilnehmer($assignment);
                 // build 
                 $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = array(
                     'content' => array(
@@ -111,7 +112,7 @@ class IntelecSemesterBelegungsplan {
             }
         }
     }
-    
+
     private function addUngeilerAssign($assign) {
         $this->dayassigns[strftime('%u', $assign['begin'])][] = $assign['realname'];
     }
@@ -121,9 +122,6 @@ class IntelecSemesterBelegungsplan {
         for ($i = date('G', $assign['begin']); $i < date('G', $assign['begin']) + $assign['runtime']; $i++) {
             $result[] = $i . "," . $day;
         }
-        
-            var_dump($result);
-            echo "#####<br>";
         return $result;
     }
 
@@ -178,6 +176,21 @@ class IntelecSemesterBelegungsplan {
         $stmt->execute(array($asset['Seminar_id']));
         $dozent = $stmt->fetch(PDO::FETCH_COLUMN);
         return $dozent;
+    }
+
+    private function loadDozentenAndTeilnehmer(&$asset) {
+        if ($asset['Seminar_id']) {
+            $stmt = DBManager::get()->prepare("SELECT Nachname FROM seminar_user JOIN auth_user_md5 USING (user_id) WHERE seminar_id = ? AND status = 'dozent' AND nachname != 'N.' ORDER BY position DESC");
+            $stmt->execute(array($asset['Seminar_id']));
+
+            $dozenten = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $asset['dozenten'] = join(', ', $dozenten);
+
+            // Fetch teilnehmer
+            $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM seminar_user WHERE seminar_id = ? AND (status = 'autor' OR status = 'user')");
+            $stmt->execute(array($asset['Seminar_id']));
+            $asset['teilnehmer'] = $stmt->fetch(PDO::FETCH_COLUMN) ? : null;
+        }
     }
 
 }
