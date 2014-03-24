@@ -41,7 +41,10 @@ class SemesterController extends StudipController {
 
         if ($this->request) {
             foreach ($this->request as $request) {
-                $this->timetables[] = new IntelecSemesterBelegungsplan($selectedSemester, $request);
+                $timetable = new IntelecSemesterBelegungsplan($selectedSemester, $request);
+                if (!$timetable->isEmpty()) {
+                    $this->timetables[] = $timetable;
+                }
             }
         }
     }

@@ -10,6 +10,8 @@ class IntelecSemesterBelegungsplan {
     public $object;
     public $hour = array();
     public $takenSlot = array();
+    
+    private $empty = true;
 
     public function __construct(Semester $semester, RoomUsageResourceObject $object, $vorlesungsbeginn = false) {
 
@@ -36,6 +38,10 @@ class IntelecSemesterBelegungsplan {
         //$this->getPriorities();
         // Sort priorities
         //$thi
+    }
+    
+    public function isEmpty() {
+        return $this->empty;
     }
 
     private static function timeformat($stamp) {
@@ -99,6 +105,7 @@ class IntelecSemesterBelegungsplan {
                 $this->takeSlots($slots);
                 $this->loadDozentenAndTeilnehmer($assignment);
                 // build 
+                $this->empty = false;
                 $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = array(
                     'content' => array(
                         //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
@@ -114,7 +121,14 @@ class IntelecSemesterBelegungsplan {
     }
 
     private function addUngeilerAssign($assign) {
+        $this->initAdditionalAssigns();
         $this->dayassigns[strftime('%u', $assign['begin'])][] = $assign['realname'];
+    }
+    
+    private function initAdditionalAssigns() {
+        if (!($this->dayassigns)) {
+            $this->dayassigns = array_fill(0, 7, array());
+        }
     }
 
     private function getSlots($assign) {
