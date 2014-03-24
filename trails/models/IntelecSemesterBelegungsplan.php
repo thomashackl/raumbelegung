@@ -60,7 +60,9 @@ class IntelecSemesterBelegungsplan {
         $stmt->bindParam(':end', $this->end);
         $stmt->bindParam(':id', $object->id);
         $stmt->execute();
-        $this->parseCyclicAssigns($stmt->fetchAll(PDO::FETCH_ASSOC));
+        $assigns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        self::enfoldAssigns($assigns);
+        $this->parseCyclicAssigns($assigns);
     }
 
     private function parseCyclicAssigns($assigns) {
@@ -218,6 +220,35 @@ class IntelecSemesterBelegungsplan {
                     . '-'
                     . strftime('%H', $assign['end']);
         }
+    }
+
+    private static function enfoldAssigns(&$assigns) {
+        $new = array();
+        foreach ($assigns as $assign) {
+            if (!$assign['metadate_id']) {
+                $floating = self::getFloatingAssigns($assign);
+                if ($floating) {
+                    $new = array_merge($new, $floating);
+                }
+            }
+        }
+        $assigns = array_merge($assigns, $new);
+    }
+
+    private static function getFloatingAssigns($assign) {
+        if ($assign['repeat_end'] && $assign['repeat_quantity'] != 0) {
+            // Calculate next
+            $next = $assign['repeat_interval'] * 3600 * 24 + $assign['repeat_day_of_week'] * 3600 * 24 * 7;
+
+            while ($assign['end'] <= $assign['repeat_end'] && ($assign['repeat_quantity'] == -1 || $assign['repeat_quantity'] < $i)) {
+                $assign['begin'] += $next;
+                $assign['end'] += $next;
+                $additional[] = $assign;
+
+                $i++;
+            }
+        }
+        return $additional;
     }
 
 }
