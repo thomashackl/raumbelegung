@@ -61,7 +61,6 @@ class IntelecSemesterBelegungsplan {
         $stmt->bindParam(':id', $object->id);
         $stmt->execute();
         $this->parseCyclicAssigns($stmt->fetchAll(PDO::FETCH_ASSOC));
-
     }
 
     private function parseCyclicAssigns($assigns) {
@@ -75,8 +74,17 @@ class IntelecSemesterBelegungsplan {
                     $map[$assign['metadate_id']] = $assign;
                 }
             } else {
-                $geilheit[++$terminnr]= 0;
-                $map[$terminnr] = $assign;
+                // Check if assign is really on this timetable
+                if ($assign['begin'] >= $this->start && $assign['begin'] <= $this->end && $assign['end'] >= $this->start && $assign['end'] <= $this->end) {
+
+                    // Now check for weekend
+                    if (strftime('%u', $assign['begin']) <= 5) {
+                        $geilheit[++$terminnr] = 0;
+                        $map[$terminnr] = $assign;
+                    } else {
+                        $this->weekendDate($assign);
+                    }
+                }
             }
         }
         arsort($geilheit);
@@ -102,7 +110,7 @@ class IntelecSemesterBelegungsplan {
 
     private function addUngeilerAssign($assign) {
         $this->initAdditionalAssigns();
-        $this->dayassigns[strftime('%u', $assign['begin'])][] = $assign['realname'].' <span class="timeinfo">('.self::fetchDateinfo($assign).')</span>';
+        $this->dayassigns[strftime('%u', $assign['begin'])][] = $assign['realname'] . ' <span class="timeinfo">(' . self::fetchDateinfo($assign) . ')</span>';
     }
 
     private function initAdditionalAssigns() {
@@ -193,7 +201,7 @@ class IntelecSemesterBelegungsplan {
                 //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
                 "name" => $assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'],
                 "dozenten" => $assignment['dozenten'],
-                "teilnehmer" => $assignment['teilnehmer'] ? _('Teilnehmer').": ".$assignment['teilnehmer'] : null,
+                "teilnehmer" => $assignment['teilnehmer'] ? _('Teilnehmer') . ": " . $assignment['teilnehmer'] : null,
                 "size" => self::SLOTSIZE * $assignment['runtime'],
                 "dateinfo" => self::fetchDateinfo($assignment),
                 "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE));
@@ -207,9 +215,8 @@ class IntelecSemesterBelegungsplan {
             return $string[1];
         } else {
             return strftime('%a. %d.%m., %H', $assign['begin'])
-                . '-'
-                . strftime('%H', $assign['end'])
-                . ', ';
+                    . '-'
+                    . strftime('%H', $assign['end']);
         }
     }
 
