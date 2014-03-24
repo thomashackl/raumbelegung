@@ -52,7 +52,7 @@
                     <? if (isset($day['weekend'])): ?>
                         <td class="weekend" rowspan="<?= count($table->hour) ?>">
                             <? foreach ($day['weekend'] as $entry): ?>
-                                <?= $entry ?><br>
+                                <p class="other"><?= $entry ?></p>
                             <? endforeach; ?>
                         </td>
                     <? endif; ?>
@@ -65,7 +65,7 @@
                 <? for ($day = 1; $day <= 5; $day++): ?>
                     <td class="non-cyclic">
                         <? foreach ($table->dayassigns[$day] as $entry): ?>
-                            <?= $entry ?><br>
+                            <p class="other"><?= $entry ?></p>
                         <? endforeach; ?>
                     </td>
                 <? endfor; ?>

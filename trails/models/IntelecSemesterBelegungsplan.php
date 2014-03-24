@@ -46,10 +46,11 @@ class IntelecSemesterBelegungsplan {
      * Fetches roomasignments for a specified day and time
      */
     private function getAssignement($object) {
-        $sql = "SELECT * , COALESCE(s.Name, user_free_name) as realname FROM resources_objects o
+        $sql = "SELECT * , COALESCE(s.Name, u.Nachname, user_free_name) as realname FROM resources_objects o
                     JOIN resources_assign a USING (resource_id)
                     LEFT JOIN termine t ON t.termin_id = a.assign_user_id
                     LEFT JOIN seminare s ON t.range_id = s.seminar_id
+                    LEFT JOIN auth_user_md5 u ON (t.range_id = u.user_id)
                     WHERE o.resource_id = :id 
                     AND 
                     ((a.begin >= :start AND  a.begin <= :end)
@@ -112,7 +113,7 @@ class IntelecSemesterBelegungsplan {
 
     private function addUngeilerAssign($assign) {
         $this->initAdditionalAssigns();
-        $this->dayassigns[strftime('%u', $assign['begin'])][] = $assign['realname'] . ' <span class="timeinfo">(' . self::fetchDateinfo($assign) . ')</span>';
+        $this->dayassigns[strftime('%u', $assign['begin'])][] =  self::fetchDateinfo($assign, true).' '.$assign['realname'];
     }
 
     private function initAdditionalAssigns() {
@@ -171,7 +172,7 @@ class IntelecSemesterBelegungsplan {
                 . '-'
                 . strftime('%H', $asset['end'])
                 . ', ';
-        $name .= $this->getDozent($asset);
+        $name .= $asset['realname'];
         $this->hour[self::STARTTIME][7]['weekend'][] = $name;
     }
 
@@ -209,10 +210,13 @@ class IntelecSemesterBelegungsplan {
                 "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE));
     }
 
-    private static function fetchDateinfo(&$assign) {
+    private static function fetchDateinfo(&$assign, $noCut = false) {
         // if we have a metadate fetch the information of the metadate
         if ($assign['metadate_id']) {
             $cycle = new SeminarCycleDate($assign['metadate_id']);
+            if ($noCut) {
+                $cycle->toString('full');
+            }
             $string = explode(', ', $cycle->toString('full'), 2);
             return $string[1];
         } else {

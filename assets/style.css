@@ -90,6 +90,12 @@ table.intelec_roomtable tbody div.entry p {
   position: relative;
   margin: 0;
 }
+table.intelec_roomtable tbody p.other {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  margin: 0;
+}
 table.intelec_roomtable tfoot {
   font-size: 10px;
 }
@@ -114,6 +120,9 @@ table.intelec_roomtable tfoot .headline {
     margin: 12mm 12mm 5mm 12mm;
   }
   table.intelec_roomtable tfoot tr td {
+    font-size: 10px;
+  }
+  p {
     font-size: 10px;
   }
 }
