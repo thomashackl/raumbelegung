@@ -8,15 +8,18 @@ $(document).ready(function() {
     });
     $('#datehint').hide();
     $('[name="submitButton"]').hide();
-    
+
+    // Work all the datepickers
+    $('.datepicker').datepicker();
+
 
     // Adjust width of entries
     /*var width = $('tbody tr th').first().width();
-    $('.entry').css('width', width - 2);
-
-    $(window).resize(function() {
-        var width = $('tbody tr th').first().width();
-        $('.entry').css('width', width - 2);
-
-    });*/
+     $('.entry').css('width', width - 2);
+     
+     $(window).resize(function() {
+     var width = $('tbody tr th').first().width();
+     $('.entry').css('width', width - 2);
+     
+     });*/
 });

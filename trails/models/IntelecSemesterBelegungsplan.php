@@ -2,7 +2,8 @@
 
 class IntelecSemesterBelegungsplan {
 
-    const SLOTSIZE = 30;
+    const PAGESIZE = 540;
+    const SLOTSIZE = 26;
     const STARTTIME = 8;
     const ENDTIME = 23;
 
@@ -12,14 +13,12 @@ class IntelecSemesterBelegungsplan {
     public $takenSlot = array();
     private $empty = true;
 
-    public function __construct(Semester $semester, RoomUsageResourceObject $object, $vorlesungsbeginn = false) {
-
-        $this->semester = $semester;
+    public function __construct(RoomUsageResourceObject $object) {
         $this->object = $object;
-
         $this->fillHours();
+    }
 
-        // Set dates
+    public function loadFromSemester(Semester $semester, $vorlesungsbeginn = false) {
         if ($vorlesungsbeginn) {
             $this->start = $semester->vorles_beginn;
             $this->end = $semester->vorles_ende;
@@ -27,15 +26,22 @@ class IntelecSemesterBelegungsplan {
             $this->start = $semester->beginn;
             $this->end = $semester->ende;
         }
-
-        $this->getHeadline($this->object, $this->start, $this->end);
-
-        // Get all single assignments
-        $this->getAssignement($object, $semester);
+        $this->load();
+    }
+    
+    public function loadFromTimespan($start, $end) {
+        $this->start = $start;
+        $this->end = $end;
+        $this->load();
     }
 
     public function isEmpty() {
         return $this->empty;
+    }
+
+    private function load() {
+        $this->getHeadline($this->object, $this->start, $this->end);
+        $this->getAssignement($this->object);
     }
 
     private static function timeformat($stamp) {
@@ -104,7 +110,7 @@ class IntelecSemesterBelegungsplan {
                 $this->loadDozentenAndTeilnehmer($assignment);
                 self::fetchDateinfo($assignment);
                 $this->empty = false;
-                $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = self::forgeEntry($assignment);
+                $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = self::forgeEntry($assignment, $this->participants);
             } else {
                 $this->addUngeilerAssign($assignment);
             }
@@ -113,7 +119,7 @@ class IntelecSemesterBelegungsplan {
 
     private function addUngeilerAssign($assign) {
         $this->initAdditionalAssigns();
-        $this->dayassigns[strftime('%u', $assign['begin'])][] =  self::fetchDateinfo($assign, true).' '.$assign['realname'];
+        $this->dayassigns[strftime('%u', $assign['begin'])][] = self::fetchDateinfo($assign, true) . ' ' . $assign['realname'];
     }
 
     private function initAdditionalAssigns() {
@@ -152,9 +158,9 @@ class IntelecSemesterBelegungsplan {
      * @param type $end end
      */
     private function getHeadline($object, $start, $end) {
-        $this->headline = $object->name . ($object->description ? (' (' . $object->description . ')') : '');
+        $this->headline = $object->name ? : $object->description;
         $this->adress = $object->parent->getProperty('Adresse');
-        $this->places = $object->getProperty('Sitzplätze') . ($object->getProperty('Sitzplätze Ergänzung') ? '(' . $object->getProperty('Sitzplätze Ergänzung') . ')' : '');
+        $this->places = $object->getProperty('Sitzplätze') . ($object->getProperty('Sitzplätze Ergänzung') ? ' (' . $object->getProperty('Sitzplätze Ergänzung') . ')' : '');
         $this->area = $object->getProperty('Fläche');
         $this->timespan = self::timeformat($start) . ' - ' . self::timeformat($end);
         $this->timestamp = self::timeformat(time());
@@ -198,13 +204,13 @@ class IntelecSemesterBelegungsplan {
         }
     }
 
-    private static function forgeEntry($assignment) {
+    private static function forgeEntry($assignment, $participants = true) {
         return array(
             'content' => array(
                 //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
                 "name" => $assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'],
                 "dozenten" => $assignment['dozenten'],
-                "teilnehmer" => $assignment['teilnehmer'] ? _('Teilnehmer') . ": " . $assignment['teilnehmer'] : null,
+                "teilnehmer" => $participants ? ($assignment['teilnehmer'] ? _('Teilnehmer') . ": " . $assignment['teilnehmer'] : null) : null,
                 "size" => self::SLOTSIZE * $assignment['runtime'],
                 "dateinfo" => self::fetchDateinfo($assignment),
                 "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE));
@@ -253,6 +259,10 @@ class IntelecSemesterBelegungsplan {
             }
         }
         return $additional;
+    }
+
+    public static function getMaxFootersize() {
+        return self::PAGESIZE - (self::ENDTIME - self::STARTTIME) * self::SLOTSIZE;
     }
 
 }

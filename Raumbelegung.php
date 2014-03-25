@@ -43,7 +43,6 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
      * @param string Die restliche Pfadangabe
      */
     function perform($unconsumed_path) {
-
         // Erstelle Unternavigation
         $navigation = AutoNavigation::getItem('/calendar/raumbelegung');
         $listview = new AutoNavigation(_('Tagesansicht (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));

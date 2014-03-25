@@ -2,11 +2,30 @@
     <label>
         <?= _('Semester') ?> 
         <select name="semester">
-            <? foreach($semesters as $semester): ?>
-            <option value="<?= $semester->id ?>" <?= Semester::findCurrent() === $semester ? 'selected' : ''?>><?= $semester->name ?></option>
+            <? foreach ($semesters as $semester): ?>
+                <option value="<?= $semester->id ?>" <?= Semester::findCurrent() === $semester ? 'selected' : '' ?>><?= $semester->name ?></option>
             <? endforeach; ?>
         </select>
-        
+    </label>
+
+    <label>
+        <input type="checkbox" name="lecture_only" <?= Request::get('lecture_only') ? 'checked' : '' ?>>
+        <?= _('Nur Vorlesungszeiten') ?>
+    </label>
+
+    <label>
+        <?= _('Manuell von') ?>
+        <input type="text" name="start" class="datepicker" value="<?= Request::get('start') ?>">
+    </label>
+
+    <label>
+        <?= _('Manuell bis') ?>
+        <input type="text" name="end" class="datepicker" value="<?= Request::get('end') ?>">
+    </label>
+    
+    <label>
+        <input type="checkbox" name="participants" <?= Request::get('participants') ? 'checked' : '' ?>>       
+         <?= _('Teilnehmer anzeigen') ?>
     </label>
 
     <label>
@@ -30,5 +49,6 @@
 <? endif; ?>
 
 <? foreach ($timetables as $timetable): ?>
-<?= $this->render_partial('semester/timetable', array('table' => $timetable)); ?>
-<? endforeach; 
+    <?= $this->render_partial('semester/timetable', array('table' => $timetable)); ?>
+    <?
+endforeach;

@@ -55,12 +55,14 @@ table.intelec_roomtable {
 
     tbody {
         tr {
-            height: 30px;
+            height: 26px;
             td {
                 border: 1px solid #000;
                 vertical-align: top;
                 padding-right: 3px;
-
+                div.cell_wrapper {
+                    overflow:hidden;
+                }
             }
             td.weekend {
                 background-color: #ffffff;
@@ -88,7 +90,7 @@ table.intelec_roomtable {
             background-color: #eeeeee;
             border: 1px solid #777777 !important;
             border-radius: 5px;
-            font-size: 10px;
+            font-size: 8px;
             position: absolute;
             overflow: hidden;
             width: 100%;
@@ -101,14 +103,16 @@ table.intelec_roomtable {
                 width: 100%;
                 position: relative;
                 margin: 0;
+                font-size: 10px;
             }
         }
-            p.other {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                -o-text-overflow: ellipsis;
-                margin: 0;
-            
+        p.other {
+            font-size: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            margin: 0;
+
         }
     }
     tfoot {
@@ -127,19 +131,23 @@ table.intelec_roomtable {
     table.intelec_roomtable {
         page-break-after: always;
         height: 100% !important;
+
+        tbody tr td {
+            div.entry,div.cell_wrapper {
+                p 
+                {
+                    font-size: 7px;
+                }
+            }
+        }
+        tfoot tr td {
+            font-size: 6px;
+        }
     }
 
     @page 
     {
         size: landscape;
         margin: 12mm 12mm 5mm 12mm;
-    }
-
-    table.intelec_roomtable tfoot tr td {
-        font-size: 10px;
-    }
-    
-    p {
-        font-size: 10px;
     }
 }

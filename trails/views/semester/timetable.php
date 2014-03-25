@@ -51,9 +51,11 @@
                     <? endif; ?>
                     <? if (isset($day['weekend'])): ?>
                         <td class="weekend" rowspan="<?= count($table->hour) ?>">
-                            <? foreach ($day['weekend'] as $entry): ?>
-                                <p class="other"><?= $entry ?></p>
-                            <? endforeach; ?>
+                            <div class="cell_wrapper" style="height: <?= count($table->hour) * IntelecSemesterBelegungsplan::SLOTSIZE ?>px">
+                                <? foreach ($day['weekend'] as $entry): ?>
+                                    <p class="other"><?= $entry ?></p>
+                                <? endforeach; ?>
+                            </div>
                         </td>
                     <? endif; ?>
                 <? endforeach; ?>
@@ -64,9 +66,11 @@
                 <td></td>
                 <? for ($day = 1; $day <= 5; $day++): ?>
                     <td class="non-cyclic">
-                        <? foreach ($table->dayassigns[$day] as $entry): ?>
-                            <p class="other"><?= $entry ?></p>
-                        <? endforeach; ?>
+                        <div class="cell_wrapper" style="max-height: <?= IntelecSemesterBelegungsplan::getMaxFootersize(); ?>px">
+                            <? foreach ($table->dayassigns[$day] as $entry): ?>
+                                <p class="other"><?= $entry ?></p>
+                            <? endforeach; ?>
+                        </div>
                     </td>
                 <? endfor; ?>
                 <td colspan="100">

@@ -41,7 +41,18 @@ class SemesterController extends StudipController {
 
         if ($this->request) {
             foreach ($this->request as $request) {
-                $timetable = new IntelecSemesterBelegungsplan($selectedSemester, $request);
+                $timetable = new IntelecSemesterBelegungsplan($request);
+                
+                // Check if we need to display participants
+                if (Request::get('participants')) {
+                    $timetable->participants = true;
+                }
+                
+                if (Request::get('start') && Request::get('end')) {
+                    $timetable->loadFromTimespan(strtotime(Request::get('start')), strtotime(Request::get('end') . ' +1 day'));
+                } else {
+                    $timetable->loadFromSemester($selectedSemester, Request::get('lecture_only'));
+                }
                 if (!$timetable->isEmpty()) {
                     $this->timetables[] = $timetable;
                 }
