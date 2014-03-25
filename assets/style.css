@@ -122,10 +122,10 @@ table.intelec_roomtable tfoot .headline {
   }
   table.intelec_roomtable tbody tr td div.entry p,
   table.intelec_roomtable tbody tr td div.cell_wrapper p {
-    font-size: 7px;
+    font-size: 8px;
   }
   table.intelec_roomtable tfoot tr td {
-    font-size: 6px;
+    font-size: 8px;
   }
   @page  {
     size: landscape;
