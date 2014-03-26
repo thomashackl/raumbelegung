@@ -82,7 +82,7 @@
         <tr>
             <td colspan="100">
                 <span class="headline">Hinweis für Notfälle:</span><br>
-                Montag bis Freitag können Sie in Notfällen von 07.00 Uhr bis 20.00 Uhr einen Mitarbeiter der Hauswerkstatt unter der Tel.Nr. 0851 509-1232 oder unter der Mobilfunknummer 0173 8638666 anrufen. Außerdem ist ein Wachmann zu folgenden Zeiten in der Universität eingesetzt und unter der Mobilfunknummer 0175 1861348 erreichbar: Mo. - So. (klandertäglich) von 19.30 Uhr - 07.00 Uhr, Samstag und Sonntag von 07.00 Uhr - 19.30 Uhr
+                Montag bis Freitag können Sie in Notfällen von 07.00 Uhr bis 20.00 Uhr einen Mitarbeiter der Hauswerkstatt unter der Tel.Nr. 0851 509-1232 oder unter der Mobilfunknummer 0173 8638666 anrufen. Außerdem ist ein Wachmann zu folgenden Zeiten in der Universität eingesetzt und unter der Mobilfunknummer 0175 1861348 erreichbar: Mo. - So. (kalendertäglich) von 19.30 Uhr - 07.00 Uhr, Samstag und Sonntag von 07.00 Uhr - 19.30 Uhr
             </td>
         </tr>
     </tfoot>
