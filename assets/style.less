@@ -94,9 +94,14 @@ table.intelec_roomtable {
                 background-repeat: no-repeat;
                 background-size: 80%;
                 font-size: 10px;
+                white-space: nowrap;
                 p {
                     font-size: 10px;
                     margin : 0;
+                    overflow: hidden;
+                    -o-text-overflow: ellipsis;
+                    -ms-text-overflow: ellipsis;
+                    text-overflow: ellipsis;
                 }
             }
             td.non-cyclic {
@@ -142,12 +147,12 @@ table.intelec_roomtable {
         height: 100% !important;
 
         tbody tr td {
-            div.entry,div.cell_wrapper {
-                p 
-                {
-                    font-size: 8px;
-                }
+
+            p 
+            {
+                font-size: 8px;
             }
+
         }
         tfoot tr td {
             font-size: 8px;

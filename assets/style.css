@@ -81,10 +81,15 @@ table.intelec_roomtable tbody tr td.weekend {
   background-repeat: no-repeat;
   background-size: 80%;
   font-size: 10px;
+  white-space: nowrap;
 }
 table.intelec_roomtable tbody tr td.weekend p {
   font-size: 10px;
   margin: 0;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
 }
 table.intelec_roomtable tbody tr td.non-cyclic {
   font-size: 10px;
@@ -127,8 +132,7 @@ table.intelec_roomtable tfoot .headline {
     page-break-after: always;
     height: 100% !important;
   }
-  table.intelec_roomtable tbody tr td div.entry p,
-  table.intelec_roomtable tbody tr td div.cell_wrapper p {
+  table.intelec_roomtable tbody tr td p {
     font-size: 8px;
   }
   table.intelec_roomtable tfoot tr td {
