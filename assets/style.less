@@ -43,7 +43,8 @@ table.intelec_roomtable {
     border: 1px solid #000;
     margin: 10px;
     border-collapse: collapse;
-    table-layout : fixed;
+    table-layout: fixed;
+    width: 100%;
 
     thead tr td {
         padding: 10px;
@@ -64,7 +65,7 @@ table.intelec_roomtable {
                 div.entry_wrapper {
                     position: relative;
                     width: 100%;
-                    
+
                     div.entry {
                         background-color: #eeeeee;
                         border: 1px solid #777777 !important;
@@ -99,6 +100,11 @@ table.intelec_roomtable {
             }
             td.non-cyclic {
                 font-size: 10px;
+                overflow: hidden;
+                -o-text-overflow: ellipsis;
+                -ms-text-overflow: ellipsis;
+                text-overflow: ellipsis;
+                white-space: nowrap;
                 p {
                     overflow: hidden;
                     -o-text-overflow: ellipsis;

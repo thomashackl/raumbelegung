@@ -36,6 +36,7 @@ table.intelec_roomtable {
   margin: 10px;
   border-collapse: collapse;
   table-layout: fixed;
+  width: 100%;
 }
 table.intelec_roomtable thead tr td {
   padding: 10px;
@@ -86,6 +87,11 @@ table.intelec_roomtable tbody tr td.weekend p {
 }
 table.intelec_roomtable tbody tr td.non-cyclic {
   font-size: 10px;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 table.intelec_roomtable tbody tr td.non-cyclic p {
   overflow: hidden;
