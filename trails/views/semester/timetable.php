@@ -1,12 +1,12 @@
 <table class="intelec_roomtable">
     <colgroup>
-        <col width="1%">
+        <col>
         <col width="16%">
         <col width="16%">
         <col width="16%">
         <col width="16%">
         <col width="16%">
-        <col width="1%">
+        <col>
         <col width="16%">
     </colgroup>
     <thead>
