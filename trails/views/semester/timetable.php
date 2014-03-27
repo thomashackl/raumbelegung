@@ -66,11 +66,9 @@
                 <td></td>
                 <? for ($day = 1; $day <= 5; $day++): ?>
                     <td class="non-cyclic">
-                        <div class="cell_wrapper" style="max-height: <?= IntelecSemesterBelegungsplan::getMaxFootersize(); ?>px">
-                            <? foreach ($table->dayassigns[$day] as $entry): ?>
-                                <p class="other"><?= $entry ?></p>
-                            <? endforeach; ?>
-                        </div>
+                        <? foreach ($table->dayassigns[$day] as $entry): ?>
+                            <p><?= $entry ?></p>
+                        <? endforeach; ?>
                     </td>
                 <? endfor; ?>
                 <td colspan="100">
