@@ -28,7 +28,7 @@ class IntelecSemesterBelegungsplan {
         }
         $this->load();
     }
-    
+
     public function loadFromTimespan($start, $end) {
         $this->start = $start;
         $this->end = $end;
@@ -52,7 +52,9 @@ class IntelecSemesterBelegungsplan {
      * Fetches roomasignments for a specified day and time
      */
     private function getAssignement($object) {
-        $sql = "SELECT * , COALESCE(s.Name, u.Nachname, user_free_name) as realname FROM resources_objects o
+        $sql = "SELECT * , 
+            COALESCE(IF(LENGTH(s.Name),CONCAT_WS(' ', s.VeranstaltungsNummer, s.Name),NULL), u.Nachname, user_free_name) as realname 
+            FROM resources_objects o
                     JOIN resources_assign a USING (resource_id)
                     LEFT JOIN termine t ON t.termin_id = a.assign_user_id
                     LEFT JOIN seminare s ON t.range_id = s.seminar_id
@@ -119,7 +121,7 @@ class IntelecSemesterBelegungsplan {
 
     private function addUngeilerAssign($assign) {
         $this->initAdditionalAssigns();
-        $this->dayassigns[strftime('%u', $assign['begin'])][] = self::fetchDateinfo($assign, true) . ' ' . $assign['realname'];
+        $this->dayassigns[strftime('%u', $assign['begin'])][] = self::fetchDateinfo($assign, true) . ', ' . $assign['realname'];
     }
 
     private function initAdditionalAssigns() {
@@ -208,7 +210,7 @@ class IntelecSemesterBelegungsplan {
         return array(
             'content' => array(
                 //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
-                "name" => $assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'],
+                "name" => $assignment['realname'],
                 "dozenten" => $assignment['dozenten'],
                 "teilnehmer" => $participants ? ($assignment['teilnehmer'] ? _('Teilnehmer') . ": " . $assignment['teilnehmer'] : null) : null,
                 "size" => self::SLOTSIZE * $assignment['runtime'],
