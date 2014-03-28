@@ -113,7 +113,7 @@ class IntelecSemesterBelegungsplan {
                 $this->loadDozentenAndTeilnehmer($assignment);
                 self::fetchDateinfo($assignment);
                 $this->empty = false;
-                $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = self::forgeEntry($assignment, $this->participants);
+                $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = self::forgeEntry($assignment, $this->participants, $this->object->getProperty('Sitzplätze'));
             } else {
                 $this->addUngeilerAssign($assignment);
             }
@@ -207,7 +207,7 @@ class IntelecSemesterBelegungsplan {
         }
     }
 
-    private static function forgeEntry($assignment, $participants = true) {
+    private static function forgeEntry($assignment, $participants = true, $maxplaces = PHP_INT_MAX) {
         return array(
             'content' => array(
                 //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
@@ -216,7 +216,9 @@ class IntelecSemesterBelegungsplan {
                 "teilnehmer" => $participants ? ($assignment['teilnehmer'] ? _('Teilnehmer') . ": " . $assignment['teilnehmer'] : null) : null,
                 "size" => self::SLOTSIZE * $assignment['runtime'],
                 "dateinfo" => self::fetchDateinfo($assignment),
-                "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE));
+                "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE,
+                "classes" => ($assignment['metadate_id'] ? 'cyclic' : ''). ' ' .($participants && $assignment['teilnehmer'] > $maxplaces  ? 'overfilled' : '') 
+                ));
     }
 
     private static function fetchDateinfo(&$assign, $noCut = false) {
