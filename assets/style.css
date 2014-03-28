@@ -74,6 +74,10 @@ table.intelec_roomtable tbody tr td div.entry_wrapper div.entry p {
   margin: 0;
   font-size: 10px;
 }
+table.intelec_roomtable tbody tr td div.entry_wrapper div.entry:hover {
+  min-height: 47px !important;
+  z-index: 99;
+}
 table.intelec_roomtable tbody tr td div.entry_wrapper div.cyclic {
   background-color: #eeeeee !important;
 }
