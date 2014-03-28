@@ -63,7 +63,8 @@ class IntelecSemesterBelegungsplan {
                     AND 
                     ((a.begin >= :start AND  a.begin <= :end)
                     OR
-                    (a.begin <= :end AND a.repeat_end >= :start))";
+                    (a.begin <= :end AND a.repeat_end >= :start))
+                    ORDER BY a.begin";
         $stmt = DBManager::get()->prepare($sql);
         $stmt->bindParam(':start', $this->start);
         $stmt->bindParam(':end', $this->end);
