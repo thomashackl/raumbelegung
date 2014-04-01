@@ -1,9 +1,9 @@
-<form id="dateform" class="studip_form" method="get">
+<form id="dateform" class="studip_form" method="post">
     <label>
         <?= _('Semester') ?> 
         <select name="semester">
             <? foreach ($semesters as $semester): ?>
-                <option value="<?= $semester->id ?>" <?= Semester::findCurrent() === $semester ? 'selected' : '' ?>><?= $semester->name ?></option>
+                <option value="<?= $semester->id ?>" <?= $chosenSemester === $semester->id ? 'selected' : '' ?>><?= $semester->name ?></option>
             <? endforeach; ?>
         </select>
     </label>
@@ -22,10 +22,15 @@
         <?= _('Manuell bis') ?>
         <input type="text" name="end" class="datepicker" value="<?= Request::get('end') ?>">
     </label>
-    
+
     <label>
         <input type="checkbox" name="participants" <?= Request::get('participants') ? 'checked' : '' ?>>       
-         <?= _('Teilnehmer anzeigen') ?>
+        <?= _('Teilnehmer anzeigen') ?>
+    </label>
+
+    <label>
+        <input type="checkbox" name="empty_rooms" <?= Request::get('empty_rooms') ? 'checked' : '' ?>>       
+        <?= _('Leere Räume anzeigen') ?>
     </label>
 
     <label>
