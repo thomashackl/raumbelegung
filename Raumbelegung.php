@@ -54,10 +54,8 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         $navigation->addSubNavigation('semesterview', new AutoNavigation(_('Semesteransicht'), PluginEngine::getUrl('raumbelegung/semester/index')));
 
         // Für root erstelle auch den Navipunkt 'Einstellungen'
-        if ($GLOBALS['perm']->have_perm('root')) {
-            $navi_settings = new AutoNavigation(_('Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
-            $navigation->addSubNavigation('settings', $navi_settings);
-        }
+        $navi_settings = new AutoNavigation(_('Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
+        $navigation->addSubNavigation('settings', $navi_settings);
 
         // Füge nun dem Head die benötigten Styles und Scripts hinzu
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/jquery-easyui-1.3.2/themes/default/easyui.css");
