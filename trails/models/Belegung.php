@@ -71,6 +71,7 @@ class Belegung {
                 LEFT JOIN termine t ON t.termin_id = a.assign_user_id
                 LEFT JOIN seminare s ON t.range_id = s.seminar_id
                 WHERE c.is_room = 1
+                AND ro.user_id = :userid
                 AND (a.begin > :begin AND a.begin < :end)
                 OR (a.end > :begin AND a.end < :end)
                 OR (a.begin < :begin AND a.repeat_end > :end)
@@ -78,6 +79,7 @@ class Belegung {
         $stmt = $db->prepare($sql);
         $stmt->bindParam(":begin", $this->begin);
         $stmt->bindParam(":end", $this->end);
+        $stmt->bindParam(":userid", $GLOBALS['user']->id);
         $stmt->execute();
         while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
 

@@ -13,9 +13,8 @@ class resources_tree extends sqlTree {
     }
 
     public static function clearRoomOrder() {
-        $db = DBManager::get();
-        $sql = "TRUNCATE TABLE resources_rooms_order";
-        $db->exec($sql);
+        $stmt = DBManager::get()->prepare("DELETE FROM resources_rooms_order WHERE user_id = ?");
+        $stmt->execute(array($GLOBALS['user']->id));
     }
 
     public function loadFromJson($json) {
@@ -32,9 +31,9 @@ class resources_tree extends sqlTree {
             }
         }
         $db = DBManager::get();
-        $sql = "INSERT INTO `resources_rooms_order` (`resource_id` ,`priority`, checked) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO `resources_rooms_order` (`resource_id` ,`priority`, checked, user_id) VALUES (?, ?, ?, ?)";
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($this->id, $this->key? : 0, $this->checked));
+        $stmt->execute(array($this->id, $this->key? : 0, $this->checked, $GLOBALS['user']->id));
         return $this->newkey;
     }
 

@@ -17,6 +17,9 @@ class SemesterController extends StudipController {
 
         // Fetch the top layer rooms
         $this->buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
+        
+        // Filter the selected rooms from settings
+        $this->buildings = SimpleORMapCollection::createFromArray($this->filter($this->buildings));
 
         // Fetch all semester and the selected
         $this->semesters = Semester::getAll();
@@ -81,5 +84,34 @@ class SemesterController extends StudipController {
         // Datechooser
         
     }
-
+    
+    public function filter($rooms) {
+        // Fill cache
+        if (!$this->rooms) {
+            $this->rooms = array();
+            $stmt = DBManager::get()->prepare("SELECT resource_id FROM resources_rooms_order WHERE user_id = ? ORDER BY priority");
+            $stmt->execute(array($GLOBALS['user']->id));
+            while ($next = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $this->rooms[$next['resource_id']] = false;
+            }
+        }
+        
+        // Produce instance of rooms
+        $roomcache = $this->rooms;
+        
+        // Now sort and filter rooms 
+        foreach ($rooms as $room) {
+            if (key_exists($room->resource_id, $roomcache)) {
+                $roomcache[$room->resource_id] = $room;
+            }
+        }
+        
+        // Build result
+        foreach ($roomcache as $room) {
+            if ($room) {
+                $result[] = $room;
+            }
+        }
+        return $result;
+    }
 }
