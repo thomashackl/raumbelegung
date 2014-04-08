@@ -35,11 +35,21 @@ table.intelec_daytable {
 }
 
 ul.resources {
-    list-style-type: none;
-    
+
+    li {
+        border: #a5adb2 solid thin;
+        background-color: #d4dbe5;
+        list-style-type: none;
+        margin: 2px;
+        padding: 2px;
+    }
+
     ul {
         list-style-type: none;
         display: none;
+        li {
+           background-color: #ffffff; 
+        }
     }
     input[type=checkbox]:checked + ul {
         display:inherit;

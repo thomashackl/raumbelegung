@@ -27,12 +27,19 @@ table.intelec_daytable table table table th {
   background-color: #d78888;
   border-color: #d78888;
 }
-ul.resources {
+ul.resources li {
+  border: #a5adb2 solid thin;
+  background-color: #d4dbe5;
   list-style-type: none;
+  margin: 2px;
+  padding: 2px;
 }
 ul.resources ul {
   list-style-type: none;
   display: none;
+}
+ul.resources ul li {
+  background-color: #ffffff;
 }
 ul.resources input[type=checkbox]:checked + ul {
   display: inherit;
