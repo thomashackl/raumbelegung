@@ -19,7 +19,7 @@ class ResourceRoomOrder extends SimpleORMap
 {
     public function __construct($id = null)
     {
-        $this->db_table = 'ResourceRoomOrder';
+        $this->db_table = 'resources_rooms_order';
         parent::__construct($id);
     }
 }

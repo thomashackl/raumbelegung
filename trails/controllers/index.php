@@ -59,6 +59,10 @@ class IndexController extends StudipController {
 
         // Gib der View den Baum als JSON Object in der Variable $data
         $this->data = json_encode($settingstree);
+        
+        // Lade die ausgewählte Raumbelegung
+        $this->resources = RoomUsageResourceObject::getAll();
+        
     }
 
     /*

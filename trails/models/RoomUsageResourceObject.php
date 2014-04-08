@@ -30,8 +30,40 @@ class RoomUsageResourceObject extends SimpleORMap {
         $this->has_many['prop_values'] = array(
             'class_name' => 'RoomUsageResourceObjectProperty'
         );
+        $this->additional_fields['order'] = true;
         $this->additional_fields['prop'] = true;
         parent::__construct($id);
+    }
+
+    public function getOrder() {
+        $room_order = ResourceRoomOrder::findBySQL('resource_id = ? AND user_id = ?', array($this->resource_id, $GLOBALS['user']->id));
+        if (!$room_order) {
+            $room_order = ResourceRoomOrder::create(
+                            array(
+                                'resource_id' => $this->resource_id,
+                                'user_id' => $GLOBALS['user']->id,
+                                'checked' => 1,
+                                'priority' => 0
+                            )
+            );
+        }
+        return $room_order;
+    }
+
+    public static function getAll() {
+        // Fetch the top layer rooms
+        $buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
+        return $buildings;
+    }
+
+    private static function filter(SimpleORMapCollection &$collection) {
+        $collection->filter(function ($object) {
+            return $object->order->checked;
+        });
+    }
+
+    private static function compare($a, $b) {
+        return $a->order->priority >= $b->order->priority;
     }
 
     public function getProp() {
