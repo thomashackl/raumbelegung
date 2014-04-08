@@ -31,6 +31,7 @@ class RoomUsageResourceObject extends SimpleORMap {
             'class_name' => 'RoomUsageResourceObjectProperty'
         );
         $this->additional_fields['order'] = true;
+        $this->additional_fields['active'] = true;
         $this->additional_fields['prop'] = true;
         parent::__construct($id);
     }
@@ -49,11 +50,19 @@ class RoomUsageResourceObject extends SimpleORMap {
         }
         return $room_order;
     }
+    
+    public function getActive() {
+        return $this->order->checked;
+    }
 
     public static function getAll() {
         // Fetch the top layer rooms
         $buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
         return $buildings;
+    }
+    
+    public function getFilteredChildren() {
+        return $this->children;
     }
 
     private static function filter(SimpleORMapCollection &$collection) {
