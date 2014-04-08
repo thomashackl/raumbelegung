@@ -27,6 +27,16 @@ table.intelec_daytable table table table th {
   background-color: #d78888;
   border-color: #d78888;
 }
+ul.resources {
+  list-style-type: none;
+}
+ul.resources ul {
+  list-style-type: none;
+  display: none;
+}
+ul.resources input[type=checkbox]:checked + ul {
+  display: inherit;
+}
 .multilevel .building {
   font-size: 1.2em;
   font-weight: bold;

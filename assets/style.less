@@ -34,6 +34,18 @@ table.intelec_daytable {
     }
 }
 
+ul.resources {
+    list-style-type: none;
+    
+    ul {
+        list-style-type: none;
+        display: none;
+    }
+    input[type=checkbox]:checked + ul {
+        display:inherit;
+    }
+}
+
 .multilevel .building {
     font-size: 1.2em;
     font-weight: bold;

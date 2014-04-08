@@ -31,13 +31,13 @@ class RoomUsageResourceObject extends SimpleORMap {
             'class_name' => 'RoomUsageResourceObjectProperty'
         );
         $this->additional_fields['order'] = true;
-        $this->additional_fields['active'] = true;
+        $this->additional_fields['checked'] = true;
         $this->additional_fields['prop'] = true;
         parent::__construct($id);
     }
 
     public function getOrder() {
-        $room_order = ResourceRoomOrder::findBySQL('resource_id = ? AND user_id = ?', array($this->resource_id, $GLOBALS['user']->id));
+        $room_order = current(ResourceRoomOrder::findBySQL('resource_id = ? AND user_id = ?', array($this->resource_id, $GLOBALS['user']->id)));
         if (!$room_order) {
             $room_order = ResourceRoomOrder::create(
                             array(
@@ -51,8 +51,8 @@ class RoomUsageResourceObject extends SimpleORMap {
         return $room_order;
     }
     
-    public function getActive() {
-        return $this->order->checked;
+    public function getChecked() {
+        return $this->order->checked ? "checked": "";
     }
 
     public static function getAll() {

@@ -40,25 +40,19 @@ class IndexController extends StudipController {
          * Wenn das Formular auf der Settingsseite abgeschickt haben, dann
          * existiert ein Request. (Best comment ever)
          */
-        if ($request = Request::get('update')) {
+        if (Request::submitted('save')) {
             
-            //schei? encoding
-            $json = json_decode(iconv("ISO-8859-1", "UTF-8", $request));
+            // Alle Einträge resetten
+            $deactivateAll = DBManager::get()->prepare("UPDATE resources_rooms_order SET checked = 0 WHERE user_id = ?");
+            $deactivateAll->execute(array($GLOBALS['user']->id));
             
-            // Lege einen Resourcenbaum an der uns den die Einstellungen updated
-            $tree = new resources_tree();
-            $tree->clearRoomOrder();
-            $tree->loadFromJson($json);
+            // Update request
+            $update = DBManager::get()->prepare("UPDATE resources_rooms_order SET checked = ?, priority = ? WHERE resource_id = ? AND user_id = ?");
+            
+            foreach (Request::getArray('resources') as $resource) {
+                $update->execute(array(1, ++$i, $resource, $GLOBALS['user']->id));
+            } 
         }
-        
-        // Lade den Resourcenbaum
-        $db = DBManager::get();
-        $settingstree = new resources_tree();
-        $settingstree->setID('0');
-        $settingstree->loadChildrenRecursiveFromSQL($db, "resources_objects", "resource_id");
-
-        // Gib der View den Baum als JSON Object in der Variable $data
-        $this->data = json_encode($settingstree);
         
         // Lade die ausgewählte Raumbelegung
         $this->resources = RoomUsageResourceObject::getAll();
