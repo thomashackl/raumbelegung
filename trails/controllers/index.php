@@ -43,7 +43,7 @@ class IndexController extends StudipController {
         if (Request::submitted('save')) {
             
             // Alle Einträge resetten
-            $deactivateAll = DBManager::get()->prepare("UPDATE resources_rooms_order SET checked = 0 WHERE user_id = ?");
+            $deactivateAll = DBManager::get()->prepare("UPDATE resources_rooms_order SET checked = 0, priority = 99999 WHERE user_id = ?");
             $deactivateAll->execute(array($GLOBALS['user']->id));
             
             // Update request

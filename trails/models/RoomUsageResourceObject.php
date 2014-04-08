@@ -32,6 +32,7 @@ class RoomUsageResourceObject extends SimpleORMap {
         );
         $this->additional_fields['order'] = true;
         $this->additional_fields['checked'] = true;
+        $this->additional_fields['priority'] = true;
         $this->additional_fields['prop'] = true;
         parent::__construct($id);
     }
@@ -43,12 +44,16 @@ class RoomUsageResourceObject extends SimpleORMap {
                             array(
                                 'resource_id' => $this->resource_id,
                                 'user_id' => $GLOBALS['user']->id,
-                                'checked' => 1,
-                                'priority' => 0
+                                'checked' => 0,
+                                'priority' => 99999
                             )
             );
         }
         return $room_order;
+    }
+    
+    public function getPriority() {
+        return $this->order->priority;
     }
     
     public function getChecked() {
@@ -58,21 +63,13 @@ class RoomUsageResourceObject extends SimpleORMap {
     public static function getAll() {
         // Fetch the top layer rooms
         $buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
-        return $buildings;
+        return $buildings->orderBy('priority');
     }
     
-    public function getFilteredChildren() {
-        return $this->children;
-    }
-
     private static function filter(SimpleORMapCollection &$collection) {
         $collection->filter(function ($object) {
             return $object->order->checked;
         });
-    }
-
-    private static function compare($a, $b) {
-        return $a->order->priority >= $b->order->priority;
     }
 
     public function getProp() {
