@@ -1,22 +1,10 @@
-
-<?
-
-use Studip\Button;
-?>
 <form id="dateform" method="get">
     <?= dgettext('roomplanplugin', 'Belegungsplan für Datum: ') ?>
     <input name="date" id="date" value="<?= $date ?>"></input>
-    <?= Button::create(dgettext('roomplanplugin', "Anzeigen"), 'submitButton') ?>
+    <?= Studip\Button::create(dgettext('roomplanplugin', "Anzeigen"), 'submitButton') ?>
     <span id="datehint"><?= dgettext('roomplanplugin', 'Datumsformat tt.mm.yyyy'); ?></span>
 </form>
-<script>
-    $('#date').datepicker( {
-        onSelect: function(date) {
-            $('#dateform').submit();
-        }});
-        $('#datehint').hide();
-    $('[name="submitButton"]').hide();
-</script>
+
 <ul class="belegungsplan">
     <?= print_list($room) ?>
 </ul>

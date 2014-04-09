@@ -3,6 +3,7 @@ $(document).ready(function() {
         onSelect: function(date) {
             $('#dateform').submit();
         }});
+    
     $('#buildings').change(function(date) {
         $('#dateform').submit();
     });
