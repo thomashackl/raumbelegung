@@ -36,9 +36,9 @@
     <label>
         <?= _('Gebäude oder Raum') ?>
         <select name="building" id="buildings" class="multilevel">
-            <? foreach ($buildings as $building): ?>
+            <? foreach (RoomUsageResourceObject::getFiltered() as $building): ?>
                 <option value="<?= $building->id ?>" class="building" <?= $building->id == Request::get('building') ? 'selected' : '' ?>><?= htmlReady($building->name) ?></option>
-                <? foreach ($controller->filter($building->children) as $child): ?>
+                <? foreach ($building->filteredChildren as $child): ?>
                     <option value="<?= $child->id ?>" <?= $child->id == Request::get('building') ? 'selected' : '' ?>><?= htmlReady($child->name) ?> <?= htmlReady($child->description) ?></option>
                 <? endforeach; ?>
             <? endforeach; ?>

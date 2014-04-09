@@ -11,7 +11,7 @@ class SemesterController extends StudipController {
     }
 
     public function index_action() {
-
+        
         // Fetch requested date
         $this->date = Request::get('date');
 
