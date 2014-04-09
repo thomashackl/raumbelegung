@@ -72,9 +72,10 @@ class Belegung {
                 LEFT JOIN seminare s ON t.range_id = s.seminar_id
                 WHERE c.is_room = 1
                 AND ro.user_id = :userid
-                AND (a.begin > :begin AND a.begin < :end)
+                AND ro.checked = 1
+                AND ((a.begin > :begin AND a.begin < :end)
                 OR (a.end > :begin AND a.end < :end)
-                OR (a.begin < :begin AND a.repeat_end > :end)
+                OR (a.begin < :begin AND a.repeat_end > :end))
                 ORDER BY ro.priority, a.begin";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(":begin", $this->begin);
@@ -88,6 +89,7 @@ class Belegung {
              * gelistet ist, dann lege diesen Raum an
              */
             if (!$this->rooms[$result['id']]) {
+                
                 $room = new Room($result['id'], "{$result['name']} {$result['description']}");
                 $this->rooms[$result['id']] = $room;
                 $parent_id = $result['parent_id'];
@@ -142,9 +144,6 @@ class Belegung {
             } else {
                 $this->rooms[$result['id']]->addTermin($result);
             }
-        }
+        } 
     }
-
 }
-
-?>
