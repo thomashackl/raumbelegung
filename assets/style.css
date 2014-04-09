@@ -56,6 +56,9 @@ ul.resources ul {
 ul.resources ul li {
   background-color: #ffffff;
 }
+ul.resources input[type=checkbox] {
+  float: left;
+}
 ul.resources input[type=checkbox]:checked + ul {
   display: inherit;
 }
