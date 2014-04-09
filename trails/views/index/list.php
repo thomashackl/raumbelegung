@@ -1,9 +1,4 @@
-<style>
-    .belegungsplan {font-size: 20px; font-weight: bolder}
-    .belegungsplan ul {font-size: 18px; font-weight: bold}
-    .belegungsplan ul ul {font-size: 16px; font-weight: normal}
-    .belegungsplan ul ul ul{font-size: 14px;}
-</style>
+
 <?
 
 use Studip\Button;
