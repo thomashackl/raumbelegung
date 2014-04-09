@@ -19,7 +19,7 @@ class SemesterController extends StudipController {
         $this->buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
         
         // Filter the selected rooms from settings
-        $this->buildings = SimpleORMapCollection::createFromArray($this->filter($this->buildings));
+        $this->buildings = SimpleORMapCollection::createFromArray($this->filter($this->buildings) ? : array());
 
         // Fetch all semester and the selected
         $this->semesters = Semester::getAll();
