@@ -1,6 +1,8 @@
-<form id="dateform" method="get">
-    <?= dgettext('roomplanplugin', 'Belegungsplan für Datum: ') ?>
-    <input name="date" id="date" value="<?= $date ?>"></input>
+<form class="studip_form" id="dateform" method="get">
+    <label>
+        <?= dgettext('roomplanplugin', 'Datum') ?>:
+        <input name="date" id="date" value="<?= $date ?>">
+    </label>
     <?= Studip\Button::create(dgettext('roomplanplugin', "Anzeigen"), 'submitButton') ?>
     <span id="datehint"><?= dgettext('roomplanplugin', 'Datumsformat tt.mm.yyyy'); ?></span>
 </form>
