@@ -31,7 +31,7 @@ class SemesterController extends StudipController {
             // At first check if we got a building
             $find = $this->buildings->find(Request::get('building'));
             if ($find) {
-                $this->request = $find->children;
+                $this->request = $find->filteredChildren;
             } else {
 
                 // If we got nothing we just have a room requested
