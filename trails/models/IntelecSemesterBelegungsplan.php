@@ -121,11 +121,14 @@ class IntelecSemesterBelegungsplan {
                 $this->addUngeilerAssign($assignment);
             }
         }
+        
+        // sort the assigns by date
+        array_walk($this->dayassigns, "ksort");
     }
 
     private function addUngeilerAssign($assign) {
         $this->initAdditionalAssigns();
-        $this->dayassigns[strftime('%u', $assign['begin'])][] = self::fetchDateinfo($assign, true) . ', ' . $assign['realname'];
+        $this->dayassigns[strftime('%u', $assign['begin'])][$assign['begin']] = self::fetchDateinfo($assign, true) . ', ' . $assign['realname'];
     }
 
     private function initAdditionalAssigns() {
