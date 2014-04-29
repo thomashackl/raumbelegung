@@ -237,7 +237,7 @@ class IntelecSemesterBelegungsplan {
             $string = explode(', ', $cycle->toString('full'), 2);
             return $string[1];
         } else {
-            return strftime('%a. %d.%m., %H', $assign['begin'])
+            return strftime('%d.%m., %H', $assign['begin'])
                     . '-'
                     . strftime('%H', $assign['end']);
         }
