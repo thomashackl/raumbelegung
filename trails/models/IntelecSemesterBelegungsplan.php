@@ -256,7 +256,7 @@ class IntelecSemesterBelegungsplan {
     private static function getFloatingAssigns($assign) {
         if ($assign['repeat_end'] && $assign['repeat_quantity'] != 0) {
             // Calculate next
-            $next = $assign['repeat_interval'] * 3600 * 24 + $assign['repeat_day_of_week'] * 3600 * 24 * 7;
+            $next = $assign['repeat_interval'] * 3600 * 24 + $assign['repeat_day_of_week'] * 3600 * 24 * 6;
 
             while ($assign['end'] <= $assign['repeat_end'] && ($assign['repeat_quantity'] == -1 || $assign['repeat_quantity'] < $i)) {
                 $assign['begin'] += $next;
