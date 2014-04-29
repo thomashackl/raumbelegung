@@ -63,6 +63,7 @@ class Belegung {
                        a.user_free_name as directname, 
                        s.VeranstaltungsNummer as nr, 
                        s.Name as sname, 
+                       au.Nachname as dozent,
                        s.seminar_id as link
                 FROM resources_objects o
                 JOIN resources_assign a USING (resource_id)
@@ -70,6 +71,8 @@ class Belegung {
                 JOIN resources_rooms_order ro USING (resource_id)
                 LEFT JOIN termine t ON t.termin_id = a.assign_user_id
                 LEFT JOIN seminare s ON t.range_id = s.seminar_id
+                LEFT JOIN seminar_user su ON (s.seminar_id = su.Seminar_id AND su.status = 'dozent')
+                LEFT JOIN auth_user_md5 au ON (su.user_id = au.user_id)
                 WHERE c.is_room = 1
                 AND ro.user_id = :userid
                 AND ro.checked = 1

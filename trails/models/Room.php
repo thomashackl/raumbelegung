@@ -79,6 +79,9 @@ class Room {
             $name = "<a href='{$link}'>{$name}</a>";
         }
         
+        // Dozenten hinzufügen
+        $name = $result['dozent'] ? "{$name} ({$result['dozent']})" : $name;
+        
         // Füge den Termin an und berechne die Öffnungszeiten des Raums neu
         $this->termine[] = new Termin($result['begin'], $result['end'], $name);
         if (!$this->close) {
