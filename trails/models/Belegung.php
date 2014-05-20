@@ -130,7 +130,7 @@ class Belegung {
 
             if ($result['repeat_end'] && $result['repeat_quantity'] != 0) {
                 // Calculate next
-                $next = $result['repeat_interval'] * 3600 * 24 + $result['repeat_day_of_week'] * 3600 * 24 * 7;
+                $next = $result['repeat_interval'] * 3600 * 24 + $result['repeat_day_of_week'] * 3600 * 24 * 6;
 
                 while ($result['end'] <= $result['repeat_end'] && ($result['repeat_quantity'] == -1 || $result['repeat_quantity'] < $i)) {
 
