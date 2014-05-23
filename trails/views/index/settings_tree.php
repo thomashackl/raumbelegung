@@ -1,5 +1,5 @@
 <li>
-    <label for="<?= $resource->id ?>"><?= htmlReady($resource->name) ?> <?= htmlReady($resource->description) ?></label>
+    <label for="<?= $resource->id ?>"><?= htmlReady($resource->name) ?></label>
     <input name="resources[]" id="<?= $resource->id ?>" type="checkbox" value="<?= $resource->id ?>" <?= $resource->checked ?>>
     <ul class="sortable">
         <? foreach ($resource->children->orderBy('priority') as $resource): ?>

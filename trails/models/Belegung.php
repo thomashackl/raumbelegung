@@ -93,7 +93,7 @@ class Belegung {
              */
             if (!$this->rooms[$result['id']]) {
                 
-                $room = new Room($result['id'], "{$result['name']} {$result['description']}");
+                $room = new Room($result['id'], "{$result['name']}");
                 $this->rooms[$result['id']] = $room;
                 $parent_id = $result['parent_id'];
 
