@@ -75,7 +75,7 @@ class Room {
         $name = $result['sname'] ? : $name;
         $name = $result['nr'] ? "{$result['nr']} {$name}" : $name;
         if ($result['link']) {
-            $link = URLHelper::getLink('seminar_main.php', array('auswahl' => $result['link']));
+            $link = URLHelper::getLink('details.php', array('sem_id' => $result['link']));
             $name = "<a href='{$link}'>{$name}</a>";
         }
         
