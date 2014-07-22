@@ -11,6 +11,7 @@ class IntelecSemesterBelegungsplan {
     public $object;
     public $hour = array();
     public $takenSlot = array();
+    public $dayassigns = array();
     private $empty = true;
 
     public function __construct(RoomUsageResourceObject $object) {
