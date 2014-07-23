@@ -122,7 +122,7 @@ class IntelecSemesterBelegungsplan {
                 $this->addUngeilerAssign($assignment);
             }
         }
-        
+
         // sort the assigns by date
         array_walk($this->dayassigns, "ksort");
     }
@@ -224,8 +224,8 @@ class IntelecSemesterBelegungsplan {
                 "size" => self::SLOTSIZE * $assignment['runtime'],
                 "dateinfo" => self::fetchDateinfo($assignment),
                 "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE,
-                "classes" => ($assignment['metadate_id'] ? 'cyclic' : ''). ' ' .($participants && $assignment['teilnehmer'] > $maxplaces  ? 'overfilled' : '') 
-                ));
+                "classes" => ($assignment['metadate_id'] ? 'cyclic' : '') . ' ' . ($participants && $assignment['teilnehmer'] > $maxplaces ? 'overfilled' : '')
+        ));
     }
 
     private static function fetchDateinfo(&$assign, $noCut = false) {
@@ -259,13 +259,17 @@ class IntelecSemesterBelegungsplan {
 
     private static function getFloatingAssigns($assign) {
         if ($assign['repeat_end'] && $assign['repeat_quantity'] != 0) {
-            
+
 // Calculate next
-            $next = $assign['repeat_interval'] * 3600 * 24 + $assign['repeat_day_of_week'] * 3600 * 24 * 6;
+            if ($assign['repeat_day_of_week']) {
+                $next = "+ 1 week";
+            } elseif ($assign['repeat_interval']) {
+                $next = "+ 1 day";
+            }
 
             while ($assign['end'] <= $assign['repeat_end'] && ($assign['repeat_quantity'] == -1 || $assign['repeat_quantity'] < $i)) {
-                $assign['begin'] += $next;
-                $assign['end'] += $next;
+                $assign['begin'] = strtotime($next, $assign['begin']);
+                $assign['end'] = strtotime($next, $assign['end']);
                 $additional[] = $assign;
 
                 $i++;
