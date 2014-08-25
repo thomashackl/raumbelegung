@@ -76,9 +76,9 @@ class Belegung {
                 WHERE c.is_room = 1
                 AND ro.user_id = :userid
                 AND ro.checked = 1
-                AND ((a.begin > :begin AND a.begin < :end)
-                OR (a.end > :begin AND a.end < :end)
-                OR (a.begin < :begin AND a.repeat_end > :end))
+                AND ((a.begin >= :begin AND a.begin <= :end)
+                OR (a.end >= :begin AND a.end <= :end)
+                OR (a.begin <= :begin AND a.repeat_end >= :end))
                 ORDER BY ro.priority, a.begin";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(":begin", $this->begin);
