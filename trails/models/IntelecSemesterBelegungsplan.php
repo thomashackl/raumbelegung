@@ -93,6 +93,9 @@ class IntelecSemesterBelegungsplan {
             } else {
                 // Check if assign is really on this timetable
                 if ($assign['begin'] >= $this->start && $assign['begin'] <= $this->end && $assign['end'] >= $this->start && $assign['end'] <= $this->end) {
+                    
+                    // This timetable is not empty
+                    $this->empty = false;
 
                     // Now check for weekend
                     if (strftime('%u', $assign['begin']) <= 5) {
@@ -106,6 +109,7 @@ class IntelecSemesterBelegungsplan {
         }
         arsort($geilheit);
         foreach ($geilheit as $key => $assign) {
+            
             // Get the object from the map
             $assignment = $map[$key];
 
@@ -117,7 +121,6 @@ class IntelecSemesterBelegungsplan {
                 $this->takeSlots($slots);
                 $this->loadDozentenAndTeilnehmer($assignment);
                 self::fetchDateinfo($assignment);
-                $this->empty = false;
                 $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = self::forgeEntry($assignment, $this->participants, $this->object->getProperty('Sitzplätze'));
             } else {
                 $this->addUngeilerAssign($assignment);
