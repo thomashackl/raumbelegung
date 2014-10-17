@@ -37,6 +37,32 @@ class RoomUsageResourceObject extends SimpleORMap {
         $this->additional_fields['prop'] = true;
         parent::__construct($id);
     }
+    
+    /**
+     * In preparation for 3.1
+     * 
+     * @param type $config
+     */
+        protected static function configure($config = array()) {
+        $config['db_table'] = 'resources_objects';
+        $config['belongs_to']['parent'] = array(
+            'class_name' => 'RoomUsageResourceObject',
+            'foreign_key' => 'parent_id'
+        );
+        $config['has_many']['children'] = array(
+            'class_name' => 'RoomUsageResourceObject',
+            'assoc_foreign_key' => 'parent_id'
+        );
+        $config['has_many']['prop_values'] = array(
+            'class_name' => 'RoomUsageResourceObjectProperty'
+        );
+        $config['additional_fields']['order'] = true;
+        $config['additional_fields']['checked'] = true;
+        $config['additional_fields']['priority'] = true;
+        $config['additional_fields']['filteredchildren'] = true;
+        $config['additional_fields']['prop'] = true;
+        parent::configure($config);
+    }
 
     public function getOrder() {
         $room_order = current(ResourceRoomOrder::findBySQL('resource_id = ? AND user_id = ?', array($this->resource_id, $GLOBALS['user']->id)));
