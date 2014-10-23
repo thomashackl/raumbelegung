@@ -277,6 +277,11 @@ class IntelecSemesterBelegungsplan {
             while ($assign['end'] <= $assign['repeat_end'] && ($assign['repeat_quantity'] == -1 || $assign['repeat_quantity'] < $i)) {
                 $assign['begin'] = strtotime($next, $assign['begin']);
                 $assign['end'] = strtotime($next, $assign['end']);
+                
+                // If we are out of the repeat cycle dont add
+                if ($assign['end'] > $assign['repeat_end']) {
+                    break;
+                }
                 $additional[] = $assign;
 
                 $i++;
