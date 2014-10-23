@@ -92,13 +92,13 @@ class IntelecSemesterBelegungsplan {
             } else {
                 // Check if assign is really on this timetable
                 if ($assign['begin'] >= $this->start && $assign['begin'] <= $this->end && $assign['end'] >= $this->start && $assign['end'] <= $this->end) {
-                    
+
                     // This timetable is not empty
                     $this->empty = false;
 
                     // Now check for weekend
                     if (strftime('%u', $assign['begin']) <= 5) {
-                        $geilheit[++$terminnr] = 0;
+                        $geilheit[++$terminnr] = 1 / $terminnr - 0.1;
                         $map[$terminnr] = $assign;
                     } else {
                         $this->weekendDate($assign);
@@ -108,7 +108,7 @@ class IntelecSemesterBelegungsplan {
         }
         arsort($geilheit);
         foreach ($geilheit as $key => $assign) {
-            
+
             // Get the object from the map
             $assignment = $map[$key];
 
@@ -258,6 +258,9 @@ class IntelecSemesterBelegungsplan {
             }
         }
         $assigns = array_merge($assigns, $new);
+        
+        // Sort by date
+        usort($assigns, function($a, $b) {return $a['begin'] >= $b['begin'];});
     }
 
     private static function getFloatingAssigns($assign) {
@@ -277,7 +280,7 @@ class IntelecSemesterBelegungsplan {
             while ($assign['end'] <= $assign['repeat_end'] && ($assign['repeat_quantity'] == -1 || $assign['repeat_quantity'] < $i)) {
                 $assign['begin'] = strtotime($next, $assign['begin']);
                 $assign['end'] = strtotime($next, $assign['end']);
-                
+
                 // If we are out of the repeat cycle dont add
                 if ($assign['end'] > $assign['repeat_end']) {
                     break;
