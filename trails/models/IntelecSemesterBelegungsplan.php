@@ -265,9 +265,13 @@ class IntelecSemesterBelegungsplan {
 
 // Calculate next
             if ($assign['repeat_day_of_week']) {
-                $next = "+ 1 week";
+                $next = "+ {$assign['repeat_interval']} week";
+            } elseif ($assign['repeat_week_of_month']) {
+                $next = "+ {$assign['repeat_interval']} month";
+            } elseif ($assign['repeat_month_of_year']) {
+                $next = "+ {$assign['repeat_interval']} year";
             } elseif ($assign['repeat_interval']) {
-                $next = "+ 1 day";
+                $next = "+ {$assign['repeat_interval']} day";
             }
 
             while ($assign['end'] <= $assign['repeat_end'] && ($assign['repeat_quantity'] == -1 || $assign['repeat_quantity'] < $i)) {
