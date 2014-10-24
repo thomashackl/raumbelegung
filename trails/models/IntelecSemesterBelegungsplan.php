@@ -83,6 +83,10 @@ class IntelecSemesterBelegungsplan {
         $geilheit = array();
         foreach ($assigns as $assign) {
             if ($assign['metadate_id']) {
+                
+                // This timetable is not empty
+                $this->empty = false;
+                
                 if (strftime('%u', $assign['begin']) > 5) {
                     $this->weekendDate($assign);
                 } else {
