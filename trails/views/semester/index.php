@@ -1,6 +1,6 @@
 <form id="dateform" class="studip_form" method="post">
     <label>
-        <?= _('Semester') ?> 
+        <?= dgettext('roomplanplugin', 'Semester') ?>
         <select name="semester">
             <? foreach ($semesters as $semester): ?>
                 <option value="<?= $semester->id ?>" <?= $chosenSemester === $semester->id ? 'selected' : '' ?>><?= $semester->name ?></option>
@@ -10,31 +10,31 @@
 
     <label>
         <input type="checkbox" name="lecture_only" <?= Request::get('lecture_only') ? 'checked' : '' ?>>
-        <?= _('Nur Vorlesungszeiten') ?>
+        <?= dgettext('roomplanplugin', 'Nur Vorlesungszeiten') ?>
     </label>
 
     <label>
-        <?= _('Manuell von') ?>
+        <?= dgettext('roomplanplugin', 'Manuell von') ?>
         <input type="text" name="start" class="datepicker" value="<?= Request::get('start') ?>">
     </label>
 
     <label>
-        <?= _('Manuell bis') ?>
+        <?= dgettext('roomplanplugin', 'Manuell bis') ?>
         <input type="text" name="end" class="datepicker" value="<?= Request::get('end') ?>">
     </label>
 
     <label>
-        <input type="checkbox" name="participants" <?= Request::get('participants') ? 'checked' : '' ?>>       
-        <?= _('Teilnehmer anzeigen') ?>
+        <input type="checkbox" name="participants" <?= Request::get('participants') ? 'checked' : '' ?>>
+        <?= dgettext('roomplanplugin', 'Teilnehmer anzeigen') ?>
     </label>
 
     <label>
-        <input type="checkbox" name="empty_rooms" <?= Request::get('empty_rooms') ? 'checked' : '' ?>>       
-        <?= _('Leere Räume anzeigen') ?>
+        <input type="checkbox" name="empty_rooms" <?= Request::get('empty_rooms') ? 'checked' : '' ?>>
+        <?= dgettext('roomplanplugin', 'Leere Räume anzeigen') ?>
     </label>
 
     <label>
-        <?= _('Gebäude oder Raum') ?>
+        <?= dgettext('roomplanplugin', 'Gebäude oder Raum') ?>
         <select name="building" id="buildings" class="multilevel">
             <? foreach (RoomUsageResourceObject::getFiltered() as $building): ?>
                 <option value="<?= $building->id ?>" class="building" <?= $building->id == Request::get('building') ? 'selected' : '' ?>><?= htmlReady($building->name) ?></option>
@@ -45,7 +45,7 @@
         </select>
     </label>
 
-    <?= \Studip\Button::create(_("Anzeigen"), 'submit') ?>
+    <?= \Studip\Button::create(dgettext('roomplanplugin', "Anzeigen"), 'submit') ?>
 </form>
 <? if (false): ?>
     <? foreach ($request as $room): ?>

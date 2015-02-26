@@ -15,14 +15,16 @@
  * @since       3.0
  */
 
-class RoomUsageResourceCategory extends SimpleORMap
-{
-    public function __construct($id = null)
-    {
-        $this->db_table = 'resources_categories';
-        $this->has_many['objects'] = array(
+class RoomUsageResourceCategory extends SimpleORMap {
+
+    protected static function configure($config = array()) {
+        $config['db_table'] = 'resources_categories';
+
+        $config['has_many']['objects'] = array(
             'class_name' => 'RoomUsageResourceObject'
         );
-        parent::__construct($id);
+
+        parent::configure($config);
     }
+
 }

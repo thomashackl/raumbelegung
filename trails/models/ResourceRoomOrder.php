@@ -15,11 +15,12 @@
  * @since       3.0
  */
 
-class ResourceRoomOrder extends SimpleORMap
-{
-    public function __construct($id = null)
-    {
-        $this->db_table = 'resources_rooms_order';
-        parent::__construct($id);
+class ResourceRoomOrder extends SimpleORMap {
+
+    protected static function configure($config = array()) {
+        $config['db_table'] = 'resources_rooms_order';
+
+        parent::configure($config);
     }
+
 }

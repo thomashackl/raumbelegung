@@ -4,10 +4,10 @@
  * Raumbelegung - Plugin zur Anzeige aller Raumbelegungen an einem Tag
  *
  * Das Raumbelegungsplugin zeigt alle Termine geornet nach Raum und Zeit in
- * einer Liste oder einer Tabelle an. Root verfügt über die 
+ * einer Liste oder einer Tabelle an. Root verfügt über die
  * Einstellungsmöglichkeit, Raume und deren Oberkategorien auszublenden, bzw
  * diese zu ordnen.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
@@ -26,11 +26,14 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
     function __construct() {
         parent::__construct();
 
+        // Localization
+        bindtextdomain('roomplanplugin', __DIR__.'/locale');
+
         // Lade den Navigationsabschnitt "tools"
         $navigation = Navigation::getItem('/calendar');
 
         // Erstelle einen neuen Navigationspunkt
-        $roomplaner_navi = new AutoNavigation(_('Raumbelegung'), PluginEngine::getUrl('raumbelegung/index/list'));
+        $roomplaner_navi = new AutoNavigation(dgettext('roomplanplugin', 'Raumbelegung'), PluginEngine::getUrl('raumbelegung/index/list'));
 
         // Binde disen Punkt unter "tools" ein
         $navigation->addSubNavigation('raumbelegung', $roomplaner_navi);
@@ -39,22 +42,22 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
     /**
      * Wird das Plugin tatsächlich aufgerufen, so landen wir in der perform
      * Methode
-     * 
+     *
      * @param string Die restliche Pfadangabe
      */
     function perform($unconsumed_path) {
         // Erstelle Unternavigation
         $navigation = AutoNavigation::getItem('/calendar/raumbelegung');
-        $listview = new AutoNavigation(_('Tagesansicht (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
-        $tableview = new AutoNavigation(_('Tagesansicht (Tabelle)'), PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
+        $listview = new AutoNavigation(dgettext('roomplanplugin', 'Tagesansicht (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
+        $tableview = new AutoNavigation(dgettext('roomplanplugin', 'Tagesansicht (Tabelle)'), PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
         $navigation->addSubNavigation('listview', $listview);
         $navigation->addSubNavigation('tableview', $tableview);
 
         // Füge Navigation für die Wochenansicht an
-        $navigation->addSubNavigation('semesterview', new AutoNavigation(_('Semesteransicht'), PluginEngine::getUrl('raumbelegung/semester/index')));
+        $navigation->addSubNavigation('semesterview', new AutoNavigation(dgettext('roomplanplugin', 'Semesteransicht'), PluginEngine::getUrl('raumbelegung/semester/index')));
 
         // Für root erstelle auch den Navipunkt 'Einstellungen'
-        $navi_settings = new AutoNavigation(_('Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
+        $navi_settings = new AutoNavigation(dgettext('roomplanplugin', 'Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
         $navigation->addSubNavigation('settings', $navi_settings);
 
         // Füge nun dem Head die benötigten Styles und Scripts hinzu

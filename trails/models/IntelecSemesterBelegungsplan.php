@@ -53,17 +53,17 @@ class IntelecSemesterBelegungsplan {
      * Fetches roomasignments for a specified day and time
      */
     private function getAssignement($object) {
-        $sql = "SELECT * , 
-            COALESCE(IF(LENGTH(s.Name),CONCAT_WS(' ', s.VeranstaltungsNummer, s.Name),NULL), u.Nachname, user_free_name) as realname 
+        $sql = "SELECT * ,
+            COALESCE(IF(LENGTH(s.Name),CONCAT_WS(' ', s.VeranstaltungsNummer, s.Name),NULL), u.Nachname, user_free_name) as realname
             FROM resources_objects o
                     JOIN resources_assign a USING (resource_id)
                     JOIN resources_rooms_order ro USING (resource_id)
                     LEFT JOIN termine t ON t.termin_id = a.assign_user_id
                     LEFT JOIN seminare s ON t.range_id = s.seminar_id
                     LEFT JOIN auth_user_md5 u ON (t.range_id = u.user_id)
-                    WHERE o.resource_id = :id 
+                    WHERE o.resource_id = :id
                     AND ro.user_id = :userid
-                    AND 
+                    AND
                     ((a.begin >= :start AND  a.begin <= :end)
                     OR
                     (a.begin <= :end AND a.repeat_end >= :start))
@@ -83,10 +83,10 @@ class IntelecSemesterBelegungsplan {
         $geilheit = array();
         foreach ($assigns as $assign) {
             if ($assign['metadate_id']) {
-                
+
                 // This timetable is not empty
                 $this->empty = false;
-                
+
                 if (strftime('%u', $assign['begin']) > 5) {
                     $this->weekendDate($assign);
                 } else {
@@ -227,7 +227,7 @@ class IntelecSemesterBelegungsplan {
                 //"name" => mb_strimwidth($assignment['VeranstaltungsNummer'] . ' ' . $assignment['realname'], 0, 40, "&hellip;"),
                 "name" => $assignment['realname'],
                 "dozenten" => $assignment['dozenten'],
-                "teilnehmer" => $participants ? ($assignment['teilnehmer'] ? _('Teilnehmer') . ": " . $assignment['teilnehmer'] : null) : null,
+                "teilnehmer" => $participants ? ($assignment['teilnehmer'] ? dgettext('roomplanplugin', 'Teilnehmer') . ": " . $assignment['teilnehmer'] : null) : null,
                 "size" => self::SLOTSIZE * $assignment['runtime'],
                 "dateinfo" => self::fetchDateinfo($assignment),
                 "margin" => ltrim(date('i', $assignment['begin']), '0') / 60 * self::SLOTSIZE,
@@ -262,7 +262,7 @@ class IntelecSemesterBelegungsplan {
             }
         }
         $assigns = array_merge($assigns, $new);
-        
+
         // Sort by date
         usort($assigns, function($a, $b) {return $a['begin'] >= $b['begin'];});
     }

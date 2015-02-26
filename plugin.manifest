@@ -3,6 +3,6 @@ pluginclassname=Raumbelegung
 origin=intelec
 version=1.0
 description=Zeigt Raumbelegungen eines Tages an
-studipMinVersion=1.11
+studipMinVersion=3.1
 dbscheme=sql/install.sql
 uninstalldbscheme=sql/uninstall.sql

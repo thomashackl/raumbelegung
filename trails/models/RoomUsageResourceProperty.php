@@ -15,11 +15,12 @@
  * @since       3.0
  */
 
-class RoomUsageResourceProperty extends SimpleORMap
-{
-    public function __construct($id = null)
-    {
-        $this->db_table = 'resources_properties';
-        parent::__construct($id);
+class RoomUsageResourceProperty extends SimpleORMap {
+
+    protected static function configure($config = array()) {
+        $config['db_table'] = 'resources_properties';
+
+        parent::configure($config);
     }
+
 }
