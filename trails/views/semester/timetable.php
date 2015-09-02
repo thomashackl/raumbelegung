@@ -44,7 +44,7 @@
                             <?= $day ?>
                         </td>
                     <? endif; ?>
-                    <? if ($day['content']): ?>
+                    <? if ($day && $day['content']): ?>
                         <td>
                             <?= $this->render_partial('semester/entry', array('entry' => $day['content'])) ?>
                         </td>

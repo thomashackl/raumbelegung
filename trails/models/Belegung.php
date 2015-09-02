@@ -92,7 +92,7 @@ class Belegung {
              * gelistet ist, dann lege diesen Raum an
              */
             if (!$this->rooms[$result['id']]) {
-                
+
                 $room = new Room($result['id'], "{$result['name']}");
                 $this->rooms[$result['id']] = $room;
                 $parent_id = $result['parent_id'];
@@ -128,6 +128,19 @@ class Belegung {
                 }
             }
 
+            // multiday repead
+            /*while ($result['repeat_end'] > $result['end'] && $result['repeat_quantity'] == 0) {
+                echo "BENIS";die;
+                $endOfDay = strtotime("tomorrow", $result['begin']) - 1;
+                if ($result['repeat_end'] > $endOfDay) {
+                    $result['end'] = $endOfDay;
+                } else {
+                    $result['end'] = $result['repeat_end'];
+                }
+                $this->rooms[$result['id']]->addTermin($result);
+                $result['begin'] = $endOfDay + 1;
+            }*/
+
             if ($result['repeat_end'] && $result['repeat_quantity'] != 0) {
                 // Calculate next
                 $next = $result['repeat_interval'] * 3600 * 24 + $result['repeat_day_of_week'] * 3600 * 24 * 6;
@@ -141,12 +154,13 @@ class Belegung {
 
                     $result['begin'] += $next;
                     $result['end'] += $next;
-                    
+
                     $i++;
                 }
             } else {
                 $this->rooms[$result['id']]->addTermin($result);
             }
-        } 
+        }
     }
+
 }

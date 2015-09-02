@@ -117,14 +117,14 @@ class IntelecSemesterBelegungsplan {
             $assignment = $map[$key];
 
             // Calculate runtime
-            $assignment['runtime'] = ($assignment['end'] - $assignment['begin']) / 3600;
+            $assignment['runtime'] = ($assignment['end'] - max(array(strtotime('today 8am', $assignment['begin']),$assignment['begin']))) / 3600;
 
             $slots = $this->getSlots($assignment);
             if (!$this->slotsTaken($this->getSlots($assignment))) {
                 $this->takeSlots($slots);
                 $this->loadDozentenAndTeilnehmer($assignment);
                 self::fetchDateinfo($assignment);
-                $this->hour[date('G', $assignment['begin'])][strftime('%u', $assignment['begin'])] = self::forgeEntry($assignment, $this->participants, $this->object->getProperty('Sitzplätze'));
+                $this->hour[max(array(8, date('G', $assignment['begin'])))][strftime('%u', $assignment['begin'])] = self::forgeEntry($assignment, $this->participants, $this->object->getProperty('Sitzplätze'));
             } else {
                 $this->addUngeilerAssign($assignment);
             }
@@ -235,6 +235,21 @@ class IntelecSemesterBelegungsplan {
         ));
     }
 
+    private static function getMultidayEntry(&$assign) {
+        // multiday repeat
+        while ($assign['repeat_end'] > $assign['end'] && $assign['repeat_quantity'] == 0) {
+            $endOfDay = strtotime("tomorrow", $assign['begin']) - 1;
+            if ($assign['repeat_end'] > $endOfDay) {
+                $assign['end'] = $endOfDay;
+            } else {
+                $assign['end'] = $assign['repeat_end'];
+            }
+            $additional[] = $assign;
+            $assign['begin'] = $endOfDay + 1;
+        }
+        return $additional;
+    }
+
     private static function fetchDateinfo(&$assign, $noCut = false) {
         // if we have a metadate fetch the information of the metadate
         if ($assign['metadate_id']) {
@@ -253,10 +268,15 @@ class IntelecSemesterBelegungsplan {
 
     private static function enfoldAssigns(&$assigns) {
         $new = array();
-        foreach ($assigns as $assign) {
+        foreach ($assigns as $key => $assign) {
             if (!$assign['metadate_id']) {
                 $floating = self::getFloatingAssigns($assign);
                 if ($floating) {
+                    $new = array_merge($new, $floating);
+                }
+                $floating = self::getMultidayEntry($assign);
+                if ($floating) {
+                    unset($assigns[$key]);
                     $new = array_merge($new, $floating);
                 }
             }
@@ -264,7 +284,9 @@ class IntelecSemesterBelegungsplan {
         $assigns = array_merge($assigns, $new);
 
         // Sort by date
-        usort($assigns, function($a, $b) {return $a['begin'] >= $b['begin'];});
+        usort($assigns, function($a, $b) {
+            return $a['begin'] >= $b['begin'];
+        });
     }
 
     private static function getFloatingAssigns($assign) {
