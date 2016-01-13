@@ -13,32 +13,32 @@
 .belegungsplan ul ul ul {
   font-size: 14px;
 }
-table.intelec_daytable {
+table.zim_daytable {
   border-style: solid;
   border-width: 6px;
   border-color: #999999;
 }
-table.intelec_daytable th {
+table.zim_daytable th {
   background-color: #999999;
 }
-table.intelec_daytable table {
+table.zim_daytable table {
   border-color: #7d92ce;
 }
-table.intelec_daytable table th {
+table.zim_daytable table th {
   background-color: #7d92ce;
   border-color: #7d92ce;
 }
-table.intelec_daytable table table {
+table.zim_daytable table table {
   border-color: #8fd08a;
 }
-table.intelec_daytable table table th {
+table.zim_daytable table table th {
   background-color: #8fd08a;
   border-color: #8fd08a;
 }
-table.intelec_daytable table table table {
+table.zim_daytable table table table {
   border-color: #d78888;
 }
-table.intelec_daytable table table table th {
+table.zim_daytable table table table th {
   background-color: #d78888;
   border-color: #d78888;
 }
@@ -66,33 +66,33 @@ ul.resources input[type=checkbox]:checked + ul {
   font-size: 1.2em;
   font-weight: bold;
 }
-table.intelec_roomtable {
+table.zim_roomtable {
   border: 1px solid #000;
   margin: 10px;
   border-collapse: collapse;
   table-layout: fixed;
   width: 98%;
 }
-table.intelec_roomtable thead tr td {
+table.zim_roomtable thead tr td {
   padding: 10px;
 }
-table.intelec_roomtable thead tr td span.headline {
+table.zim_roomtable thead tr td span.headline {
   font-size: 20px;
   font-weight: bold;
 }
-table.intelec_roomtable tbody tr {
+table.zim_roomtable tbody tr {
   height: 26px;
 }
-table.intelec_roomtable tbody tr td {
+table.zim_roomtable tbody tr td {
   border: 1px solid #000;
   vertical-align: top;
   padding-right: 3px;
 }
-table.intelec_roomtable tbody tr td div.entry_wrapper {
+table.zim_roomtable tbody tr td div.entry_wrapper {
   position: relative;
   width: 100%;
 }
-table.intelec_roomtable tbody tr td div.entry_wrapper div.entry {
+table.zim_roomtable tbody tr td div.entry_wrapper div.entry {
   background-color: #FFFFFF;
   border: 1px solid #777777 !important;
   border-radius: 5px;
@@ -101,7 +101,7 @@ table.intelec_roomtable tbody tr td div.entry_wrapper div.entry {
   overflow: hidden;
   width: 100%;
 }
-table.intelec_roomtable tbody tr td div.entry_wrapper div.entry p {
+table.zim_roomtable tbody tr td div.entry_wrapper div.entry p {
   overflow: hidden;
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
@@ -109,19 +109,19 @@ table.intelec_roomtable tbody tr td div.entry_wrapper div.entry p {
   margin: 0;
   font-size: 10px;
 }
-table.intelec_roomtable tbody tr td div.entry_wrapper div.entry:hover {
+table.zim_roomtable tbody tr td div.entry_wrapper div.entry:hover {
   min-height: 47px !important;
   z-index: 99;
 }
-table.intelec_roomtable tbody tr td div.entry_wrapper div.cyclic {
+table.zim_roomtable tbody tr td div.entry_wrapper div.cyclic {
   background-color: #eeeeee !important;
 }
-table.intelec_roomtable tbody tr td div.entry_wrapper div.overfilled {
+table.zim_roomtable tbody tr td div.entry_wrapper div.overfilled {
   background-image: url('exclaim-circle.png');
   background-repeat: no-repeat;
   background-position: right center;
 }
-table.intelec_roomtable tbody tr td.weekend {
+table.zim_roomtable tbody tr td.weekend {
   background-color: #ffffff;
   background-image: url('logo.png');
   background-position: bottom;
@@ -130,7 +130,7 @@ table.intelec_roomtable tbody tr td.weekend {
   font-size: 10px;
   white-space: nowrap;
 }
-table.intelec_roomtable tbody tr td.weekend p {
+table.zim_roomtable tbody tr td.weekend p {
   font-size: 10px;
   margin: 0;
   overflow: hidden;
@@ -138,7 +138,7 @@ table.intelec_roomtable tbody tr td.weekend p {
   -ms-text-overflow: ellipsis;
   text-overflow: ellipsis;
 }
-table.intelec_roomtable tbody tr td.non-cyclic {
+table.zim_roomtable tbody tr td.non-cyclic {
   font-size: 10px;
   overflow: hidden;
   -o-text-overflow: ellipsis;
@@ -146,24 +146,24 @@ table.intelec_roomtable tbody tr td.non-cyclic {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-table.intelec_roomtable tbody tr td.non-cyclic p {
+table.zim_roomtable tbody tr td.non-cyclic p {
   overflow: hidden;
   -o-text-overflow: ellipsis;
   -ms-text-overflow: ellipsis;
   text-overflow: ellipsis;
   margin: 0;
 }
-table.intelec_roomtable tbody tr:nth-child(4n+4),
-table.intelec_roomtable tbody tr:nth-child(4n+5) {
+table.zim_roomtable tbody tr:nth-child(4n+4),
+table.zim_roomtable tbody tr:nth-child(4n+5) {
   background-color: #dddddd !important;
 }
-table.intelec_roomtable tbody tr th {
+table.zim_roomtable tbody tr th {
   border: 1px solid #000;
 }
-table.intelec_roomtable tfoot {
+table.zim_roomtable tfoot {
   font-size: 10px;
 }
-table.intelec_roomtable tfoot .headline {
+table.zim_roomtable tfoot .headline {
   font-weight: bold;
 }
 @media print {
@@ -175,14 +175,14 @@ table.intelec_roomtable tfoot .headline {
   #dateform {
     display: none;
   }
-  table.intelec_roomtable {
+  table.zim_roomtable {
     page-break-after: always;
     height: 100% !important;
   }
-  table.intelec_roomtable tbody tr td p {
+  table.zim_roomtable tbody tr td p {
     font-size: 8px;
   }
-  table.intelec_roomtable tfoot tr td {
+  table.zim_roomtable tfoot tr td {
     font-size: 8px;
   }
   @page  {

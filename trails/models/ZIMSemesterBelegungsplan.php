@@ -1,6 +1,6 @@
 <?php
 
-class IntelecSemesterBelegungsplan {
+class ZIMSemesterBelegungsplan {
 
     const PAGESIZE = 540;
     const SLOTSIZE = 26;

@@ -1,4 +1,4 @@
-<table class="intelec_roomtable">
+<table class="zim_roomtable">
     <colgroup>
         <col>
         <col width="16%">
@@ -51,7 +51,7 @@
                     <? endif; ?>
                     <? if (isset($day['weekend'])): ?>
                         <td class="weekend" rowspan="<?= count($table->hour) + ($table->dayassigns ? 1 : 0)?>">
-                            <div class="cell_wrapper" style="height: <?= count($table->hour) * IntelecSemesterBelegungsplan::SLOTSIZE ?>px">
+                            <div class="cell_wrapper" style="height: <?= count($table->hour) * ZIMSemesterBelegungsplan::SLOTSIZE ?>px">
                                 <? foreach ($day['weekend'] as $entry): ?>
                                     <p><?= $entry ?></p>
                                 <? endforeach; ?>

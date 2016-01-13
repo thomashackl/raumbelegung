@@ -44,7 +44,7 @@ class SemesterController extends StudipController {
 
         if ($this->request) {
             foreach ($this->request as $request) {
-                $timetable = new IntelecSemesterBelegungsplan($request);
+                $timetable = new ZIMSemesterBelegungsplan($request);
 
                 // Check if we need to display participants
                 if (Request::get('participants')) {

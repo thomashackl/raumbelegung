@@ -49,7 +49,7 @@
 </form>
 <? if (false): ?>
     <? foreach ($request as $room): ?>
-        <?= IntelecBelegungsplan::display(Request::get('date'), $room) ?>
+        <?= zimBelegungsplan::display(Request::get('date'), $room) ?>
     <? endforeach; ?>
 <? endif; ?>
 

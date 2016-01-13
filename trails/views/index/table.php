@@ -14,7 +14,7 @@
 
 function print_table($room) {
     ?>
-    <table class="intelec_daytable" border="1" width="800">
+    <table class="zim_daytable" border="1" width="800">
         <tr>
             <th>
                 <?= $room->name ?><br> 
