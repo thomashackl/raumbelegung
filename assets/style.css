@@ -161,7 +161,7 @@ table.zim_roomtable tbody tr th {
   border: 1px solid #000;
 }
 table.zim_roomtable tfoot {
-  font-size: 10px;
+  font-size: 12px;
 }
 table.zim_roomtable tfoot .headline {
   font-weight: bold;
@@ -183,10 +183,10 @@ table.zim_roomtable tfoot .headline {
     font-size: 8px;
   }
   table.zim_roomtable tfoot tr td {
-    font-size: 8px;
+    font-size: 12px;
   }
-  @page  {
+  @page :first :left :right :last {
     size: landscape;
-    margin: 12mm 12mm 5mm 12mm;
+    margin: 12mm 12mm 12mm 12mm;
   }
 }
