@@ -187,6 +187,6 @@ table.zim_roomtable tfoot .headline {
   }
   @page :first :left :right :last {
     size: landscape;
-    margin: 12mm 12mm 12mm 12mm;
+    margin: 12mm 12mm 5mm 12mm;
   }
 }
