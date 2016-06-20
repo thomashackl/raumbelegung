@@ -1,1 +1,1 @@
-DROP TABLE `resources_rooms_order`;
+DROP TABLE IF EXISTS `resources_rooms_order`;
