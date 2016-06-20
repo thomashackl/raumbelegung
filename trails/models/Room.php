@@ -66,7 +66,7 @@ class Room {
      * Fügt einem Raum einen Termin hinzu
      * @param array SQL Result des Belegungsplans
      */
-    public function addTermin($result) {
+    public function addTermin($result, $dayBegin = 0, $dayEnd = PHP_INT_MAX) {
         
         // Finde einen passenden Namen
         $name = "Unbekannt";
@@ -81,9 +81,10 @@ class Room {
         
         // Dozenten hinzufügen
         $name = $result['dozent'] ? "{$name} ({$result['dozent']})" : $name;
-        
         // Füge den Termin an und berechne die Öffnungszeiten des Raums neu
-        $this->termine[$result['begin']] = new Termin($result['begin'], $result['end'], $name);
+        $realbegin = max(array($result['begin'], $dayBegin));
+        $realend = min(array($result['repeat_end'], $dayEnd));
+        $this->termine[$result['begin']] = new Termin($realbegin, $realend, $name);
         ksort($this->termine);
         
         if (!$this->close) {
@@ -94,8 +95,8 @@ class Room {
             $this->opening = PHP_INT_MAX;
         }
         //$this->opening = $result['begin'];
-        $this->opening = min(array($this->opening, $result['begin']));
-        $this->close = max(array($this->close, $result['end']));
+        $this->opening = min(array($this->opening, $realbegin));
+        $this->close = max(array($this->close, $realend));
     }
 
 }

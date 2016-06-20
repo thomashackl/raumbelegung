@@ -149,7 +149,7 @@ class Belegung {
 
                     // Füge dem Raum einen Termin hinzu
                     if ($result['begin'] >= $this->begin && $result['begin'] <= $this->end) {
-                        $this->rooms[$result['id']]->addTermin($result);
+                        $this->rooms[$result['id']]->addTermin($result, $this->begin, $this->end);
                     }
 
                     $result['begin'] += $next;
@@ -158,7 +158,8 @@ class Belegung {
                     $i++;
                 }
             } else {
-                $this->rooms[$result['id']]->addTermin($result);
+
+                $this->rooms[$result['id']]->addTermin($result, $this->begin, $this->end);
             }
         }
     }
