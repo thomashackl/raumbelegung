@@ -85,6 +85,7 @@ class Belegung {
         $stmt->bindParam(":end", $this->end);
         $stmt->bindParam(":userid", $GLOBALS['user']->id);
         $stmt->execute();
+
         while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
             /*
@@ -142,18 +143,63 @@ class Belegung {
             }*/
 
             if ($result['repeat_end'] && $result['repeat_quantity'] != 0) {
-                // Calculate next
-                $next = $result['repeat_interval'] * 3600 * 24 + $result['repeat_day_of_week'] * 3600 * 24 * 6;
 
-                while ($result['end'] <= $result['repeat_end'] && ($result['repeat_quantity'] == -1 || $result['repeat_quantity'] < $i)) {
+                $i = 0;
+
+                while ($result['end'] <= $result['repeat_end'] && ($result['repeat_quantity'] == -1 || $i < $result['repeat_quantity'])) {
 
                     // Füge dem Raum einen Termin hinzu
                     if ($result['begin'] >= $this->begin && $result['begin'] <= $this->end) {
                         $this->rooms[$result['id']]->addTermin($result, $this->begin, $this->end);
                     }
 
-                    $result['begin'] += $next;
-                    $result['end'] += $next;
+                    // Calculate next
+                    if ($result['repeat_day_of_week']) {
+                        $next = $result['repeat_interval'] == 1 ? '+1 week' : '+' . $result['repeat_interval'] . ' weeks';
+                        $result['begin'] = strtotime($next, $result['begin']);
+                        $result['end'] = strtotime($next, $result['end']);
+                    } else if ($result['repeat_week_of_month']) {
+                        // We need english names for numbers here.
+                        switch ($result['repeat_interval']) {
+                            case '1':
+                                $number = 'first';
+                                break;
+                            case '2':
+                                $number = 'second';
+                                break;
+                            case '3':
+                                $number = 'third';
+                                break;
+                            case '4':
+                                $number = 'fourth';
+                                break;
+                            case '5':
+                                $number = 'fifth';
+                                break;
+                            default:
+                                $number = 'first';
+                                break;
+                        }
+
+                        // Ho many months do we have to look ahead?
+                        $monthdistance = $result['repeat_interval'] == 1 ? '+1 month' :
+                            '+' . $result['repeat_interval'] . ' months';
+
+                        // Calculate next date according to given week number in month.
+                        // (something like "second monday of 2016-12 14:00")
+                        $next = $number . date(' l \o\f Y-m H:i:00', strtotime($monthdistance, $result['begin']));
+                        $result['begin'] = strtotime($next);
+                        $next = $number . date(' l \o\f Y-m H:i:59', strtotime($monthdistance, $result['end']));
+                        $result['end'] = strtotime($next);
+                    } else if ($result['repeat_day_of_month']) {
+                        $next = $result['repeat_interval'] == 1 ? '+1 month' : '+' . $result['repeat_interval'] . ' months';
+                        $result['begin'] = strtotime($next, $result['begin']);
+                        $result['end'] = strtotime($next, $result['end']);
+                    } else if ($result['repeat_month_of_year']) {
+                        $next = $result['repeat_interval'] == 1 ? '+1 year' : '+' . $result['repeat_interval'] . ' years';
+                        $result['begin'] = strtotime($next, $result['begin']);
+                        $result['end'] = strtotime($next, $result['end']);
+                    }
 
                     $i++;
                 }
