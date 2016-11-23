@@ -83,7 +83,7 @@ class Room {
         $name = $result['dozent'] ? "{$name} ({$result['dozent']})" : $name;
         // Füge den Termin an und berechne die Öffnungszeiten des Raums neu
         $realbegin = max(array($result['begin'], $dayBegin));
-        $realend = min(array($result['repeat_end'], $dayEnd));
+        $realend = min(array($result['end'], $dayEnd));
         $this->termine[$result['begin']] = new Termin($realbegin, $realend, $name);
         ksort($this->termine);
         
