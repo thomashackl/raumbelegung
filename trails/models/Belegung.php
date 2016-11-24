@@ -199,6 +199,10 @@ class Belegung {
                         $next = $result['repeat_interval'] == 1 ? '+1 year' : '+' . $result['repeat_interval'] . ' years';
                         $result['begin'] = strtotime($next, $result['begin']);
                         $result['end'] = strtotime($next, $result['end']);
+                    } else {
+                        $next = $result['repeat_interval'] == 1 ? '+1 day' : '+' . $result['repeat_interval'] . ' days';
+                        $result['begin'] = strtotime($next, $result['begin']);
+                        $result['end'] = strtotime($next, $result['end']);
                     }
 
                     $i++;
