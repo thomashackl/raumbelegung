@@ -94,8 +94,85 @@ class ZIMSemesterBelegungsplan {
                     $map[$assign['metadate_id']] = $assign;
                 }
             } else {
+
+                // Check for repeated assigns.
+                if ($assign['repeat_end'] && $assign['repeat_quantity'] != 0) {
+
+                    $i = 0;
+
+                    while ($assign['end'] <= $assign['repeat_end'] && ($assign['repeat_quantity'] == -1 || $i < $assign['repeat_quantity'])) {
+
+                        // Füge dem Raum einen Termin hinzu
+                        if ($assign['begin'] >= $this->start && $assign['begin'] <= $this->end && $assign['end'] >= $this->start && $assign['end'] <= $this->end) {
+                            // This timetable is not empty
+                            $this->empty = false;
+
+                            // Now check for weekend
+                            if (strftime('%u', $assign['begin']) <= 5) {
+                                $geilheit[++$terminnr] = 1 / $terminnr - 0.1;
+                                $map[$terminnr] = $assign;
+                            } else {
+                                $this->weekendDate($assign);
+                            }
+                        }
+
+                        // Calculate next
+                        if ($assign['repeat_day_of_week']) {
+                            $next = $assign['repeat_interval'] == 1 ? '+1 week' : '+' . $assign['repeat_interval'] . ' weeks';
+                            $assign['begin'] = strtotime($next, $assign['begin']);
+                            $assign['end'] = strtotime($next, $assign['end']);
+                        } else if ($assign['repeat_week_of_month']) {
+                            // We need english names for numbers here.
+                            switch ($assign['repeat_interval']) {
+                                case '1':
+                                    $number = 'first';
+                                    break;
+                                case '2':
+                                    $number = 'second';
+                                    break;
+                                case '3':
+                                    $number = 'third';
+                                    break;
+                                case '4':
+                                    $number = 'fourth';
+                                    break;
+                                case '5':
+                                    $number = 'fifth';
+                                    break;
+                                default:
+                                    $number = 'first';
+                                    break;
+                            }
+
+                            // Ho many months do we have to look ahead?
+                            $monthdistance = $assign['repeat_interval'] == 1 ? '+1 month' :
+                                '+' . $assign['repeat_interval'] . ' months';
+
+                            // Calculate next date according to given week number in month.
+                            // (something like "second monday of 2016-12 14:00")
+                            $next = $number . date(' l \o\f Y-m H:i:00', strtotime($monthdistance, $assign['begin']));
+                            $assign['begin'] = strtotime($next);
+                            $next = $number . date(' l \o\f Y-m H:i:59', strtotime($monthdistance, $assign['end']));
+                            $assign['end'] = strtotime($next);
+                        } else if ($assign['repeat_day_of_month']) {
+                            $next = $assign['repeat_interval'] == 1 ? '+1 month' : '+' . $assign['repeat_interval'] . ' months';
+                            $assign['begin'] = strtotime($next, $assign['begin']);
+                            $assign['end'] = strtotime($next, $assign['end']);
+                        } else if ($assign['repeat_month_of_year']) {
+                            $next = $assign['repeat_interval'] == 1 ? '+1 year' : '+' . $assign['repeat_interval'] . ' years';
+                            $assign['begin'] = strtotime($next, $assign['begin']);
+                            $assign['end'] = strtotime($next, $assign['end']);
+                        } else {
+                            $next = $assign['repeat_interval'] == 1 ? '+1 day' : '+' . $assign['repeat_interval'] . ' days';
+                            $assign['begin'] = strtotime($next, $assign['begin']);
+                            $assign['end'] = strtotime($next, $assign['end']);
+                        }
+
+                        $i++;
+                    }
+
                 // Check if assign is really on this timetable
-                if ($assign['begin'] >= $this->start && $assign['begin'] <= $this->end && $assign['end'] >= $this->start && $assign['end'] <= $this->end) {
+                } else if ($assign['begin'] >= $this->start && $assign['begin'] <= $this->end && $assign['end'] >= $this->start && $assign['end'] <= $this->end) {
 
                     // This timetable is not empty
                     $this->empty = false;
@@ -292,7 +369,7 @@ class ZIMSemesterBelegungsplan {
     private static function getFloatingAssigns($assign) {
         if ($assign['repeat_end'] && $assign['repeat_quantity'] != 0) {
 
-// Calculate next
+            // Calculate next
             if ($assign['repeat_day_of_week']) {
                 $next = "+ {$assign['repeat_interval']} week";
             } elseif ($assign['repeat_week_of_month']) {
