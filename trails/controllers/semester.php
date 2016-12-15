@@ -66,25 +66,6 @@ class SemesterController extends StudipController {
         $this->chosenSemester = Request::get('semester') ? : Semester::findCurrent()->id;
     }
 
-    private function setInfobox() {
-        $this->setInfoBoxImage('infobox/schedule.jpg');
-
-        // Semesterchooser
-        
-        
-        $form = '<form id="dateform" class="studip_form" method="post"><select name="semester">';
-        foreach ($this->semesters as $semester) {
-            $form .= "<option value='{$semester->id}' " . ($chosenSemester === $semester->id ? 'selected' : '') . ">{$semester->name}</option>";
-        }
-        $form .= '</select>';
-        $form .= "<label><input type='checkbox' name='lecture_only' ".(Request::get('lecture_only') ? 'checked' : '') .">";
-        $form .= _('Nur Vorlesungszeiten')."</label>";
-        $this->addToInfobox(_('Semester'), $form);
-        
-        // Datechooser
-        
-    }
-    
     public function filter($rooms) {
         // Fill cache
         if (!$this->rooms) {
