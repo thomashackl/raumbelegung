@@ -337,9 +337,9 @@ class ZIMSemesterBelegungsplan {
             $string = explode(', ', $cycle->toString('full'), 2);
             return $string[1];
         } else {
-            return strftime('%d.%m., %H', $assign['begin'])
+            return strftime('%d.%m., %H:%M', $assign['begin'])
                     . '-'
-                    . strftime('%H', $assign['end']);
+                    . strftime('%H:%M', $assign['end']);
         }
     }
 
