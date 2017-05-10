@@ -52,7 +52,7 @@ class SemesterController extends StudipController {
                 }
 
                 if (Request::get('start') && Request::get('end')) {
-                    $timetable->loadFromTimespan(strtotime(Request::get('start')), strtotime(Request::get('end') . ' +1 day'));
+                    $timetable->loadFromTimespan(strtotime(Request::get('start')), strtotime(Request::get('end')));
                 } else {
                     $timetable->loadFromSemester($selectedSemester, Request::get('lecture_only'));
                 }
