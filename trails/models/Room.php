@@ -75,7 +75,7 @@ class Room {
         $name = $result['sname'] ? : $name;
         $name = $result['nr'] ? "{$result['nr']} {$name}" : $name;
         if ($result['link']) {
-            $link = URLHelper::getLink('details.php', array('sem_id' => $result['link']));
+            $link = URLHelper::getURL('dispatch.php/course/details', array('sem_id' => $result['link']));
             $name = "<a href='{$link}'>{$name}</a>";
         }
         
@@ -84,7 +84,7 @@ class Room {
         // Füge den Termin an und berechne die Öffnungszeiten des Raums neu
         $realbegin = max(array($result['begin'], $dayBegin));
         $realend = min(array($result['end'], $dayEnd));
-        $this->termine[$result['begin']] = new Termin($realbegin, $realend, $name);
+        $this->termine[$result['begin']] = new Termin($realbegin, $realend, $name, $result['assign_id']);
         ksort($this->termine);
         
         if (!$this->close) {
@@ -100,5 +100,3 @@ class Room {
     }
 
 }
-
-?>

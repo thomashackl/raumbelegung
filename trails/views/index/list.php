@@ -18,7 +18,13 @@ function print_list($room) {
     <li><?= $room->name ?> (<?= $room->getDate() ?>)</li>
     <ul>
         <? foreach ($room->termine as $termin): ?>
-            <li><?= $termin->display ?></li>
+            <li>
+                <?= $termin->display ?>
+                <?php if ($termin->info) : ?>
+                    <br>
+                    <?= formatReady($termin->info) ?>
+                <?php endif ?>
+            </li>
         <? endforeach; ?>
     </ul>
     <ul id="sortable">
@@ -28,4 +34,3 @@ function print_list($room) {
     </ul>
     <?
 }
-?>

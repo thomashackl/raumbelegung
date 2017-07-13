@@ -22,7 +22,13 @@ function print_table($room) {
             </th>
             <? foreach ($room->termine as $termin): ?>
             <tr>
-                <td><?= $termin->display ?></td>
+                <td>
+                    <?= $termin->display ?>
+                    <?php if ($termin->info) : ?>
+                        <br>
+                        <?= formatReady($termin->info) ?>
+                    <?php endif ?>
+                </td>
             </tr>
         <? endforeach; ?>
     </tr>

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Raumbelegung - Plugin zur Anzeige aller Raumbelegungen an einem Tag
  *
@@ -26,6 +25,8 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
     function __construct() {
         parent::__construct();
 
+        StudipAutoloader::addAutoloadPath(__DIR__.'/trails/models');
+
         // Localization
         bindtextdomain('roomplanplugin', __DIR__.'/locale');
 
@@ -37,6 +38,34 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
 
         // Binde disen Punkt unter "tools" ein
         $navigation->addSubNavigation('raumbelegung', $roomplaner_navi);
+
+        // Observe resource assignment changes for writing additional info to database.
+        NotificationCenter::addObserver($this, 'assignSaveInfo', 'ResourcesAssignDidCreate');
+        NotificationCenter::addObserver($this, 'assignSaveInfo', 'ResourcesAssignDidUpdate');
+
+        // Hook into resources assignment view and insert the text field for further information.
+        if (strpos(Request::path(), 'resources.php') !== false &&
+                (Request::option('edit_assign_object') || Request::option('change_object_schedules'))) {
+            $info = ResourceAssignInfo::find(
+                Request::option('edit_assign_object') ?: Request::option('change_object_schedules'));
+            if (!$info) {
+                $info = new ResourceAssignInfo();
+            }
+            PageLayout::addBodyElements(
+                '<div id="assign-info" style="display:none; width: 100%">'.
+                '<label>'.
+                dgettext('roomplanplugin', 'Zusätzliche Informationen').'<br>'.
+                '<textarea name="assign_info" style="width: 98%" rows="4" class="add_toolbar">'.htmlReady($info->info).'</textarea>'.
+                '</label>'.
+                '</div>');
+            // Load correct js depending on mode.
+            if (Studip\ENV == 'development') {
+                $js = $this->getPluginURL() . '/assets/assign-info.js';
+            } else {
+                $js = $this->getPluginURL() . '/assets/assign-info.min.js';
+            }
+            PageLayout::addScript($js);
+        }
     }
 
     /**
@@ -80,6 +109,22 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         $dispatcher->dispatch($unconsumed_path);
     }
 
-}
+    /**
+     * Store additional info given for a resource assignment.
+     *
+     * @param $event The triggered event (ResourcesAssignDidCreate or ResourcesAssignDidUpdate)
+     * @param $assign_id ID of the changed assignment
+     * @param $data additional data like affected course or resource ID.
+     */
+    public function assignSaveInfo($event, $assign_id, $data) {
+        $i = ResourceAssignInfo::find($assign_id);
+        if (!$i) {
+            $i = new ResourceAssignInfo();
+            $i->assign_id = $assign_id;
+            $i->user_id = $GLOBALS['user']->id;
+        }
+        $i->info = trim(Request::get('assign_info'));
+        $i->store();
+    }
 
-?>
+}
