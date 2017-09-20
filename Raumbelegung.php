@@ -25,7 +25,7 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
     function __construct() {
         parent::__construct();
 
-        StudipAutoloader::addAutoloadPath(__DIR__.'/trails/models');
+        StudipAutoloader::addAutoloadPath(__DIR__.'/models');
 
         // Localization
         bindtextdomain('roomplanplugin', __DIR__.'/locale');
@@ -92,19 +92,14 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         // Füge nun dem Head die benötigten Styles und Scripts hinzu
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
         PageLayout::addScript($this->getPluginURL() . "/assets/raumbelegung.js");
-        // Baue jetzt einen autoloader für alle models (ja ich bin faul)
-        $GLOBALS['autoloader_path'] = $this->getPluginPath() . '/trails/models/';
-        spl_autoload_register(function ($class) {
-            include_once $GLOBALS['autoloader_path'] . $class . '.php';
-        });
+        StudipAutoLoader::addAutoloadPath($this->getPluginPath() . '/models');
 
         /*
          * Jetzt brauchen wir nur noch einen Trailsdispatcher der die restliche
          * Arbeit für uns erledigt. An dieser Stelle springt also die Plugin-
          * verarbeitung weiter in den Trailsordner
          */
-        $trails_root = $this->getPluginPath() . "/trails";
-        $dispatcher = new Trails_Dispatcher($trails_root, PluginEngine::getUrl('raumbelegung/index'), 'index');
+        $dispatcher = new Trails_Dispatcher($this->getPluginPath(), PluginEngine::getUrl('raumbelegung/index'), 'index');
         $dispatcher->plugin = $this;
         $dispatcher->dispatch($unconsumed_path);
     }
