@@ -30,11 +30,11 @@
 
     <label>
         <input type="checkbox" name="empty_rooms" <?= Request::get('empty_rooms') ? 'checked' : '' ?>>
-        <?= dgettext('roomplanplugin', 'Leere Räume anzeigen') ?>
+        <?= dgettext('roomplanplugin', 'Leere RÃ¤ume anzeigen') ?>
     </label>
 
     <label>
-        <?= dgettext('roomplanplugin', 'Gebäude oder Raum') ?>
+        <?= dgettext('roomplanplugin', 'GebÃ¤ude oder Raum') ?>
         <select name="building" id="buildings" class="multilevel">
             <? foreach (RoomUsageResourceObject::getFiltered() as $building): ?>
                 <option value="<?= $building->id ?>" class="building" <?= $building->id == Request::get('building') ? 'selected' : '' ?>><?= htmlReady($building->name) ?></option>

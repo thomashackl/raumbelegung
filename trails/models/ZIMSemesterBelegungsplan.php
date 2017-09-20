@@ -102,7 +102,7 @@ class ZIMSemesterBelegungsplan {
 
                     while ($assign['end'] <= $assign['repeat_end'] && ($assign['repeat_quantity'] == -1 || $i < $assign['repeat_quantity'])) {
 
-                        // Füge dem Raum einen Termin hinzu
+                        // FÃ¼ge dem Raum einen Termin hinzu
                         if ($assign['begin'] >= $this->start && $assign['begin'] <= $this->end && $assign['end'] >= $this->start && $assign['end'] <= $this->end) {
                             // This timetable is not empty
                             $this->empty = false;
@@ -201,7 +201,7 @@ class ZIMSemesterBelegungsplan {
                 $this->takeSlots($slots);
                 $this->loadDozentenAndTeilnehmer($assignment);
                 self::fetchDateinfo($assignment);
-                $this->hour[max(array(8, date('G', $assignment['begin'])))][strftime('%u', $assignment['begin'])] = self::forgeEntry($assignment, $this->participants, $this->object->getProperty('Sitzplätze'));
+                $this->hour[max(array(8, date('G', $assignment['begin'])))][strftime('%u', $assignment['begin'])] = self::forgeEntry($assignment, $this->participants, $this->object->getProperty('SitzplÃ¤tze'));
             } else {
                 $this->addUngeilerAssign($assignment);
             }
@@ -254,8 +254,8 @@ class ZIMSemesterBelegungsplan {
     private function getHeadline($object, $start, $end) {
         $this->headline = $object->name ? : $object->description;
         $this->adress = $object->parent->getProperty('Adresse');
-        $this->places = $object->getProperty('Sitzplätze') . ($object->getProperty('Sitzplätze Ergänzung') ? ' (' . $object->getProperty('Sitzplätze Ergänzung') . ')' : '');
-        $this->area = $object->getProperty('Fläche');
+        $this->places = $object->getProperty('SitzplÃ¤tze') . ($object->getProperty('SitzplÃ¤tze ErgÃ¤nzung') ? ' (' . $object->getProperty('SitzplÃ¤tze ErgÃ¤nzung') . ')' : '');
+        $this->area = $object->getProperty('FlÃ¤che');
         $this->timespan = self::timeformat($start) . ' - ' . self::timeformat($end);
         $this->timestamp = self::timeformat(time());
     }

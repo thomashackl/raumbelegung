@@ -17,7 +17,7 @@ class IndexController extends StudipController {
     }
 
     /*
-     * Listaction Aufruf. Läd nur die Belegung. Toll oder?
+     * Listaction Aufruf. LÃ¤d nur die Belegung. Toll oder?
      */
 
     public function list_action() {
@@ -42,7 +42,7 @@ class IndexController extends StudipController {
          */
         if (Request::submitted('save')) {
             
-            // Alle Einträge resetten
+            // Alle EintrÃ¤ge resetten
             $deactivateAll = DBManager::get()->prepare("UPDATE resources_rooms_order SET checked = 0, priority = 99999 WHERE user_id = ?");
             $deactivateAll->execute(array($GLOBALS['user']->id));
             
@@ -54,13 +54,13 @@ class IndexController extends StudipController {
             } 
         }
         
-        // Lade die ausgewählte Raumbelegung
+        // Lade die ausgewÃ¤hlte Raumbelegung
         $this->resources = RoomUsageResourceObject::getAll();
         
     }
 
     /*
-     * Schöner Codestil. 3 Zeilen doppelten Code vermieden. Woohoo
+     * SchÃ¶ner Codestil. 3 Zeilen doppelten Code vermieden. Woohoo
      */
     private function loadBelegung() {
         

@@ -16,8 +16,8 @@
                 <?= $table->adress ?>
             </td>
             <td colspan="2">
-                Plätze: <?= $table->places ?><br>
-                Fläche: <?= $table->area ?>
+                PlÃ¤tze: <?= $table->places ?><br>
+                FlÃ¤che: <?= $table->area ?>
             </td>
             <td colspan="3">
                 Zeitraum: <?= $table->timespan ?><br>
@@ -78,8 +78,8 @@
     <tfoot>
         <tr>
             <td colspan="8">
-                <span class="headline">Hinweis für Notfälle:</span><br>
-                Montag bis Freitag können Sie in Notfällen von 07.00 Uhr bis 20.00 Uhr einen Mitarbeiter der Hauswerkstatt unter der Tel.Nr. 0851 509-1232 oder unter der Mobilfunknummer 0173 8638666 anrufen. Außerdem ist ein Wachmann zu folgenden Zeiten in der Universität eingesetzt und unter der Mobilfunknummer 0175 1861348 erreichbar: Montag - Freitag von 20.00 Uhr - 07.00 Uhr, Samstag, Sonntag und an gesetzl. Feiertagen ganztägig
+                <span class="headline">Hinweis fÃ¼r NotfÃ¤lle:</span><br>
+                Montag bis Freitag kÃ¶nnen Sie in NotfÃ¤llen von 07.00 Uhr bis 20.00 Uhr einen Mitarbeiter der Hauswerkstatt unter der Tel.Nr. 0851 509-1232 oder unter der Mobilfunknummer 0173 8638666 anrufen. AuÃŸerdem ist ein Wachmann zu folgenden Zeiten in der UniversitÃ¤t eingesetzt und unter der Mobilfunknummer 0175 1861348 erreichbar: Montag - Freitag von 20.00 Uhr - 07.00 Uhr, Samstag, Sonntag und an gesetzl. Feiertagen ganztÃ¤gig
             </td>
         </tr>
     </tfoot>

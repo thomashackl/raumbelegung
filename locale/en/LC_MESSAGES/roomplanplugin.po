@@ -14,7 +14,7 @@ msgstr ""
 "passau.de/weblate/projects/studip/raumbelegungsplugin/en/>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 1.9-dev\n"
@@ -36,7 +36,7 @@ msgid "Einstellungen"
 msgstr "Settings"
 
 #: trails/views/index/list.php:13
-msgid "Belegungsplan für Datum: "
+msgid "Belegungsplan fÃ¼r Datum: "
 msgstr "Room occupancy plan for date: "
 
 #: trails/views/index/list.php:15 trails/views/index/table.php:18
@@ -48,5 +48,5 @@ msgid "Datumsformat tt.mm.yyyy"
 msgstr "Date format dd.mm.yyyy"
 
 #: trails/views/index/settings.php:5
-msgid "Ändern"
+msgid "Ã„ndern"
 msgstr "Change"

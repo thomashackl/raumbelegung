@@ -16,7 +16,7 @@ class SemesterController extends StudipController {
         $this->date = Request::get('date');
 
         // Fetch the top layer rooms
-        $this->buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
+        $this->buildings = current(RoomUsageResourceCategory::findByName('GebÃ¤ude'))->objects;
         
         // Filter the selected rooms from settings
         $this->buildings = SimpleORMapCollection::createFromArray($this->filter($this->buildings) ? : array());

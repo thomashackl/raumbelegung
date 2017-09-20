@@ -67,12 +67,12 @@ class RoomUsageResourceObject extends SimpleORMap {
 
     public static function getAll() {
         // Fetch the top layer rooms
-        $buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
+        $buildings = current(RoomUsageResourceCategory::findByName('GebÃ¤ude'))->objects;
         return $buildings->orderBy('priority');
     }
 
     public static function getFiltered() {
-        $buildings = current(RoomUsageResourceCategory::findByName('Gebäude'))->objects;
+        $buildings = current(RoomUsageResourceCategory::findByName('GebÃ¤ude'))->objects;
         return self::filter($buildings->orderBy('priority'));
     }
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Belegungsplanobjekt - Repräsentiert die Belegung eines Tages
+ * Belegungsplanobjekt - ReprÃ¤sentiert die Belegung eines Tages
  */
 class Belegung {
 
@@ -14,7 +14,7 @@ class Belegung {
     public $close = 0;
 
     /**
-     * Lade einen Belegungsplan für einen Tag
+     * Lade einen Belegungsplan fÃ¼r einen Tag
      * @param string Datum
      */
     public function __construct($date = null) {
@@ -38,7 +38,7 @@ class Belegung {
     }
 
     /**
-     * Berechne die Zeitspanne, in der Veranstaltungen liegen müssen
+     * Berechne die Zeitspanne, in der Veranstaltungen liegen mÃ¼ssen
      */
     private function calcBeginAndEnd() {
         $this->begin = strtotime("midnight", $this->date);
@@ -99,13 +99,13 @@ class Belegung {
                 $parent_id = $result['parent_id'];
 
                 /*
-                 * Da wir im Vorhinein nicht wissen können, an welchen
-                 * Ressourcen letzen Endes ein Raum hängt führen wir hier eine
-                 * Rückwärtssuche aus, bis wir einen Knoten erreichen, den wir
+                 * Da wir im Vorhinein nicht wissen kÃ¶nnen, an welchen
+                 * Ressourcen letzen Endes ein Raum hÃ¤ngt fÃ¼hren wir hier eine
+                 * RÃ¼ckwÃ¤rtssuche aus, bis wir einen Knoten erreichen, den wir
                  * bereits kennen oder am root Knoten angelangt sind.
                  * 
-                 * Da jede Ressource über eine ID verfügt, führen wir also eine
-                 * Liste, in der wir festhalten, was bereits im Baum hängt.
+                 * Da jede Ressource Ã¼ber eine ID verfÃ¼gt, fÃ¼hren wir also eine
+                 * Liste, in der wir festhalten, was bereits im Baum hÃ¤ngt.
                  * 
                  * Hier evtl Suche auf dem Baum implementieren dann sparst du
                  * dir Speicher du fauler Sack :)
@@ -148,7 +148,7 @@ class Belegung {
 
                 while ($result['end'] <= $result['repeat_end'] && ($result['repeat_quantity'] == -1 || $i < $result['repeat_quantity'])) {
 
-                    // Füge dem Raum einen Termin hinzu
+                    // FÃ¼ge dem Raum einen Termin hinzu
                     if ($result['begin'] >= $this->begin && $result['begin'] <= $this->end) {
                         $this->rooms[$result['id']]->addTermin($result, $this->begin, $this->end);
                     }

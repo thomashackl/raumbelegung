@@ -3,8 +3,8 @@
  * Raumbelegung - Plugin zur Anzeige aller Raumbelegungen an einem Tag
  *
  * Das Raumbelegungsplugin zeigt alle Termine geornet nach Raum und Zeit in
- * einer Liste oder einer Tabelle an. Root verfügt über die
- * Einstellungsmöglichkeit, Raume und deren Oberkategorien auszublenden, bzw
+ * einer Liste oder einer Tabelle an. Root verfÃ¼gt Ã¼ber die
+ * EinstellungsmÃ¶glichkeit, Raume und deren Oberkategorien auszublenden, bzw
  * diese zu ordnen.
  *
  * This program is free software; you can redistribute it and/or
@@ -54,7 +54,7 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
             PageLayout::addBodyElements(
                 '<div id="assign-info" style="display:none; width: 100%">'.
                 '<label>'.
-                dgettext('roomplanplugin', 'Zusätzliche Informationen').'<br>'.
+                dgettext('roomplanplugin', 'ZusÃ¤tzliche Informationen').'<br>'.
                 '<textarea name="assign_info" style="width: 98%" rows="4" class="add_toolbar">'.htmlReady($info->info).'</textarea>'.
                 '</label>'.
                 '</div>');
@@ -69,7 +69,7 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
     }
 
     /**
-     * Wird das Plugin tatsächlich aufgerufen, so landen wir in der perform
+     * Wird das Plugin tatsÃ¤chlich aufgerufen, so landen wir in der perform
      * Methode
      *
      * @param string Die restliche Pfadangabe
@@ -82,17 +82,17 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         $navigation->addSubNavigation('listview', $listview);
         $navigation->addSubNavigation('tableview', $tableview);
 
-        // Füge Navigation für die Wochenansicht an
+        // FÃ¼ge Navigation fÃ¼r die Wochenansicht an
         $navigation->addSubNavigation('semesterview', new AutoNavigation(dgettext('roomplanplugin', 'Semesteransicht'), PluginEngine::getUrl('raumbelegung/semester/index')));
 
-        // Für root erstelle auch den Navipunkt 'Einstellungen'
+        // FÃ¼r root erstelle auch den Navipunkt 'Einstellungen'
         $navi_settings = new AutoNavigation(dgettext('roomplanplugin', 'Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
         $navigation->addSubNavigation('settings', $navi_settings);
 
-        // Füge nun dem Head die benötigten Styles und Scripts hinzu
+        // FÃ¼ge nun dem Head die benÃ¶tigten Styles und Scripts hinzu
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
         PageLayout::addScript($this->getPluginURL() . "/assets/raumbelegung.js");
-        // Baue jetzt einen autoloader für alle models (ja ich bin faul)
+        // Baue jetzt einen autoloader fÃ¼r alle models (ja ich bin faul)
         $GLOBALS['autoloader_path'] = $this->getPluginPath() . '/trails/models/';
         spl_autoload_register(function ($class) {
             include_once $GLOBALS['autoloader_path'] . $class . '.php';
@@ -100,7 +100,7 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
 
         /*
          * Jetzt brauchen wir nur noch einen Trailsdispatcher der die restliche
-         * Arbeit für uns erledigt. An dieser Stelle springt also die Plugin-
+         * Arbeit fÃ¼r uns erledigt. An dieser Stelle springt also die Plugin-
          * verarbeitung weiter in den Trailsordner
          */
         $trails_root = $this->getPluginPath() . "/trails";

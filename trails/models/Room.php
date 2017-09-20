@@ -19,10 +19,10 @@ class Room {
     }
 
     /**
-     * Rekursive Berechnung der Raumöffnungszeit anhand der Unterräume und
+     * Rekursive Berechnung der RaumÃ¶ffnungszeit anhand der UnterrÃ¤ume und
      * Termine
      * 
-     * @return int Öffnungstimestamp
+     * @return int Ã–ffnungstimestamp
      */
     public function getOpening() {
         if (!$this->opening) {
@@ -35,10 +35,10 @@ class Room {
     }
 
     /**
-     * Rekursive Berechnung der Raumöffnungszeit anhand der Unterräume und
+     * Rekursive Berechnung der RaumÃ¶ffnungszeit anhand der UnterrÃ¤ume und
      * Termine
      * 
-     * @return int Öffnungstimestamp
+     * @return int Ã–ffnungstimestamp
      */
     public function getClose() {
         if (!$this->close) {
@@ -51,7 +51,7 @@ class Room {
     }
 
     /**
-     * Gibt einen Datumsstring zurück
+     * Gibt einen Datumsstring zurÃ¼ck
      * 
      * @return string Datumsstring
      */
@@ -63,7 +63,7 @@ class Room {
     }
 
     /**
-     * Fügt einem Raum einen Termin hinzu
+     * FÃ¼gt einem Raum einen Termin hinzu
      * @param array SQL Result des Belegungsplans
      */
     public function addTermin($result, $dayBegin = 0, $dayEnd = PHP_INT_MAX) {
@@ -79,9 +79,9 @@ class Room {
             $name = "<a href='{$link}'>{$name}</a>";
         }
         
-        // Dozenten hinzufügen
+        // Dozenten hinzufÃ¼gen
         $name = $result['dozent'] ? "{$name} ({$result['dozent']})" : $name;
-        // Füge den Termin an und berechne die Öffnungszeiten des Raums neu
+        // FÃ¼ge den Termin an und berechne die Ã–ffnungszeiten des Raums neu
         $realbegin = max(array($result['begin'], $dayBegin));
         $realend = min(array($result['end'], $dayEnd));
         $this->termine[$result['begin']] = new Termin($realbegin, $realend, $name, $result['assign_id']);
