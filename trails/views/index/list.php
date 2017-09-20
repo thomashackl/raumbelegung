@@ -1,4 +1,4 @@
-<form class="studip_form" id="dateform" method="get">
+<form class="default" id="dateform" method="get">
     <label>
         <?= dgettext('roomplanplugin', 'Datum') ?>:
         <input name="date" id="date" value="<?= $date ?>">

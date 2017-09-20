@@ -1,4 +1,4 @@
-<form id="dateform" class="studip_form" method="post">
+<form id="dateform" class="default" method="post">
     <label>
         <?= dgettext('roomplanplugin', 'Semester') ?>
         <select name="semester">
