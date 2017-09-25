@@ -1,5 +1,5 @@
 <?php
-class ResourcesAssignInfo extends DBMigration {
+class ResourcesAssignInfo extends Migration {
 
     function up() {
         DBManager::get()->execute("CREATE TABLE IF NOT EXISTS `resources_assign_info` (
