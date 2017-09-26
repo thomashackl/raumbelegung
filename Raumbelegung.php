@@ -45,17 +45,17 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
 
         // Hook into resources assignment view and insert the text field for further information.
         if (strpos(Request::path(), 'resources.php') !== false &&
-                (Request::option('edit_assign_object') || Request::option('change_object_schedules'))) {
+                (Request::option('edit_assign_object') || Request::option('change_object_schedules') || Request::option('quick_view') == 'edit_object_assign')) {
             $info = ResourceAssignInfo::find(
                 Request::option('edit_assign_object') ?: Request::option('change_object_schedules'));
             if (!$info) {
                 $info = new ResourceAssignInfo();
             }
             PageLayout::addBodyElements(
-                '<div id="assign-info" style="display:none; width: 100%">'.
+                '<div id="assign-info" style="display:none">'.
                 '<label>'.
                 dgettext('roomplanplugin', 'Zusätzliche Informationen').'<br>'.
-                '<textarea name="assign_info" style="width: 98%" rows="4" class="add_toolbar">'.htmlReady($info->info).'</textarea>'.
+                '<textarea name="assign_info" cols="75" rows="4" class="add_toolbar" style="width: 600px">'.htmlReady($info->info).'</textarea>'.
                 '</label>'.
                 '</div>');
             // Load correct js depending on mode.
