@@ -75,7 +75,7 @@ class ZIMSemesterBelegungsplan {
         $stmt->bindParam(":userid", $GLOBALS['user']->id);
         $stmt->execute();
         $assigns = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        self::enfoldAssigns($assigns);
+        $this->enfoldAssigns($assigns);
         $this->parseCyclicAssigns($assigns);
     }
 
@@ -343,11 +343,11 @@ class ZIMSemesterBelegungsplan {
         }
     }
 
-    private static function enfoldAssigns(&$assigns) {
+    private function enfoldAssigns(&$assigns) {
         $new = array();
         foreach ($assigns as $key => $assign) {
             if (!$assign['metadate_id']) {
-                $floating = self::getFloatingAssigns($assign);
+                $floating = $this->getFloatingAssigns($assign);
                 if ($floating) {
                     $new = array_merge($new, $floating);
                 }
@@ -366,7 +366,7 @@ class ZIMSemesterBelegungsplan {
         });
     }
 
-    private static function getFloatingAssigns($assign) {
+    private function getFloatingAssigns($assign) {
         if ($assign['repeat_end'] && $assign['repeat_quantity'] != 0) {
 
             // Calculate next
@@ -380,15 +380,18 @@ class ZIMSemesterBelegungsplan {
                 $next = "+ {$assign['repeat_interval']} day";
             }
 
+            $i = 0;
             while ($assign['end'] <= $assign['repeat_end'] && ($assign['repeat_quantity'] == -1 || $assign['repeat_quantity'] < $i)) {
                 $assign['begin'] = strtotime($next, $assign['begin']);
                 $assign['end'] = strtotime($next, $assign['end']);
 
                 // If we are out of the repeat cycle dont add
-                if ($assign['end'] > $assign['repeat_end']) {
+                if (($assign['end'] > $assign['repeat_end']) || ($assign['end'] > $this->end)) {
                     break;
                 }
-                $additional[] = $assign;
+                if ($assign['begin'] >= $this->start) {
+                    $additional[] = $assign;
+                }
 
                 $i++;
             }
