@@ -15,12 +15,12 @@
 
     <label>
         <?= dgettext('roomplanplugin', 'Manuell von') ?>
-        <input type="text" name="start" class="datepicker" value="<?= Request::get('start') ?>">
+        <input type="text" name="start" id="start" data-date-picker='{"<=":"#end"}' value="<?= Request::get('start') ?>">
     </label>
 
     <label>
         <?= dgettext('roomplanplugin', 'Manuell bis') ?>
-        <input type="text" name="end" class="datepicker" value="<?= Request::get('end') ?>">
+        <input type="text" name="end" id="end" data-date-picker='{">=":"#start"}' value="<?= Request::get('end') ?>">
     </label>
 
     <label>
@@ -44,8 +44,9 @@
             <? endforeach; ?>
         </select>
     </label>
-
-    <?= \Studip\Button::create(dgettext('roomplanplugin', "Anzeigen"), 'submit') ?>
+    <footer data-dialog-button>
+        <?= \Studip\Button::create(dgettext('roomplanplugin', "Anzeigen"), 'submit') ?>
+    </footer>
 </form>
 <? if (false): ?>
     <? foreach ($request as $room): ?>
