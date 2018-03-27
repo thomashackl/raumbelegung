@@ -16,6 +16,9 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  */
+
+require_once(__DIR__.'/AssignmentsExportCronjob.php');
+
 class Raumbelegung extends StudipPlugin implements SystemPlugin {
     /*
      *  Ein Systemplugin wird auf JEDER Seite geladen (Konstruiert) deshalb
@@ -130,6 +133,16 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         }
         $i->info = trim(Request::get('assign_info'));
         $i->store();
+    }
+
+    public static function onEnable($pluginId) {
+        parent::onEnable($pluginId);
+        AssignmentsExportCronjob::register()->schedulePeriodic(41, 0)->activate();
+    }
+
+    public static function onDisable($pluginId) {
+        AssignmentsExportCronjob::unregister();
+        parent::onDisable($pluginId);
     }
 
 }

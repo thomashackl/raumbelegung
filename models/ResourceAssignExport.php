@@ -95,9 +95,11 @@ class ResourceAssignExport {
             if ($resource['parent_id'] != '0') {
                 $roomtimes = $times;
                 $assigns = new AssignEventList($start, $end, $resource['resource_id']);
-                foreach ($assigns->events as $event) {
-                    for ($i = $event->begin; $i < $event->end; $i += 1800) {
-                        $roomtimes[date('d.m.Y', $i)][date('H:i', $i)] = 1;
+                if ($assign->events) {
+                    foreach ($assigns->events as $event) {
+                        for ($i = $event->begin; $i < $event->end; $i += 1800) {
+                            $roomtimes[date('d.m.Y', $i)][date('H:i', $i)] = 1;
+                        }
                     }
                 }
 
