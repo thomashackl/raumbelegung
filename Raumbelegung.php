@@ -66,6 +66,35 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
             }
             PageLayout::addScript($js);
         }
+
+        // Erstelle Unternavigation
+        $navigation = AutoNavigation::getItem('/calendar/raumbelegung');
+        $listview = new AutoNavigation(dgettext('roomplanplugin', 'Tagesansicht (Liste)'),
+            PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
+        $navigation->addSubNavigation('listview', $listview);
+        $tableview = new AutoNavigation(dgettext('roomplanplugin', 'Tagesansicht (Tabelle)'),
+            PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
+        $navigation->addSubNavigation('tableview', $tableview);
+
+        // Füge Navigation für die Wochenansicht an
+        $navigation->addSubNavigation('semesterview',
+            new AutoNavigation(dgettext('roomplanplugin', 'Semesteransicht'),
+                PluginEngine::getUrl('raumbelegung/semester/index')));
+
+        // Add Export options for Facility Management
+        $navigation->addSubNavigation('export', new AutoNavigation(
+            dgettext('roomplanplugin', 'Export der Raumbelegungen'),
+            PluginEngine::getUrl('raumbelegung/export/index')));
+
+        // Für root erstelle auch den Navipunkt 'Einstellungen'
+        $navi_settings = new AutoNavigation(dgettext('roomplanplugin', 'Einstellungen'),
+            PluginEngine::getUrl('raumbelegung/index/settings'));
+        $navigation->addSubNavigation('settings', $navi_settings);
+
+        // Füge nun dem Head die benötigten Styles und Scripts hinzu
+        PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
+        PageLayout::addScript($this->getPluginURL() . "/assets/raumbelegung.js");
+        StudipAutoLoader::addAutoloadPath($this->getPluginPath() . '/models');
     }
 
     /**
@@ -74,32 +103,13 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
      *
      * @param string Die restliche Pfadangabe
      */
-    function perform($unconsumed_path) {
-        // Erstelle Unternavigation
-        $navigation = AutoNavigation::getItem('/calendar/raumbelegung');
-        $listview = new AutoNavigation(dgettext('roomplanplugin', 'Tagesansicht (Liste)'), PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
-        $tableview = new AutoNavigation(dgettext('roomplanplugin', 'Tagesansicht (Tabelle)'), PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
-        $navigation->addSubNavigation('listview', $listview);
-        $navigation->addSubNavigation('tableview', $tableview);
-
-        // Füge Navigation für die Wochenansicht an
-        $navigation->addSubNavigation('semesterview', new AutoNavigation(dgettext('roomplanplugin', 'Semesteransicht'), PluginEngine::getUrl('raumbelegung/semester/index')));
-
-        // Für root erstelle auch den Navipunkt 'Einstellungen'
-        $navi_settings = new AutoNavigation(dgettext('roomplanplugin', 'Einstellungen'), PluginEngine::getUrl('raumbelegung/index/settings'));
-        $navigation->addSubNavigation('settings', $navi_settings);
-
-        // Füge nun dem Head die benötigten Styles und Scripts hinzu
-        PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
-        PageLayout::addScript($this->getPluginURL() . "/assets/raumbelegung.js");
-        StudipAutoLoader::addAutoloadPath($this->getPluginPath() . '/models');
-
-        /*
-         * Jetzt brauchen wir nur noch einen Trailsdispatcher der die restliche
-         * Arbeit für uns erledigt. An dieser Stelle springt also die Plugin-
-         * verarbeitung weiter in den Trailsordner
-         */
-        $dispatcher = new Trails_Dispatcher($this->getPluginPath(), PluginEngine::getUrl('raumbelegung/index'), 'index');
+    public function perform($unconsumed_path)
+    {
+        $dispatcher = new Trails_Dispatcher(
+            $this->getPluginPath(),
+            rtrim(PluginEngine::getLink($this, [], null), '/'),
+            'index'
+        );
         $dispatcher->plugin = $this;
         $dispatcher->dispatch($unconsumed_path);
     }

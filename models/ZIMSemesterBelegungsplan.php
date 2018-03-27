@@ -14,9 +14,11 @@ class ZIMSemesterBelegungsplan {
     public $dayassigns = array();
     private $empty = true;
 
-    public function __construct(RoomUsageResourceObject $object) {
+    public function __construct(RoomUsageResourceObject $object, $starthour = 8, $endhour = 23) {
         $this->object = $object;
-        $this->fillHours();
+        $this->starthour = $starthour;
+        $this->endhour = $endhour;
+        $this->fillHours($starthour, $endhour);
     }
 
     public function loadFromSemester(Semester $semester, $vorlesungsbeginn = false) {
@@ -260,11 +262,11 @@ class ZIMSemesterBelegungsplan {
         $this->timestamp = self::timeformat(time());
     }
 
-    private function fillHours() {
-        for ($time = self::STARTTIME; $time <= self::ENDTIME; $time++) {
+    private function fillHours($start, $end) {
+        for ($time = $start; $time <= $end; $time++) {
             $this->hour[$time] = array($time, '', '', '', '', '', $time);
         }
-        $this->hour[self::STARTTIME][] = array('weekend' => array());
+        $this->hour[$this->starthour][] = array('weekend' => array());
     }
 
     private function weekendDate($asset) {
@@ -273,7 +275,7 @@ class ZIMSemesterBelegungsplan {
                 . strftime('%H', $asset['end'])
                 . ', ';
         $name .= $asset['realname'];
-        $this->hour[self::STARTTIME][7]['weekend'][] = $name;
+        $this->hour[$this->starthour][7]['weekend'][] = $name;
     }
 
     private function getDozent($asset) {
