@@ -37,42 +37,47 @@ class AssignmentsExportCronjob extends CronJob {
      * Create CSV file.
      */
     public function execute($last_result, $parameters = array()) {
-        $mailto = Config::get()->RAUMBELEGUNG_EXPORT_CSV_MAILTO;
+        StudipAutoloader::addAutoloadPath(__DIR__ . '/models');
 
-        if ($mailto) {
-            StudipAutoloader::addAutoloadPath(__DIR__ . '/models');
+        // Provide room assignments for next week.
+        $start = strtotime('Monday next week');
+        $startDate = date('d.m.Y', $start);
+        $end = strtotime('Sunday next week 23:59:59');
+        $endDate = date('d.m.Y', $end);
 
-            // Provide room assignments for next week.
-            $start = strtotime('Monday next week');
-            $startDate = date('d.m.Y', $start);
-            $end = strtotime('Sunday next week 23:59:59');
-            $endDate = date('d.m.Y', $end);
+        $matrix = ResourceAssignExport::buildAssignmentMatrix($start, $end);
 
-            $matrix = ResourceAssignExport::buildAssignmentMatrix($start, $end);
+        $filename = $GLOBALS['TMP_PATH'] . '/raumbelegungen-' . date('Y-m-d-H-i') . '.csv';
 
-            $filename = 'raumbelegungen-' . date('Y-m-d-H-i') . '.csv';
+        $file = fopen($filename, 'w');
+        fwrite($file, array_to_csv($matrix));
+        fclose($file);
 
-            $file = fopen($GLOBALS['TMP_PATH'] . '/' . $filename, 'w');
-            fwrite($file, array_to_csv($matrix));
-            fclose($file);
+        $folder = AssignmentsExportFolder::findTopfolder('');
 
-            $message = "Hallo,\n\nanbei der aktuelle Export aller Raumbelegungen für den Zeitraum vom " .
-                $startDate . " bis " . $endDate . ".\n\nViele Grüße,\nIhr Stud.IP";
+        if ($folder) {
+            $fileObj = new File();
+            $fileObj->user_id = $GLOBALS['user']->id;
+            $fileObj->mime_type = 'text/csv';
+            $fileObj->name = 'Raumbelegungen ' . $startDate . ' - ' . $endDate . ' (Stand ' . date('d.m.Y H:i') . ')';
+            $fileObj->size = filesize($filename);
+            $fileObj->storage = 'disk';
+            $fileObj->store();
+            $fileObj->connectWithDataFile($filename);
 
-            $mail = new StudipMail();
-            $mail->setSubject('Raumbelegungen ' . $startDate . ' - ' . date('d.m.Y', $endDate))
-                ->setReplyToEmail($GLOBALS['UNI_CONTACT'])
-                ->setBodyText($message)
-                ->setSenderEmail($GLOBALS['UNI_CONTACT'])
-                ->addRecipient($mailto)
-                ->addFileAttachment($GLOBALS['TMP_PATH'] . '/' . $filename, $filename, 'text/csv');
-
-            if (!$mail->send()) {
-                echo "\nERROR: Cannot send mail.\n";
+            if (!$fileref = $folder->createFile($fileObj)) {
+                echo "\nERROR: Could not add export file to folder.\n";
+            } else {
+                $fileref->name = $startDate . ' - ' . $endDate;
+                $fileref->description = date('d.m.Y H:i');
+                $fileref->store();
             }
         } else {
-            echo "\nERROR: No target mail address set.\n";
+            echo "\nERROR: Could not find or create target folder.\n";
         }
+
+        unlink($filename);
+
     }
 
     public function tearDown() {

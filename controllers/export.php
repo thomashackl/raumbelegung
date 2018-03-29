@@ -1,5 +1,4 @@
 <?php
-require_once 'app/controllers/studip_controller.php';
 
 class ExportController extends StudipController {
 
@@ -15,6 +14,46 @@ class ExportController extends StudipController {
     }
 
     public function index_action()
+    {
+        $this->relocate('export/files');
+    }
+
+    public function files_action($folderId = '')
+    {
+        Navigation::activateItem('/calendar/raumbelegung/export');
+
+        if (!$folderId) {
+            $folder = Folder::findOneByRange_id('roomplanplugin');
+        } else {
+            $folder = Folder::find($folderId);
+        }
+
+        if (!$folder) {
+
+            PageLayout::postInfo(dgettext('roomplanplugin', 'Es sind keine Dateien vorhanden.'));
+
+        } else {
+
+            $this->topFolder = $folder->getTypedFolder();
+
+            if (!$this->topFolder->isVisible($GLOBALS['user']->id)) {
+                throw new AccessDeniedException();
+            }
+        }
+    }
+
+    public function delete_action($file_id)
+    {
+        $file = File::find($file_id);
+        if ($file->delete()) {
+            PageLayout::postInfo(dgettext('roomplanplugin', 'Die Exportdatei wurde gelöscht.'));
+        } else {
+            PageLayout::postError(dgettext('roomplanplugin', 'Die Exportdatei konnte nicht gelöscht werden.'));
+        }
+        $this->relocate('export/files');
+    }
+
+    public function manual_action()
     {
         PageLayout::setTitle(dgettext('roomplanplugin', 'Export der Raumbelegungen'));
         $this->start = date('d.m.Y', strtotime('Monday next week'));
