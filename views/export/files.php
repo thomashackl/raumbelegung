@@ -1,4 +1,4 @@
-<?php if ($topFolder) : ?>
+<?php if ($topFolder && count($topFolder->getFiles()) > 0) : ?>
     <table class="default">
         <caption>
             <?= dgettext('roomplanplugin', 'CSV-Exporte der Raumbelegungen') ?>
@@ -16,14 +16,26 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($topFolder->getFiles() as $file) : ?>
+            <?php foreach ($topFolder->getFiles()->orderBy('mkdate DESC') as $file) : ?>
+                <?php
+                    $split = explode(' - ', $file->name);
+                    $start = strtotime($split[0]);
+                    $end = strtotime($split[1]);
+                    $startDate = date('Y-m-d', $start);
+                    $endDate = date('Y-m-d', $end);
+                    $filename = 'raumbelegungen-' . $startDate . '-' . $endDate . '.csv';
+                ?>
                 <tr>
                     <td>
-                        <?= htmlReady($file->name) ?>
+                        <a href="<?= URLHelper::getURL('sendfile.php?type=0&file_id=' . $file->id . '&file_name=' . $filename) ?>">
+                            <?= Icon::create('download', 'clickable',
+                                ['title' => dgettext('roomplanplugin', 'Datei herunterladen')]) ?>
+                            <?= htmlReady($file->name) ?>
+                        </a>
                     </td>
                     <td><?= htmlReady($file->description) ?></td>
                     <td>
-                        <a href="<?= $controller->url_for('export/files/delete', $file->id) ?>"
+                        <a href="<?= $controller->url_for('export/delete', $file->id) ?>"
                            data-confirm="<?= dgettext('roomplanplugin',
                                'Soll die Exportdatei wirklich gelöscht werden?') ?>">
                             <?= Icon::create('trash', 'clickable',
@@ -34,4 +46,6 @@
             <?php endforeach ?>
         </tbody>
     </table>
+<?php else : ?>
+    <?= PageLayout::postInfo(dgettext('roomplanplugin', 'Es sind keine Dateien vorhanden.')) ?>
 <?php endif;

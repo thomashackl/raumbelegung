@@ -53,7 +53,7 @@ class AssignmentsExportCronjob extends CronJob {
         fwrite($file, array_to_csv($matrix));
         fclose($file);
 
-        $folder = AssignmentsExportFolder::findTopfolder('');
+        $folder = AssignmentsExportFolder::findTopFolder('');
 
         if ($folder) {
             $fileObj = new File();

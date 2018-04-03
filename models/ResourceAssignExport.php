@@ -19,10 +19,11 @@ class ResourceAssignExport {
     /**
      * Generates a "matrix view" of all rooms and their assignments for the given timespan.
      * The result shows for each day and half hour if the room is occupied or not.
-     * @param $start
-     * @param $end
+     * @param int $start start time for exporting assignments
+     * @param int $end end time for exporting assignments
+     * @param array $ids use only these resource IDs for export
      */
-    public static function buildAssignmentMatrix($start, $end)
+    public static function buildAssignmentMatrix($start, $end, $ids = [])
     {
         $times = [];
         for ($day = $start ; $day <= $end ; $day += 86400) {
@@ -32,6 +33,7 @@ class ResourceAssignExport {
         }
 
         $resources = self::getResources();
+        $selected = $ids ?: Config::get()->ROOMPLAN_CSV_EXPORT_ROOMS;
 
         $matrix = [[
             dgettext('roomplanplugin', 'Zähler'),
@@ -91,11 +93,11 @@ class ResourceAssignExport {
 
         $text = '';
         $counter = 1;
-        foreach ($resources as $resource) {
-            if ($resource['parent_id'] != '0') {
+        foreach ($selected as $id) {
+            if ($resources[$id]['parent_id'] != '0') {
                 $roomtimes = $times;
-                $assigns = new AssignEventList($start, $end, $resource['resource_id']);
-                if ($assign->events) {
+                $assigns = new AssignEventList($start, $end, $id);
+                if ($assigns->events) {
                     foreach ($assigns->events as $event) {
                         for ($i = $event->begin; $i < $event->end; $i += 1800) {
                             $roomtimes[date('d.m.Y', $i)][date('H:i', $i)] = 1;
@@ -106,9 +108,9 @@ class ResourceAssignExport {
                 foreach ($roomtimes as $day => $hours) {
                     $matrix[] = array_merge([
                         $counter,
-                        $resource['resource_id'],
-                        $resources[$resource['parent_id']]['name'],
-                        $resource['name'],
+                        $id,
+                        $resources[$resources[$id]['parent_id']]['name'],
+                        $resources[$id]['name'],
                         $day
                     ], $hours);
                 }
@@ -120,7 +122,14 @@ class ResourceAssignExport {
         return $matrix;
     }
 
-    public static function getResources($parentId = '0')
+    /**
+     * Gets all resources in order.
+     *
+     * @param string $parentId resource ID to start from, default at root ("0")
+     * @param bool $preserve_hierarchy keep parent/child relations or just return entries as flat structure?
+     * @return array
+     */
+    public static function getResources($parentId = '0', $preserve_hierarchy = false)
     {
         $resources = [];
         $level = DBManager::get()->fetchAll("SELECT `resource_id`, `category_id`, `name`, `description`, `parent_id`
@@ -130,7 +139,12 @@ class ResourceAssignExport {
 
         foreach ($level as $one) {
             $resources[$one['resource_id']] = $one;
-            $resources = array_merge($resources, self::getResources($one['resource_id']));
+
+            if ($preserve_hierarchy) {
+                $resources[$one['resource_id']]['children'] = self::getResources($one['resource_id']);
+            } else {
+                $resources = array_merge($resources, self::getResources($one['resource_id']));
+            }
         }
 
         return $resources;

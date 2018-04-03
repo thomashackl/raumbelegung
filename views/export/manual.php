@@ -15,6 +15,14 @@
             </label>
         </section>
     </fieldset>
+    <fieldset>
+        <legend>
+            <?= dgettext('roomplanplugin', 'Welche Räume sollen exportiert werden?') ?>
+        </legend>
+        <section>
+            <?= $this->render_partial('export/_resourcelist', compact('resources', 'selected')) ?>
+        </section>
+    </fieldset>
     <footer data-dialog-button>
         <?= Studip\Button::create(dgettext('roomplanplugin', 'Exportieren'), 'do_export') ?>
     </footer>
