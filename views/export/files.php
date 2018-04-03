@@ -46,6 +46,6 @@
             <?php endforeach ?>
         </tbody>
     </table>
-<?php else : ?>
+<?php elseif ($topFolder && count($topFolder->getFiles()) == 0) : ?>
     <?= PageLayout::postInfo(dgettext('roomplanplugin', 'Es sind keine Dateien vorhanden.')) ?>
 <?php endif;
