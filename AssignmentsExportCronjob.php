@@ -65,13 +65,28 @@ class AssignmentsExportCronjob extends CronJob {
             $fileObj->store();
             $fileObj->connectWithDataFile($filename);
 
-            if (!$fileref = $folder->createFile($fileObj)) {
-                echo "\nERROR: Could not add export file to folder.\n";
+            // Replace previous export file if it exists.
+            $existing = $folder->getFiles()->findOneBy('name', $startDate . ' - ' . $endDate);
+            if ($existing) {
+                $oldFile = $existing->file;
+                if ($oldFile->delete()) {
+                    $existing->file = $fileObj;
+                    $existing->description = date('d.m.Y H:i');
+                    $existing->store();
+                } else {
+                    echo "\nERROR: Could not delete old file.\n";
+                }
+            // No previous export file for this timespan week found, create new.
             } else {
-                $fileref->name = $startDate . ' - ' . $endDate;
-                $fileref->description = date('d.m.Y H:i');
-                $fileref->store();
+                if (!$fileref = $folder->createFile($fileObj)) {
+                    echo "\nERROR: Could not add export file to folder.\n";
+                } else {
+                    $fileref->name = $startDate . ' - ' . $endDate;
+                    $fileref->description = date('d.m.Y H:i');
+                    $fileref->store();
+                }
             }
+
         } else {
             echo "\nERROR: Could not find or create target folder.\n";
         }

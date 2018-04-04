@@ -393,18 +393,18 @@ class AssignmentsExportFolder implements FolderType
     }
 
     /**
-     * Files inside AssignmentsExportFolders are not editable.
+     * Files inside AssignmentsExportFolders are editable.
      */
     public function isFileEditable($file_ref_id, $user_id)
     {
-        return false;
+        return true;
     }
 
     /**
-     * Files inside AssignmentsExportFolders are not writable.
+     * Files inside AssignmentsExportFolders are writable.
      */
     public function isFileWritable($file_ref_id, $user_id)
     {
-        return false;
+        return true;
     }
 }
