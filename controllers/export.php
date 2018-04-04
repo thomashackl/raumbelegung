@@ -16,6 +16,8 @@ class ExportController extends StudipController {
             $this->set_layout($GLOBALS['template_factory']->open('layouts/base'));
         }
 
+        Navigation::activateItem('/calendar/raumbelegung/export');
+
         $this->createSidebar($action);
     }
 
@@ -33,8 +35,6 @@ class ExportController extends StudipController {
      */
     public function files_action($folderId = '')
     {
-        Navigation::activateItem('/calendar/raumbelegung/export');
-
         if (!$folderId) {
             $folder = Folder::findOneByRange_id('roomplanplugin');
         } else {
