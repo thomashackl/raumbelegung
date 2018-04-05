@@ -100,26 +100,26 @@ class ResourceAssignExport {
                     foreach ($assigns->events as $event) {
 
                         // Round begin down to nearest half hour if necessary.
-                        $begin = $event->begin;
-                        $beginMinute = date('i', $begin);
+                        $newBegin = $event->begin;
+                        $beginMinute = date('i', $newBegin);
                         if ($beginMinute != 0 && $beginMinute != 30) {
-                            $begin = $beginMinute < 30 ?
+                            $newBegin = $beginMinute < 30 ?
                                 strtotime(date('d.m.Y H:00', $event->begin)) :
                                 strtotime(date('d.m.Y H:30', $event->begin));
                         }
 
                         // Round end up to nearest half hour if necessary.
-                        $end = $event->end;
+                        $newEnd = $event->end;
                         $endMinute = date('i', $end);
                         if ($endMinute != 0 && $endMinute != 30) {
-                            $end = $endMinute < 30 ?
+                            $newEnd = $endMinute < 30 ?
                                 strtotime('d.m.Y H:30', $event->end) :
                                 strtotime(
                                     date('d.m.Y H:00', strtotime(
                                         date('d.m.Y H:i', $event->end) . ' +1 hour')));
                         }
 
-                        for ($i = $begin; $i < $end; $i += 1800) {
+                        for ($i = $newBegin; $i < $newEnd; $i += 1800) {
                             $roomtimes[date('d.m.Y', $i)][date('H:i', $i)] = 1;
                         }
                     }
