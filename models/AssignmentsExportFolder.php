@@ -178,7 +178,7 @@ class AssignmentsExportFolder implements FolderType
     public function isReadable($user_id)
     {
         return ($GLOBALS['perm']->have_perm('root') ||
-            $GLOBALS['user']->getAuthenticatedUser()->hasRole('Raumbelegung'));
+            $GLOBALS['user']->getAuthenticatedUser()->hasRole('Belegungsplan'));
     }
 
     /**
