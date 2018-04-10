@@ -111,12 +111,10 @@ class ResourceAssignExport {
                         // Round end up to nearest half hour if necessary.
                         $newEnd = $event->end;
                         $endMinute = date('i', $end);
-                        if ($endMinute != 0 && $endMinute != 30) {
+                        if ($endMinute != 0 && $endMinute != 59 && $endMinute != 30) {
                             $newEnd = $endMinute < 30 ?
-                                strtotime('d.m.Y H:30', $event->end) :
-                                strtotime(
-                                    date('d.m.Y H:00', strtotime(
-                                        date('d.m.Y H:i', $event->end) . ' +1 hour')));
+                                strtotime(date('d.m.Y H:30', $event->end)) :
+                                strtotime(date('d.m.Y H:59', $event->end));
                         }
 
                         for ($i = $newBegin; $i < $newEnd; $i += 1800) {
