@@ -40,9 +40,9 @@ class AssignmentsExportCronjob extends CronJob {
         StudipAutoloader::addAutoloadPath(__DIR__ . '/models');
 
         // Provide room assignments for next week.
-        $start = strtotime('Monday next week');
+        $start = strtotime('today 00:00:00');
         $startDate = date('d.m.Y', $start);
-        $end = strtotime('Sunday next week 23:59:59');
+        $end = strtotime('today + 6 days 23:59:59');
         $endDate = date('d.m.Y', $end);
 
         $matrix = ResourceAssignExport::buildAssignmentMatrix($start, $end);
@@ -65,26 +65,18 @@ class AssignmentsExportCronjob extends CronJob {
             $fileObj->store();
             $fileObj->connectWithDataFile($filename);
 
-            // Replace previous export file if it exists.
-            $existing = $folder->getFiles()->findOneBy('name', $startDate . ' - ' . $endDate);
-            if ($existing) {
-                $oldFile = $existing->file;
-                if ($oldFile->delete()) {
-                    $existing->file = $fileObj;
-                    $existing->description = date('d.m.Y H:i');
-                    $existing->store();
-                } else {
-                    echo "\nERROR: Could not delete old file.\n";
-                }
-            // No previous export file for this timespan week found, create new.
+            // Remove all previous files.
+            foreach ($folder->getFiles() as $file) {
+                $file->delete();
+            }
+
+            // Create new file.
+            if (!$fileref = $folder->createFile($fileObj)) {
+                echo "\nERROR: Could not add export file to folder.\n";
             } else {
-                if (!$fileref = $folder->createFile($fileObj)) {
-                    echo "\nERROR: Could not add export file to folder.\n";
-                } else {
-                    $fileref->name = $startDate . ' - ' . $endDate;
-                    $fileref->description = date('d.m.Y H:i');
-                    $fileref->store();
-                }
+                $fileref->name = $startDate . ' - ' . $endDate;
+                $fileref->description = date('d.m.Y H:i');
+                $fileref->store();
             }
 
         } else {

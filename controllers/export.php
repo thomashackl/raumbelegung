@@ -76,8 +76,8 @@ class ExportController extends StudipController {
     public function manual_action()
     {
         PageLayout::setTitle(dgettext('roomplanplugin', 'Export der Raumbelegungen'));
-        $this->start = date('d.m.Y', strtotime('Monday next week'));
-        $this->end = date('d.m.Y', strtotime('Sunday next week'));
+        $this->start = date('d.m.Y', strtotime('today 00:00:00'));
+        $this->end = date('d.m.Y', strtotime('today + 6 days 23:59:59'));
         $this->resources = ResourceAssignExport::getResources('0', true);
         $this->selected = Config::get()->ROOMPLAN_CSV_EXPORT_ROOMS;
         $this->prefix = 'manual';
