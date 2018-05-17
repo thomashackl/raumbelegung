@@ -21,6 +21,9 @@ class IndexController extends StudipController {
      */
 
     public function list_action() {
+        Navigation::activateItem('/calendar/raumbelegung/list');
+        PageLayout::setTitle($this->dispatcher->plugin->getDisplayName() . ' - ' .
+            dgettext('roomplanplugin', 'Tagesansicht (Liste)'));
         $this->loadBelegung();
     }
 
@@ -28,6 +31,9 @@ class IndexController extends StudipController {
      * Beim Table wird auch nur die Belegung geladen. Absolut krasser Code
      */
     public function table_action() {
+        Navigation::activateItem('/calendar/raumbelegung/table');
+        PageLayout::setTitle($this->dispatcher->plugin->getDisplayName() . ' - ' .
+            dgettext('roomplanplugin', 'Tagesansicht (Tabelle)'));
         $this->loadBelegung();
     }
 
@@ -35,8 +41,9 @@ class IndexController extends StudipController {
      * Wenn wir die Settings Seite aufrufen, passiert jetzt schon etwas mehr
      */
     public function settings_action() {
-        
-        /* 
+        Navigation::activateItem('/calendar/raumbelegung/settings');
+
+        /*
          * Wenn das Formular auf der Settingsseite abgeschickt haben, dann
          * existiert ein Request. (Best comment ever)
          */

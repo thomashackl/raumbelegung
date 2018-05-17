@@ -17,6 +17,8 @@ class ExportController extends StudipController {
         }
 
         Navigation::activateItem('/calendar/raumbelegung/export');
+        PageLayout::setTitle($this->dispatcher->plugin->getDisplayName() . ' - ' .
+            dgettext('roomplanplugin', 'Export der Raumbelegungen'));
 
         $this->createSidebar($action);
     }

@@ -11,7 +11,10 @@ class SemesterController extends StudipController {
     }
 
     public function index_action() {
-        
+        Navigation::activateItem('/calendar/raumbelegung/semester');
+        PageLayout::setTitle($this->dispatcher->plugin->getDisplayName() . ' - ' .
+            dgettext('roomplanplugin', 'Semesteransicht'));
+
         if (Request::submitted('print')) {
             $this->flash['semester'] = Request::option('semester');
             $this->flash['building'] = Request::option('building');

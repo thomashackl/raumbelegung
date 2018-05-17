@@ -21,7 +21,9 @@ class RoomUsageResourceCategory extends SimpleORMap {
         $config['db_table'] = 'resources_categories';
 
         $config['has_many']['objects'] = array(
-            'class_name' => 'RoomUsageResourceObject'
+            'class_name' => 'RoomUsageResourceObject',
+            'foreign_key' => 'category_id',
+            'assoc_foreign_key' => 'category_id'
         );
 
         parent::configure($config);

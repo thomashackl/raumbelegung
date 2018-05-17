@@ -1,6 +1,6 @@
 <?php
 /**
- * RoomUsageResourceProperty.php
+ * RoomUsageResourcePropertyeProperty.php
  * model class for table RoomUsageResourceProperty
  *
  * This program is free software; you can redistribute it and/or

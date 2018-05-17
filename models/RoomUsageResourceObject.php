@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ResourceObjects.php
+ * RoomUsageResourceObject.phpbject.php
  * model class for table ResourceObjects
  *
  * This program is free software; you can redistribute it and/or
@@ -31,6 +31,14 @@ class RoomUsageResourceObject extends SimpleORMap {
         );
         $config['has_many']['prop_values'] = array(
             'class_name' => 'RoomUsageResourceObjectProperty'
+        );
+        $config['belongs_to']['category'] = array(
+            'class_name' => 'RoomUsageResourceCategory',
+            'foreign_key' => 'category_id'
+        );
+        $config['has_one']['opening_times'] = array(
+            'class_name' => 'ResourceOpeningTimes',
+            'foreign_key' => 'resource_id'
         );
 
         $config['additional_fields']['order'] = true;
@@ -108,6 +116,20 @@ class RoomUsageResourceObject extends SimpleORMap {
         // Now find the value and return
         $value = $this->prop_values->findOneBy('property_id', $prop->id);
         return $value->state;
+    }
+
+    public static function findBuilding($resource_id, $category_id = '')
+    {
+        if (!$category_id) {
+            $category_id = RoomUsageResourceCategory::findOneByName('Gebäude')->id;
+        }
+
+        $resource = self::find($resource_id);
+        if ($resource->category_id == $category_id) {
+            return $resource;
+        } else {
+            return self::findBuilding($resource->parent_id, $category_id);
+        }
     }
 
 }

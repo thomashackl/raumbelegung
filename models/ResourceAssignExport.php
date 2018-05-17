@@ -95,6 +95,8 @@ class ResourceAssignExport {
         foreach ($selected as $id) {
             if ($resources[$id]['parent_id'] != '0') {
                 $roomtimes = $times;
+
+                // Get concrete assignments.
                 $assigns = new AssignEventList($start, $end, $id);
                 if ($assigns->events) {
                     foreach ($assigns->events as $event) {
@@ -119,6 +121,52 @@ class ResourceAssignExport {
 
                         for ($i = $newBegin; $i < $newEnd; $i += 1800) {
                             $roomtimes[date('d.m.Y', $i)][date('H:i', $i)] = 1;
+                        }
+                    }
+                }
+
+                if ($resources[$id]['use_opening_times']) {
+                    $openingTimes = ResourceOpeningTimes::find(RoomUsageResourceObject::findBuilding($id)->id);
+
+                    if ($openingTimes) {
+
+                        foreach ($times as $day => $hours) {
+
+                            // Which field from opening_times shall be used?
+                            switch (date('w', strtotime($day . ' 00:00:00'))) {
+                                case 0:
+                                    $startField = 'sunday_start';
+                                    $endField = 'sunday_end';
+                                    break;
+                                case 6:
+                                    $startField = 'saturday_start';
+                                    $endField = 'saturday_end';
+                                    break;
+                                default:
+                                    $startField = 'weekdays_start';
+                                    $endField = 'weekdays_end';
+                                    break;
+                            }
+
+                            $set = false;
+
+                            // Set room to occupied during building opening times
+                            foreach ($hours as $hour => $assigned) {
+                                /*
+                                 * Use substring for comparison, as values in database are stored
+                                 * including seconds (e.g. "07:00:00")
+                                 */
+                                if ($hour == mb_substr($openingTimes->$startField, 0, 5)) {
+                                    $set = true;
+                                }
+                                if ($hour == mb_substr($openingTimes->$endField, 0, 5)) {
+                                    $set = false;
+                                }
+
+                                if ($set) {
+                                    $roomtimes[$day][$hour] = 1;
+                                }
+                            }
                         }
                     }
                 }
@@ -150,8 +198,10 @@ class ResourceAssignExport {
     public static function getResources($parentId = '0', $preserve_hierarchy = false)
     {
         $resources = [];
-        $level = DBManager::get()->fetchAll("SELECT `resource_id`, `category_id`, `name`, `description`, `parent_id`
-            FROM `resources_objects`
+        $level = DBManager::get()->fetchAll("SELECT o.`resource_id`, o.`category_id`, o.`name`, o.`description`,
+                o.`parent_id`, IF(t.`resource_id` IS NULL, 0, 1) AS use_opening_times
+            FROM `resources_objects` o
+                LEFT JOIN `resources_objects_opening_times` t USING (`resource_id`)
             WHERE `parent_id` = :parent
             ORDER BY `name`", ['parent' => $parentId]);
 

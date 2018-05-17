@@ -36,12 +36,6 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         // Lade den Navigationsabschnitt "tools"
         $navigation = Navigation::getItem('/calendar');
 
-        // Erstelle einen neuen Navigationspunkt
-        $roomplaner_navi = new AutoNavigation(dgettext('roomplanplugin', 'Raumbelegung'), PluginEngine::getUrl('raumbelegung/index/list'));
-
-        // Binde disen Punkt unter "tools" ein
-        $navigation->addSubNavigation('raumbelegung', $roomplaner_navi);
-
         // Observe resource assignment changes for writing additional info to database.
         NotificationCenter::addObserver($this, 'assignSaveInfo', 'ResourcesAssignDidCreate');
         NotificationCenter::addObserver($this, 'assignSaveInfo', 'ResourcesAssignDidUpdate');
@@ -70,29 +64,30 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
             PageLayout::addScript($js);
         }
 
-        // Erstelle Unternavigation
-        $navigation = AutoNavigation::getItem('/calendar/raumbelegung');
-        $listview = new AutoNavigation(dgettext('roomplanplugin', 'Tagesansicht (Liste)'),
-            PluginEngine::getUrl('raumbelegung/index/list', array("date" => Request::get('date'))));
-        $navigation->addSubNavigation('listview', $listview);
-        $tableview = new AutoNavigation(dgettext('roomplanplugin', 'Tagesansicht (Tabelle)'),
-            PluginEngine::getUrl('raumbelegung/index/table', array("date" => Request::get('date'))));
-        $navigation->addSubNavigation('tableview', $tableview);
+        $navigation = new Navigation($this->getDisplayName(), PluginEngine::getURL($this, [], 'index/list'));
 
-        // Füge Navigation für die Wochenansicht an
-        $navigation->addSubNavigation('semesterview',
-            new AutoNavigation(dgettext('roomplanplugin', 'Semesteransicht'),
-                PluginEngine::getUrl('raumbelegung/semester/index')));
+        $navigation->addSubNavigation('list',
+            new Navigation(dgettext('roomplanplugin', 'Tagesansicht (Liste)'),
+                PluginEngine::getURL($this, [], 'index/list')));
+        $navigation->addSubNavigation('table',
+            new Navigation(dgettext('roomplanplugin', 'Tagesansicht (Tabelle)'),
+                PluginEngine::getURL($this, [], 'index/table')));
+        $navigation->addSubNavigation('semester',
+            new Navigation(dgettext('roomplanplugin', 'Semesteransicht'),
+                PluginEngine::getURL($this, [], 'semester')));
+        $navigation->addSubNavigation('export',
+            new Navigation(dgettext('roomplanplugin', 'Export der Raumbelegungen'),
+                PluginEngine::getURL($this, [], 'export')));
+        if ($GLOBALS['perm']->have_perm('root')) {
+            $navigation->addSubNavigation('openingtimes',
+                new Navigation(dgettext('roomplanplugin', 'Gebäudeöffnungszeiten'),
+                    PluginEngine::getURL($this, [], 'openingtimes/times')));
+        }
+        $navigation->addSubNavigation('settings',
+            new Navigation(dgettext('roomplanplugin', 'Einstellungen'),
+                PluginEngine::getURL($this, [], 'index/settings')));
 
-        // Add Export options for Facility Management
-        $navigation->addSubNavigation('export', new AutoNavigation(
-            dgettext('roomplanplugin', 'Export der Raumbelegungen'),
-            PluginEngine::getUrl('raumbelegung/export/index')));
-
-        // Für root erstelle auch den Navipunkt 'Einstellungen'
-        $navi_settings = new AutoNavigation(dgettext('roomplanplugin', 'Einstellungen'),
-            PluginEngine::getUrl('raumbelegung/index/settings'));
-        $navigation->addSubNavigation('settings', $navi_settings);
+        Navigation::addItem('/calendar/raumbelegung', $navigation);
 
         // Füge nun dem Head die benötigten Styles und Scripts hinzu
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
@@ -143,6 +138,11 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
     public static function onDisable($pluginId) {
         AssignmentsExportCronjob::unregister();
         parent::onDisable($pluginId);
+    }
+
+    public function getDisplayName()
+    {
+        return dgettext('roomplanplugin', 'Raumbelegung');
     }
 
 }
