@@ -13,7 +13,7 @@ class OpeningTimes extends Migration {
             PRIMARY KEY (`resource_id`))
             ENGINE=InnoDB ROW_FORMAT=DYNAMIC");
         DBManager::get()->execute("CREATE TABLE IF NOT EXISTS `resources_objects_opening_times` (
-            `resource_id` CHAR(32) NOT NULL REFERENCES `resources_objects`.`resource_id`
+            `resource_id` CHAR(32) NOT NULL REFERENCES `resources_objects`.`resource_id`,
             PRIMARY KEY (`resource_id`))
             ENGINE=InnoDB ROW_FORMAT=DYNAMIC");
     }
