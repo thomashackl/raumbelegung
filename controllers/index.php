@@ -3,9 +3,6 @@ require_once 'app/controllers/studip_controller.php';
 
 class IndexController extends StudipController {
 
-    /**
-     * Diese Methode wird bei jedem Pfad aufgerufen
-     */
     public function before_filter(&$action, &$args) {
         parent::before_filter($action, $args);
 
@@ -16,10 +13,9 @@ class IndexController extends StudipController {
         $this->date = Request::get('date');
     }
 
-    /*
-     * Listaction Aufruf. Läd nur die Belegung. Toll oder?
+    /**
+     * Load list view with all resource assignments
      */
-
     public function list_action() {
         Navigation::activateItem('/calendar/raumbelegung/list');
         PageLayout::setTitle($this->dispatcher->plugin->getDisplayName() . ' - ' .
@@ -27,8 +23,8 @@ class IndexController extends StudipController {
         $this->loadBelegung();
     }
 
-    /*
-     * Beim Table wird auch nur die Belegung geladen. Absolut krasser Code
+    /**
+     * Load table view with all resource assignments
      */
     public function table_action() {
         Navigation::activateItem('/calendar/raumbelegung/table');
@@ -37,37 +33,46 @@ class IndexController extends StudipController {
         $this->loadBelegung();
     }
 
-    /*
+    /**
      * Wenn wir die Settings Seite aufrufen, passiert jetzt schon etwas mehr
      */
     public function settings_action() {
         Navigation::activateItem('/calendar/raumbelegung/settings');
 
-        /*
-         * Wenn das Formular auf der Settingsseite abgeschickt haben, dann
-         * existiert ein Request. (Best comment ever)
-         */
-        if (Request::submitted('save')) {
-            
-            // Alle Einträge resetten
-            $deactivateAll = DBManager::get()->prepare("UPDATE resources_rooms_order SET checked = 0, priority = 99999 WHERE user_id = ?");
-            $deactivateAll->execute(array($GLOBALS['user']->id));
-            
-            // Update request
-            $update = DBManager::get()->prepare("UPDATE resources_rooms_order SET checked = ?, priority = ? WHERE resource_id = ? AND user_id = ?");
-            
-            foreach (Request::getArray('resources') as $resource) {
-                $update->execute(array(1, ++$i, $resource, $GLOBALS['user']->id));
-            } 
-        }
-        
         // Lade die ausgewählte Raumbelegung
         $this->resources = RoomUsageResourceObject::getAll();
         
     }
 
-    /*
-     * Schöner Codestil. 3 Zeilen doppelten Code vermieden. Woohoo
+    /**
+     * Save custom resources order and checked status
+     */
+    public function save_settings_action()
+    {
+        // Alle Einträge resetten
+        $deactivateAll = DBManager::get()->prepare("UPDATE resources_rooms_order SET checked = 0, priority = 99999 WHERE user_id = ?");
+        $deactivateAll->execute(array($GLOBALS['user']->id));
+
+        // Update request
+        $update = DBManager::get()->prepare("UPDATE resources_rooms_order SET checked = ?, priority = ? WHERE resource_id = ? AND user_id = ?");
+
+        $success = true;
+        $i = 0;
+        foreach (Request::getArray('resources') as $resource => $checked) {
+            $success = $success && $update->execute(array($checked, ++$i, $resource, $GLOBALS['user']->id));
+        }
+
+        if ($success) {
+            PageLayout::postSuccess(dgettext('roomplanplugin', 'Die Einstellungen wurden gespeichert.'));
+        } else {
+            PageLayout::postError(dgettext('roomplanplugin', 'Die Einstellungen konnten nicht gespeichert werden.'));
+        }
+
+        $this->relocate('index/settings');
+    }
+
+    /**
+     * Load assignments for rooms on the given day.
      */
     private function loadBelegung() {
         
