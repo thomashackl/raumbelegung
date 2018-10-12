@@ -15,7 +15,7 @@ $(document).ready(function() {
 
     // Make settings sortable
     $(function() {
-        $("ul.sortable").sortable();
+        $("ul.can-be-sorted").sortable();
     });
 });
 
