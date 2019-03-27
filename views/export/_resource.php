@@ -1,5 +1,5 @@
 <li>
-    <?php if (count($resource['children']) > 0) : ?>
+    <?php if ($resource['children'] && count($resource['children']) > 0) : ?>
         <input type="checkbox" id="<?= $prefix . htmlReady($resource['resource_id']) ?>">
         <label for="<?= $prefix . htmlReady($resource['resource_id']) ?>" class="undecorated">
             <?= htmlReady($resource['name']) ?>
@@ -11,7 +11,7 @@
             <?= htmlReady($resource['name']) ?>
         </label>
     <?php endif ?>
-    <?php if (count($resource['children']) > 0) : ?>
+    <?php if ($resource['children'] && count($resource['children']) > 0) : ?>
     <ul>
         <?php foreach ($resource['children'] as $child) : ?>
             <?= $this->render_partial('export/_resource', ['resource' => $child, 'selected' => $selected]) ?>

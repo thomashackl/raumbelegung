@@ -25,10 +25,14 @@ class ResourceAssignExport {
      */
     public static function buildAssignmentMatrix($start, $end, $ids = [])
     {
+
         $times = [];
         for ($day = $start ; $day <= $end ; $day += 86400) {
-            for ($hour = $day ; $hour < $day + 86400 ; $hour += 1800) {
-                $times[date('d.m.Y', $day)][date('H:i', $hour)] = 0;
+            for ($hour = 0 ; $hour < 24; $hour++) {
+                $times[date('d.m.Y', $day)]
+                    [str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00'] = 0;
+                $times[date('d.m.Y', $day)]
+                    [str_pad($hour, 2, '0', STR_PAD_LEFT) . ':30'] = 0;
             }
         }
 
@@ -94,9 +98,10 @@ class ResourceAssignExport {
         $counter = 1;
         foreach ($selected as $id) {
             if ($resources[$id]['parent_id'] != '0') {
+
                 $roomtimes = $times;
 
-                // Get concrete assignments.
+                // Get actual assignments.
                 $assigns = new AssignEventList($start, $end, $id);
                 if ($assigns->events) {
                     foreach ($assigns->events as $event) {
