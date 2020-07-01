@@ -107,7 +107,7 @@ class ResourceAssignExport {
                     [
                         ['begin' => $start, 'end' => $end]
                     ],
-                    [1]
+                    [0]
                 );
 
                 if (count($bookings) > 0) {
