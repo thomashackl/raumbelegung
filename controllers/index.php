@@ -11,6 +11,9 @@ class IndexController extends StudipController {
 
         // Lade 'date' aus dem Request.
         $this->date = Request::get('date');
+
+        PageLayout::addStylesheet($this->dispatcher->plugin->getPluginURL() . "/assets/style.css");
+        PageLayout::addScript($this->dispatcher->plugin->getPluginURL() . "/assets/raumbelegung.js");
     }
 
     /**
@@ -40,8 +43,7 @@ class IndexController extends StudipController {
         Navigation::activateItem('/calendar/raumbelegung/settings');
 
         // Lade die ausgewählte Raumbelegung
-        $this->resources = RoomUsageResourceObject::getAll();
-        
+        $this->resources = Resource::findBySQL("`parent_id` = ''");
     }
 
     /**

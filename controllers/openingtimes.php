@@ -38,7 +38,13 @@ class OpeningTimesController extends StudipController {
             dgettext('roomplanplugin', 'Gebäudeöffnungszeiten verwalten'));
 
         // Find all relevant buildings.
-        $this->buildings = RoomUsageResourceObject::getAll()->orderBy('name');
+        $this->buildings = [];
+        foreach (Building::findAll() as $building) {
+            $this->buildings[] = [
+                'data' => $building,
+                'opening_times' => ResourceOpeningTimes::find($building->id)
+            ];
+        }
     }
 
     /**
@@ -52,7 +58,7 @@ class OpeningTimesController extends StudipController {
             dgettext('roomplanplugin', 'Raumzuweisung'));
 
         $ids = SimpleCollection::createFromArray(ResourceObjectOpeningTimes::findBySQL("1"))->pluck('resource_id');
-        $this->rooms = RoomUsageResourceObject::findMany($ids, 'ORDER BY `name`');
+        $this->rooms = Room::findMany($ids, 'ORDER BY `name`');
     }
 
     /**

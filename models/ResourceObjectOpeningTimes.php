@@ -20,9 +20,10 @@ class ResourceObjectOpeningTimes extends SimpleORMap {
     public static function configure($config=array()) {
         $config['db_table'] = 'resources_objects_opening_times';
 
-        $config['belongs_to']['resource_object'] = [
-            'class_name' => 'RoomUsageResourceObject',
-            'foreign_key' => 'resource_id'
+        $config['belongs_to']['resource'] = [
+            'class_name' => 'Resource',
+            'foreign_key' => 'resource_id',
+            'assoc_foreign_key' => 'id',
         ];
         $config['has_one']['openingtimes'] = [
             'class_name' => 'ResourceOpeningTimes',

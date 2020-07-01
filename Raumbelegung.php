@@ -20,10 +20,6 @@
 require_once(__DIR__.'/AssignmentsExportCronjob.php');
 
 class Raumbelegung extends StudipPlugin implements SystemPlugin {
-    /*
-     *  Ein Systemplugin wird auf JEDER Seite geladen (Konstruiert) deshalb
-     * erzeugen wir hier den Navigationspunkt
-     */
 
     function __construct() {
         parent::__construct();
@@ -33,48 +29,8 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
         // Localization
         bindtextdomain('roomplanplugin', __DIR__.'/locale');
 
-        // Lade den Navigationsabschnitt "tools"
-        $navigation = Navigation::getItem('/calendar');
+        $navigation = new Navigation($this->getDisplayName(), PluginEngine::getURL($this, [], 'export'));
 
-        // Observe resource assignment changes for writing additional info to database.
-        NotificationCenter::addObserver($this, 'assignSaveInfo', 'ResourcesAssignDidCreate');
-        NotificationCenter::addObserver($this, 'assignSaveInfo', 'ResourcesAssignDidUpdate');
-
-        // Hook into resources assignment view and insert the text field for further information.
-        if (strpos(Request::path(), 'resources.php') !== false &&
-                (Request::option('edit_assign_object') || Request::option('change_object_schedules') || Request::option('quick_view') == 'edit_object_assign')) {
-            $info = ResourceAssignInfo::find(
-                Request::option('edit_assign_object') ?: Request::option('change_object_schedules'));
-            if (!$info) {
-                $info = new ResourceAssignInfo();
-            }
-            PageLayout::addBodyElements(
-                '<div id="assign-info" style="display:none">'.
-                '<label>'.
-                dgettext('roomplanplugin', 'Zusätzliche Informationen').'<br>'.
-                '<textarea name="assign_info" cols="75" rows="4" class="add_toolbar" style="width: 600px">'.htmlReady($info->info).'</textarea>'.
-                '</label>'.
-                '</div>');
-            // Load correct js depending on mode.
-            if (Studip\ENV == 'development') {
-                $js = $this->getPluginURL() . '/assets/assign-info.js';
-            } else {
-                $js = $this->getPluginURL() . '/assets/assign-info.min.js';
-            }
-            PageLayout::addScript($js);
-        }
-
-        $navigation = new Navigation($this->getDisplayName(), PluginEngine::getURL($this, [], 'index/list'));
-
-        $navigation->addSubNavigation('list',
-            new Navigation(dgettext('roomplanplugin', 'Tagesansicht (Liste)'),
-                PluginEngine::getURL($this, [], 'index/list')));
-        $navigation->addSubNavigation('table',
-            new Navigation(dgettext('roomplanplugin', 'Tagesansicht (Tabelle)'),
-                PluginEngine::getURL($this, [], 'index/table')));
-        $navigation->addSubNavigation('semester',
-            new Navigation(dgettext('roomplanplugin', 'Semesteransicht'),
-                PluginEngine::getURL($this, [], 'semester')));
         $navigation->addSubNavigation('export',
             new Navigation(dgettext('roomplanplugin', 'Export der Raumbelegungen'),
                 PluginEngine::getURL($this, [], 'export')));
@@ -83,15 +39,9 @@ class Raumbelegung extends StudipPlugin implements SystemPlugin {
                 new Navigation(dgettext('roomplanplugin', 'Gebäudeöffnungszeiten'),
                     PluginEngine::getURL($this, [], 'openingtimes/times')));
         }
-        $navigation->addSubNavigation('settings',
-            new Navigation(dgettext('roomplanplugin', 'Einstellungen'),
-                PluginEngine::getURL($this, [], 'index/settings')));
 
         Navigation::addItem('/calendar/raumbelegung', $navigation);
 
-        // Füge nun dem Head die benötigten Styles und Scripts hinzu
-        PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
-        PageLayout::addScript($this->getPluginURL() . "/assets/raumbelegung.js");
         StudipAutoLoader::addAutoloadPath($this->getPluginPath() . '/models');
     }
 

@@ -21,6 +21,9 @@ class ExportController extends StudipController {
             dgettext('roomplanplugin', 'Export der Raumbelegungen'));
 
         $this->createSidebar($action);
+
+        PageLayout::addStylesheet($this->dispatcher->plugin->getPluginURL() . "/assets/style.css");
+        PageLayout::addScript($this->dispatcher->plugin->getPluginURL() . "/assets/raumbelegung.js");
     }
 
     /**
@@ -80,7 +83,7 @@ class ExportController extends StudipController {
         PageLayout::setTitle(dgettext('roomplanplugin', 'Export der Raumbelegungen'));
         $this->start = date('d.m.Y', strtotime('today 00:00:00'));
         $this->end = date('d.m.Y', strtotime('today + 6 days 23:59:59'));
-        $this->resources = ResourceAssignExport::getResources('0', true);
+        $this->resources = ResourceAssignExport::getResources('', true);
         $this->selected = Config::get()->ROOMPLAN_CSV_EXPORT_ROOMS;
         $this->prefix = 'manual';
     }
@@ -105,7 +108,7 @@ class ExportController extends StudipController {
      */
     public function rooms_action()
     {
-        $this->resources = ResourceAssignExport::getResources('0', true);
+        $this->resources = ResourceAssignExport::getResources('', true);
         $this->selected = Config::get()->ROOMPLAN_CSV_EXPORT_ROOMS;
         $this->prefix = 'auto';
     }
@@ -141,7 +144,7 @@ class ExportController extends StudipController {
             Icon::create('export', 'clickable'))->setActive($action == 'manual');
         $views->addLink(dgettext('roomplanplugin', 'Zu exportierende Räume'),
             $this->url_for('export/rooms'),
-            Icon::create('export', 'clickable'))->setActive($action == 'rooms')->asDialog('size=auto');
+            Icon::create('export', 'clickable'))->setActive($action == 'rooms')->asDialog();
         $this->sidebar->addWidget($views);
     }
 

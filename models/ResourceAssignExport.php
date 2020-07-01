@@ -102,9 +102,16 @@ class ResourceAssignExport {
                 $roomtimes = $times;
 
                 // Get actual assignments.
-                $assigns = new AssignEventList($start, $end, $id);
-                if ($assigns->events) {
-                    foreach ($assigns->events as $event) {
+                $bookings = ResourceBooking::findByResourceAndTimeRanges(
+                    Resource::find($id),
+                    [
+                        ['begin' => $start, 'end' => $end]
+                    ],
+                    [1]
+                );
+
+                if (count($bookings) > 0) {
+                    foreach ($bookings as $event) {
 
                         // Round begin down to nearest half hour if necessary.
                         $newBegin = $event->begin;
@@ -131,7 +138,7 @@ class ResourceAssignExport {
                 }
 
                 if ($resources[$id]['use_opening_times']) {
-                    $openingTimes = ResourceOpeningTimes::find(RoomUsageResourceObject::findBuilding($id)->id);
+                    $openingTimes = ResourceOpeningTimes::find(Room::find($id)->findBuilding()->id);
 
                     if ($openingTimes) {
 
@@ -200,23 +207,23 @@ class ResourceAssignExport {
      * @param bool $preserve_hierarchy keep parent/child relations or just return entries as flat structure?
      * @return array
      */
-    public static function getResources($parentId = '0', $preserve_hierarchy = false)
+    public static function getResources($parentId = '', $preserve_hierarchy = false)
     {
         $resources = [];
-        $level = DBManager::get()->fetchAll("SELECT o.`resource_id`, o.`category_id`, o.`name`, o.`description`,
-                o.`parent_id`, IF(t.`resource_id` IS NULL, 0, 1) AS use_opening_times
-            FROM `resources_objects` o
-                LEFT JOIN `resources_objects_opening_times` t USING (`resource_id`)
+        $level = DBManager::get()->fetchAll("SELECT r.`id`, r.`category_id`, r.`name`, r.`description`,
+                r.`parent_id`, IF(t.`resource_id` IS NULL, 0, 1) AS use_opening_times
+            FROM `resources` r
+                LEFT JOIN `resources_objects_opening_times` t ON (t.`resource_id` = r.`id`)
             WHERE `parent_id` = :parent
             ORDER BY `name`", ['parent' => $parentId]);
 
         foreach ($level as $one) {
-            $resources[$one['resource_id']] = $one;
+            $resources[$one['id']] = $one;
 
             if ($preserve_hierarchy) {
-                $resources[$one['resource_id']]['children'] = self::getResources($one['resource_id']);
+                $resources[$one['id']]['children'] = self::getResources($one['id'], true);
             } else {
-                $resources = array_merge($resources, self::getResources($one['resource_id']));
+                $resources = array_merge($resources, self::getResources($one['id']));
             }
         }
 

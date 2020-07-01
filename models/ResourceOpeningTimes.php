@@ -23,8 +23,7 @@ class ResourceOpeningTimes extends SimpleORMap {
 
     public static function findTimesByResource_id($resource_id)
     {
-        $building_id = RoomUsageResourceObject::findBuilding($resource_id);
-        return self::find($building_id);
+        return self::find(Room::find($resource_id)->findBuilding()->id);
     }
 
 }
