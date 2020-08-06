@@ -9,30 +9,54 @@ function openNode(node) {
     })
 }
 
+function clickActions() {
+    $('a.select-all').on('click', (event) => {
+        event.preventDefault()
+        $(event.target)
+            .closest('li')
+            .children('ul')
+            .children('li')
+            .find('label input[type="checkbox"]')
+            .attr('checked', true)
+    })
+    $('a.select-none').on('click', (event) => {
+        event.preventDefault()
+        $(event.target)
+            .closest('li')
+            .children('ul')
+            .children('li')
+            .find('label input[type="checkbox"]')
+            .attr('checked', false)
+    })
+    return false
+}
+
 STUDIP.domReady(function() {
     $('#date').datepicker({
         onSelect: function(date) {
-            $('#dateform').submit();
+            $('#dateform').submit()
         }});
     
     $('#buildings').change(function(date) {
-        $('#dateform').submit();
+        $('#dateform').submit()
     });
     $('#datehint').hide();
-    $('[name="submitButton"]').hide();
+    $('[name="submitButton"]').hide()
 
     // Work all the datepickers
-    $('.datepicker').datepicker();
+    $('.datepicker').datepicker()
 
     // Make settings sortable
     $(function() {
-        $("ul.can-be-sorted").sortable();
+        $("ul.can-be-sorted").sortable()
     });
 
     openNode($('ul.css-tree'))
+    clickActions()
 
     $(document).on('dialog-open', () => {
         openNode($('ul.css-tree'))
+        clickActions()
     })
 });
 

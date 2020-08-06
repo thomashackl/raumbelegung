@@ -3,6 +3,11 @@
         <input type="checkbox" id="<?= $prefix . htmlReady($resource['id']) ?>">
         <label for="<?= $prefix . htmlReady($resource['id']) ?>" class="undecorated">
             <?= htmlReady($resource['name']) ?>
+            (
+                <a href="" class="select-all"><?php echo dgettext('roomplanplugin', 'alle') ?></a>
+                |
+                <a href="" class="select-none"><?php echo dgettext('roomplanplugin', 'keine') ?></a>
+            )
         </label>
     <?php else : ?>
         <label class="undecorated">
