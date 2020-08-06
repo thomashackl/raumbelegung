@@ -112,11 +112,7 @@ class ResourceAssignExport {
 
                 if (count($bookings) > 0) {
 
-                    $log = fopen('/Users/thomashackl/Downloads/bookings.log', 'w');
-
                     foreach ($bookings as $event) {
-
-                        fwrite($log, print_r($event->toArray(),1) . "\n");
 
                         // Round begin down to nearest half hour if necessary.
 
