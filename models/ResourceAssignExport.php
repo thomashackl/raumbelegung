@@ -111,10 +111,28 @@ class ResourceAssignExport {
                 );
 
                 if (count($bookings) > 0) {
+
+                    $log = fopen('/Users/thomashackl/Downloads/bookings.log', 'w');
+
                     foreach ($bookings as $event) {
 
+                        fwrite($log, print_r($event->toArray(),1) . "\n");
+
                         // Round begin down to nearest half hour if necessary.
-                        $newBegin = $event->begin;
+
+                        if ($event->repetition_interval) {
+                            $dt = new DateTime('now', new DateTimeZone('Europe/Berlin'));
+                            $dt->setTimestamp($event->begin);
+
+                            $newBegin = $dt->getTimestamp();
+                            while ($newBegin < $start) {
+                                $dt->add(new DateInterval($event->repetition_interval));
+                                $newBegin = $dt->getTimestamp();
+                            }
+
+                        } else {
+                            $newBegin = $event->begin;
+                        }
                         $beginMinute = date('i', $newBegin);
                         if ($beginMinute != 0 && $beginMinute != 30) {
                             $newBegin = $beginMinute < 30 ?
@@ -123,7 +141,19 @@ class ResourceAssignExport {
                         }
 
                         // Round end up to nearest half hour if necessary.
-                        $newEnd = $event->end;
+                        if ($event->repetition_interval) {
+                            $dt = new DateTime('now', new DateTimeZone('Europe/Berlin'));
+                            $dt->setTimestamp($event->end);
+
+                            $newEnd = $dt->getTimestamp();
+                            while ($newEnd < $start) {
+                                $dt->add(new DateInterval($event->repetition_interval));
+                                $newEnd = $dt->getTimestamp();
+                            }
+
+                        } else {
+                            $newEnd = $event->end;
+                        }
                         $endMinute = date('i', $end);
                         if ($endMinute != 0 && $endMinute != 59 && $endMinute != 30) {
                             $newEnd = $endMinute < 30 ?
